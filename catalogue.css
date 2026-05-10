@@ -290,5 +290,10 @@
     .cat-hero-inner { flex-direction: column; }
     .cat-hero-badge { width: 100%; }
     .cat-cta-inner  { flex-direction: column; text-align: center; }
-    .cat-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    .cat-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+}
+
+@media (max-width: 480px) {
+    .cat-grid { grid-template-columns: 1fr; }
+    .cat-card-body h3 { font-size: 1.1rem; }
 }
