@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogue — MediAfrica Solutions Santé</title>
+    <meta name="description" content="Catalogue complet de médicaments et fournitures médicales MediAfrica. Livraison au Canada, Guinée Conakry, Burkina Faso et Côte d'Ivoire.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="catalogue.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="logo">
+                <img src="assets/logo.jpeg" alt="MediAfrica Solutions Santé" class="logo-img">
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html">Accueil</a>
+                <a href="index.html#zones">Zones</a>
+                <a href="catalogue.html" class="active">Catalogue</a>
+                <a href="index.html#commander" class="btn-nav">Commander</a>
+            </div>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- PAGE HERO -->
+    <div class="cat-hero">
+        <div class="cat-hero-inner">
+            <div class="cat-hero-text">
+                <span class="section-tag">Catalogue complet</span>
+                <h1>Nos <em>Médicaments</em><br>& Fournitures</h1>
+                <p>Tous nos produits sont certifiés, sans ordonnance, livrés partout au Canada et en Afrique de l'Ouest.</p>
+            </div>
+            <div class="cat-hero-badge">
+                <i class="fa-solid fa-shield-check"></i>
+                <div>
+                    <strong>Certifié Santé Canada</strong>
+                    <span>Licence officielle</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CATALOGUE BODY -->
+    <main class="cat-main">
+        <div class="container">
+
+            <!-- SEARCH + FILTER BAR -->
+            <div class="cat-toolbar">
+                <div class="cat-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Rechercher un médicament ou produit...">
+                </div>
+                <div class="cat-filters" id="catFilters">
+                    <button class="filter-btn active" data-cat="tous">Tous</button>
+                    <button class="filter-btn" data-cat="antidouleur">Antidouleur</button>
+                    <button class="filter-btn" data-cat="antipaludeen">Antipaludéens</button>
+                    <button class="filter-btn" data-cat="digestif">Digestif</button>
+                    <button class="filter-btn" data-cat="antiseptique">Antiseptiques</button>
+                    <button class="filter-btn" data-cat="vitamines">Vitamines</button>
+                    <button class="filter-btn" data-cat="allergie">Allergie</button>
+                    <button class="filter-btn" data-cat="fourniture">Fournitures</button>
+                    <button class="filter-btn" data-cat="seringue">Seringues & Équipement</button>
+                </div>
+            </div>
+
+            <!-- PRODUCT COUNT -->
+            <div class="cat-count">
+                <span id="productCount">0</span> produit(s) trouvé(s)
+            </div>
+
+            <!-- PRODUCTS GRID -->
+            <div class="cat-grid" id="catGrid">
+
+
+
+
+
+                <!-- ===== GAMME CHEVEUX (M1) ===== -->
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M1.jpeg'); background-size: cover; background-position: center; height: 160px; border-bottom: none; background-color: #fff8f1;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#D97706">Cheveux</span>
+                        <h3>Hair Growth Formula</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Stimule les follicules, renforce les racines, prévient la chute.</p>
+                        <div class="cat-dosage">
+                            <span>50 ml</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+
+                <!-- ===== GAMME PEAU COLLAGÈNE (M2) ===== -->
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M2_1.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #fdf2f8;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#EC4899">Peau / Articulations</span>
+                        <h3>Collagène en Poudre</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Formule premium pour la peau et la fonction articulaire.</p>
+                        <div class="cat-dosage">
+                            <span>200 g</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M2_2.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #fdf2f8;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#EC4899">Peau / Articulations</span>
+                        <h3>Collagène Caplets</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutient la croissance de la peau.</p>
+                        <div class="cat-dosage">
+                            <span>60 Caplets</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M2_3.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #fdf2f8;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#EC4899">Peau / Articulations</span>
+                        <h3>Collagène Gummies</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutient l'élasticité de la peau.</p>
+                        <div class="cat-dosage">
+                            <span>60 Gummies</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M2_4.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #fdf2f8;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#EC4899">Peau / Articulations</span>
+                        <h3>Collagène Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Formule liquide premium à absorption rapide.</p>
+                        <div class="cat-dosage">
+                            <span>50 ml</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+
+                <!-- ===== GAMME VITAMINES SET 1 (M3) ===== -->
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M3_1.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0fdf4;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#16A34A">Vitamines</span>
+                        <h3>Vitamine C</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Puissant antioxydant, renforce le système immunitaire.</p>
+                        <div class="cat-dosage">
+                            <span>500mg / 1000mg</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M3_2.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0fdf4;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#16A34A">Vitamines</span>
+                        <h3>Vitamine D3</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Favorise la santé des os et l'immunité.</p>
+                        <div class="cat-dosage">
+                            <span>1000 UI</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M3_3.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0fdf4;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#16A34A">Vitamines</span>
+                        <h3>Multivitamines (Comprimés)</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Énergie, vitalité et santé générale.</p>
+                        <div class="cat-dosage">
+                            <span>Comprimés</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M3_4.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0fdf4;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#16A34A">Vitamines</span>
+                        <h3>Mélatonine</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Améliore la qualité du sommeil (cycle veille-sommeil).</p>
+                        <div class="cat-dosage">
+                            <span>3 mg</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+
+                <!-- ===== GAMME VITAMINES SET 2 (M4) ===== -->
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M4_1.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0fdf4;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#16A34A">Vitamines</span>
+                        <h3>Multivitamines Gummies</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Santé et bien-être naturel et délicieux.</p>
+                        <div class="cat-dosage">
+                            <span>Gummies</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M4_2.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0fdf4;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#16A34A">Minéraux</span>
+                        <h3>Magnésium</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutient la fonction musculaire et réduit la fatigue.</p>
+                        <div class="cat-dosage">
+                            <span>250 mg</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M4_3.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0fdf4;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#16A34A">Minéraux</span>
+                        <h3>Fer</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutient la production d'énergie, prévient l'anémie.</p>
+                        <div class="cat-dosage">
+                            <span>65 mg</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('M4_4.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0fdf4;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#16A34A">Oméga</span>
+                        <h3>Omega-3</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Favorise la santé cardiaque et les fonctions cérébrales.</p>
+                        <div class="cat-dosage">
+                            <span>1000 mg</span>
+                            <span>MOQ: 1000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+
+
+                <!-- ===== GAMME VITAMINES LIQUIDES ===== -->
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('Medicaments_1.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f8fcf8;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
+                        <h3>Vitamine B12 Liquide (5000 mcg)</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Booster naturel contre la fatigue, améliore la concentration.</p>
+                        <div class="cat-dosage">
+                            <span>Format Liquide</span>
+                            <span>MOQ: 1500 unités</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('Medicaments_2.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f8fcf8;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
+                        <h3>Complexe Vitamine B Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Idéal pour le stress et la fatigue chronique.</p>
+                        <div class="cat-dosage">
+                            <span>Format Liquide</span>
+                            <span>MOQ: 1500 unités</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('Medicaments_3.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f8fcf8;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
+                        <h3>Formule Immunité Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Vitamine C + Zinc + Sureau. Anti-grippe et protection globale.</p>
+                        <div class="cat-dosage">
+                            <span>Format Liquide</span>
+                            <span>MOQ: 1500 unités</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('Medicaments_4.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f8fcf8;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
+                        <h3>Mélatonine Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Aide à dormir rapidement et mieux. Renforce cheveux, peau et ongles.</p>
+                        <div class="cat-dosage">
+                            <span>Format Liquide</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+
+                <!-- ===== GAMME GUMMIES ===== -->
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('Medicaments_5.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
+                        <h3>Multivitamines Adultes</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Maintien de la santé générale.</p>
+                        <div class="cat-dosage">
+                            <span>Gummies</span>
+                            <span>Adultes</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('Medicaments_6.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
+                        <h3>Multivitamines Enfants</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutien pour la croissance & l'immunité.</p>
+                        <div class="cat-dosage">
+                            <span>Gummies</span>
+                            <span>Enfants</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('Medicaments_7.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
+                        <h3>Multivitamines Femmes</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Équilibre hormonal & énergie.</p>
+                        <div class="cat-dosage">
+                            <span>Gummies</span>
+                            <span>Femmes</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('Medicaments_8.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
+                        <h3>Vitamine C Gummies</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutien de l'immunité.</p>
+                        <div class="cat-dosage">
+                            <span>500 mg / 1000 mg</span>
+                            <span>Gummies</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('Medicaments_9.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
+                        <h3>Vitamine D3 Gummies</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutien de l'immunité et des os.</p>
+                        <div class="cat-dosage">
+                            <span>50 mcg / 125 mcg</span>
+                            <span>Gummies</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('Medicaments_10.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
+                        <h3>Vitamine B12 Gummies</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Énergie, os & système immunitaire.</p>
+                        <div class="cat-dosage">
+                            <span>500 à 5000 mcg</span>
+                            <span>Gummies</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('Medicaments_11.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
+                        <h3>B-Complex Gummies</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Métabolisme & énergie.</p>
+                        <div class="cat-dosage">
+                            <span>Complexe B</span>
+                            <span>Gummies</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('Medicaments_12.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
+                        <h3>Magnésium Gummies</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Anti-stress et relaxation musculaire.</p>
+                        <div class="cat-dosage">
+                            <span>100-250 mg</span>
+                            <span>Gummies</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-cart-shopping"></i> Commander</a>
+                </div>
+
+                <!-- ===== ANTIDOULEURS ===== -->
+                <div class="cat-card" data-cat="antidouleur">
+                    <div class="cat-card-header" style="--hc:#14532D">
+                        <i class="fa-solid fa-temperature-arrow-down"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag">Antidouleur</span>
+                        <h3>Paracétamol 500mg</h3>
+                        <p>Comprimés. Soulagement douleur & fièvre. Boîte de 20 comprimés.</p>
+                        <div class="cat-dosage">
+                            <span>500mg</span>
+                            <span>Adulte</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="antidouleur">
+                    <div class="cat-card-header" style="--hc:#14532D">
+                        <i class="fa-solid fa-temperature-arrow-down"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag">Antidouleur</span>
+                        <h3>Paracétamol 1000mg</h3>
+                        <p>Comprimés effervescents. Douleurs intenses, forte fièvre. Boîte de 16.</p>
+                        <div class="cat-dosage">
+                            <span>1000mg</span>
+                            <span>Adulte</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="antidouleur">
+                    <div class="cat-card-header" style="--hc:#14532D">
+                        <i class="fa-solid fa-temperature-arrow-down"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag">Antidouleur</span>
+                        <h3>Ibuprofène 400mg</h3>
+                        <p>Anti-inflammatoire. Douleurs musculaires, maux de tête, règles douloureuses.</p>
+                        <div class="cat-dosage">
+                            <span>400mg</span>
+                            <span>Adulte</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <!-- ===== ANTIPALUDEENS ===== -->
+                <div class="cat-card" data-cat="antipaludeen">
+                    <div class="cat-card-header" style="--hc:#B45309">
+                        <i class="fa-solid fa-mosquito-net"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#B45309">Antipaludéen</span>
+                        <h3>Chloroquine 250mg</h3>
+                        <p>Prévention et traitement du paludisme. Usage adapté Afrique de l'Ouest.</p>
+                        <div class="cat-dosage">
+                            <span>250mg</span>
+                            <span>Adulte</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="antipaludeen">
+                    <div class="cat-card-header" style="--hc:#B45309">
+                        <i class="fa-solid fa-mosquito-net"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#B45309">Antipaludéen</span>
+                        <h3>Quinine 500mg</h3>
+                        <p>Traitement du paludisme sévère. Comprimés. Boîte de 20.</p>
+                        <div class="cat-dosage">
+                            <span>500mg</span>
+                            <span>Adulte</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <!-- ===== DIGESTIF ===== -->
+                <div class="cat-card" data-cat="digestif">
+                    <div class="cat-card-header" style="--hc:#1D4ED8">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#1D4ED8">Digestif</span>
+                        <h3>Sels de Réhydratation Orale (SRO)</h3>
+                        <p>Réhydratation rapide. Sachet 1L. Idéal diarrhées et déshydratation.</p>
+                        <div class="cat-dosage">
+                            <span>Sachet 1L</span>
+                            <span>Adulte & Enfant</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="digestif">
+                    <div class="cat-card-header" style="--hc:#1D4ED8">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#1D4ED8">Digestif</span>
+                        <h3>Lopéramide 2mg</h3>
+                        <p>Antidiarrhéique. Ralentit le transit intestinal. Boîte de 12 gélules.</p>
+                        <div class="cat-dosage">
+                            <span>2mg</span>
+                            <span>Adulte</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <!-- ===== ANTISEPTIQUES ===== -->
+                <div class="cat-card" data-cat="antiseptique">
+                    <div class="cat-card-header" style="--hc:#7C3AED">
+                        <i class="fa-solid fa-syringe"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#7C3AED">Antiseptique</span>
+                        <h3>Bétadine Solution 10%</h3>
+                        <p>Désinfection cutanée. Plaies, coupures, infections superficielles. Flacon 125ml.</p>
+                        <div class="cat-dosage">
+                            <span>10%</span>
+                            <span>Usage externe</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="antiseptique">
+                    <div class="cat-card-header" style="--hc:#7C3AED">
+                        <i class="fa-solid fa-syringe"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#7C3AED">Antiseptique</span>
+                        <h3>Alcool Isopropylique 70%</h3>
+                        <p>Désinfection surfaces et peau. Flacon 250ml avec spray.</p>
+                        <div class="cat-dosage">
+                            <span>70%</span>
+                            <span>Usage externe</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <!-- ===== VITAMINES ===== -->
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="--hc:#0E7490">
+                        <i class="fa-solid fa-apple-whole"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamines</span>
+                        <h3>Vitamine C 1000mg</h3>
+                        <p>Renforce l'immunité. Comprimés effervescents. Boîte de 20.</p>
+                        <div class="cat-dosage">
+                            <span>1000mg</span>
+                            <span>Adulte</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="--hc:#0E7490">
+                        <i class="fa-solid fa-apple-whole"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamines</span>
+                        <h3>Zinc 20mg</h3>
+                        <p>Soutien immunitaire, cicatrisation. Comprimés. Boîte de 30.</p>
+                        <div class="cat-dosage">
+                            <span>20mg</span>
+                            <span>Adulte & Enfant</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="--hc:#0E7490">
+                        <i class="fa-solid fa-apple-whole"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamines</span>
+                        <h3>Fer + Acide Folique</h3>
+                        <p>Traitement anémie, femmes enceintes. Comprimés. Boîte de 30.</p>
+                        <div class="cat-dosage">
+                            <span>65mg / 400µg</span>
+                            <span>Adulte</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <!-- ===== ALLERGIE ===== -->
+                <div class="cat-card" data-cat="allergie">
+                    <div class="cat-card-header" style="--hc:#BE185D">
+                        <i class="fa-solid fa-wind"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#BE185D">Allergie</span>
+                        <h3>Cétirizine 10mg</h3>
+                        <p>Antihistaminique 2e génération. Rhinite, urticaire. Sans somnolence. Boîte 30.</p>
+                        <div class="cat-dosage">
+                            <span>10mg</span>
+                            <span>Adulte</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="allergie">
+                    <div class="cat-card-header" style="--hc:#BE185D">
+                        <i class="fa-solid fa-wind"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#BE185D">Allergie</span>
+                        <h3>Loratadine 10mg</h3>
+                        <p>Soulagement allergies saisonnières. Non sédatif. Comprimés boîte de 30.</p>
+                        <div class="cat-dosage">
+                            <span>10mg</span>
+                            <span>Adulte & Enfant +12ans</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <!-- ===== FOURNITURES ===== -->
+                <div class="cat-card" data-cat="fourniture">
+                    <div class="cat-card-header" style="--hc:#374151">
+                        <i class="fa-solid fa-kit-medical"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#374151">Fourniture</span>
+                        <h3>Pansements adhésifs</h3>
+                        <p>Assortiment de pansements stériles toutes tailles. Boîte de 40.</p>
+                        <div class="cat-dosage">
+                            <span>Stérile</span>
+                            <span>Toutes tailles</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="fourniture">
+                    <div class="cat-card-header" style="--hc:#374151">
+                        <i class="fa-solid fa-kit-medical"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#374151">Fourniture</span>
+                        <h3>Thermomètre digital</h3>
+                        <p>Mesure axillaire et orale. Résultat en 60 secondes. Étui inclus.</p>
+                        <div class="cat-dosage">
+                            <span>Digital</span>
+                            <span>Adulte & Enfant</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="fourniture">
+                    <div class="cat-card-header" style="--hc:#374151">
+                        <i class="fa-solid fa-kit-medical"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#374151">Fourniture</span>
+                        <h3>Gants latex — Boîte 100</h3>
+                        <p>Gants d'examen non stériles. Tailles S/M/L disponibles.</p>
+                        <div class="cat-dosage">
+                            <span>100 pièces</span>
+                            <span>S / M / L</span>
+                        </div>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <!-- ===== SERINGUES & ÉQUIPEMENT ===== -->
+                <div class="cat-card" data-cat="seringue">
+                    <div class="cat-card-header cat-card-img">
+                        <img src="assets/catalogue-page1.jpeg" alt="Seringues Sol-M" class="prod-img">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0369A1">Seringue</span>
+                        <h3>Sol-M® Seringue Luer Lock 1ml</h3>
+                        <p>Seringue à faible espace mort (LDS). Réduit les médicaments perdus après injection. Transparent, piston souple. <strong>Sans aiguille.</strong></p>
+                        <div class="cat-dosage">
+                            <span>Réf. V0201</span>
+                            <span>Boîte de 100</span>
+                        </div>
+                        <ul class="cat-features">
+                            <li>Minimise l'espace mort (LDS) réduisant le gaspillage</li>
+                            <li>Augmente le nombre de doses par flacon</li>
+                            <li>Cylindre haute transparence pour une visualisation facile</li>
+                            <li>Lubrification au silicone pour un mouvement fluide du piston</li>
+                            <li>Butée de sécurité évitant le retrait accidentel du piston</li>
+                            <li>Emballage individuel</li>
+                        </ul>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="seringue">
+                    <div class="cat-card-header cat-card-img">
+                        <img src="assets/catalogue-page1.jpeg" alt="Seringues Sol-M 3ml" class="prod-img">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0369A1">Seringue</span>
+                        <h3>Sol-M® Seringue Luer Lock 3ml</h3>
+                        <p>Seringue Luer Lock 3ml sans aiguille. Connexion sécurisée, disponible en plusieurs tailles. Emballage individuel.</p>
+                        <div class="cat-dosage">
+                            <span>Réf. V0203</span>
+                            <span>Boîte de 100</span>
+                        </div>
+                        <ul class="cat-features">
+                            <li>Connexion Luer Lock sécurisée</li>
+                            <li>Cylindre haute transparence pour une visualisation facile</li>
+                            <li>Lubrification au silicone pour un mouvement fluide</li>
+                            <li>Butée de sécurité évitant le retrait accidentel du piston</li>
+                            <li>Emballage individuel</li>
+                        </ul>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="seringue">
+                    <div class="cat-card-header cat-card-img">
+                        <img src="assets/catalogue-page1.jpeg" alt="Sol-Care Aiguille de sécurité" class="prod-img">
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0369A1">Aiguille</span>
+                        <h3>Sol-Care® Aiguille de Sécurité — Adulte 1"</h3>
+                        <p>Aiguille hypodermique à usage unique avec bras de protection anti-piqûre. Activation d'une seule main. <strong>Réf. V0205</strong></p>
+                        <div class="cat-dosage">
+                            <span>Adulte 1"</span>
+                            <span>Boîte de 100</span>
+                        </div>
+                        <ul class="cat-features">
+                            <li>Bras protecteur protégeant contre les piqûres accidentelles</li>
+                            <li>Deux options d'activation : surface dure ou par le pouce</li>
+                            <li>Mécanisme de bouclier de sécurité simple à une main</li>
+                            <li>Emballage individuel</li>
+                        </ul>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="seringue">
+                    <div class="cat-card-header" style="--hc:#0369A1">
+                        <i class="fa-solid fa-syringe"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0369A1">Aiguille</span>
+                        <h3>Sol-Care® Aiguille de Sécurité 1½" — Population à risque</h3>
+                        <p>Aiguille sécurisée 1½ pouce, conçue pour les patients nécessitant une injection plus profonde.</p>
+                        <div class="cat-dosage">
+                            <span>Réf. V0206</span>
+                            <span>Boîte de 100</span>
+                        </div>
+                        <ul class="cat-features">
+                            <li>Taille 1½" pour les patients à IMC plus élevé</li>
+                            <li>Bras protecteur protégeant contre les piqûres accidentelles</li>
+                            <li>Mécanisme de sécurité à une main</li>
+                            <li>Emballage individuel</li>
+                        </ul>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="seringue">
+                    <div class="cat-card-header" style="--hc:#0369A1">
+                        <i class="fa-solid fa-syringe"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0369A1">Aiguille</span>
+                        <h3>Sol-Care® Aiguille de Sécurité 5/8" — Adolescent / Nourrisson</h3>
+                        <p>Aiguille courte sécurisée pour injections sous-cutanées chez l'adolescent et le nourrisson.</p>
+                        <div class="cat-dosage">
+                            <span>Réf. V0207</span>
+                            <span>Boîte de 100</span>
+                        </div>
+                        <ul class="cat-features">
+                            <li>Taille 5/8" pour les adolescents et nourrissons</li>
+                            <li>Bras protecteur protégeant contre les piqûres accidentelles</li>
+                            <li>Mécanisme de sécurité à une main</li>
+                            <li>Emballage individuel</li>
+                        </ul>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+                <div class="cat-card" data-cat="seringue">
+                    <div class="cat-card-header" style="--hc:#0369A1">
+                        <i class="fa-solid fa-tag"></i>
+                    </div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0369A1">Étiquette</span>
+                        <h3>Étiquette Confidentialité Patient — Réf. 7039</h3>
+                        <p>Protège les informations sensibles sur ordonnances, flacons et poches IV. Étiquette inviolable, opaque bleu. Conforme HIPAA.</p>
+                        <div class="cat-dosage">
+                            <span>75mm × 48mm</span>
+                            <span>2 rouleaux × 500 = 1 000</span>
+                        </div>
+                        <ul class="cat-features">
+                            <li>Solution rapide et abordable conforme aux normes HIPAA</li>
+                            <li>Pour flacons, plaquettes, seringues et poches IV</li>
+                            <li>Fentes inviolables (autodestruction si tentative de retrait)</li>
+                            <li>Évite d'investir dans le déchiquetage ou l'incinération coûteuse</li>
+                            <li>Étiquette bleue opaque pour masquer les données du patient</li>
+                        </ul>
+                    </div>
+                    <a href="index.html#commander" class="cat-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Commander
+                    </a>
+                </div>
+
+            </div><!-- end cat-grid -->
+
+            <!-- EMPTY STATE -->
+            <div class="cat-empty" id="catEmpty" style="display:none">
+                <i class="fa-solid fa-box-open"></i>
+                <p>Aucun produit trouvé pour cette recherche.</p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- CTA COMMANDER -->
+    <section class="cat-cta">
+        <div class="container cat-cta-inner">
+            <div>
+                <h2>Vous ne trouvez pas ce qu'il vous faut ?</h2>
+                <p>Contactez-nous directement — nous pouvons sourcer des médicaments spécifiques sur demande.</p>
+            </div>
+            <a href="index.html#commander" class="btn-primary">
+                <i class="fa-solid fa-paper-plane"></i> Faire une demande spéciale
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <div class="logo">
+                    <img src="assets/logo.jpeg" alt="MediAfrica Solutions Santé" class="logo-img">
+                </div>
+                <p>Médicaments de qualité, livrés au Canada et en Afrique de l'Ouest.</p>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Accueil</a>
+                <a href="index.html#zones">Zones</a>
+                <a href="catalogue.html">Catalogue</a>
+                <a href="index.html#commander">Commander</a>
+            </div>
+            <div class="footer-flags">
+                <span title="Canada">🇨🇦</span>
+                <span title="Guinée Conakry">🇬🇳</span>
+                <span title="Burkina Faso">🇧🇫</span>
+                <span title="Côte d'Ivoire">🇨🇮</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 MediAfrica — Solution Santé. Tous droits réservés.</p>
+            <p class="disclaimer">Les médicaments proposés sont en vente libre (sans ordonnance). Consultez un professionnel de santé si nécessaire.</p>
+        </div>
+    </footer>
+
+    <script src="catalogue.js"></script>
+</body>
+</html>
