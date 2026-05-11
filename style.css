@@ -1059,25 +1059,45 @@ img { max-width: 100%; display: block; }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
-    .produits-grid { grid-template-columns: repeat(2, 1fr); }
-    .zones-grid    { grid-template-columns: repeat(2, 1fr); }
-    .pourquoi-inner{ grid-template-columns: 1fr; gap: 3rem; }
-    .trust-card--2 { transform: none; }
+    .produits-grid   { grid-template-columns: repeat(2, 1fr); }
+    .zones-grid      { grid-template-columns: repeat(2, 1fr); }
+    .pourquoi-inner  { grid-template-columns: 1fr; gap: 3rem; }
+    .trust-card--2   { transform: none; }
     .commander-inner { grid-template-columns: 1fr; gap: 3rem; }
 }
 
 @media (max-width: 768px) {
-    .section { padding: 5rem 0; }
+    /* ── Navbar + Ticker : logo réduit → header plus compact ── */
+    .logo-img   { height: 56px; }
+    .navbar     { padding: .55rem 0; }
+    .ticker-wrap{ top: 74px; }   /* 56px logo + 2×0.55rem ≈ 74px */
+    .hero       { padding-top: 116px; } /* 74px + ~42px ticker */
 
+    /* ── Sections ── */
+    .section { padding: 4rem 0; }
+
+    /* ── Hero intérieur ── */
     .hero-inner {
-        padding-top: 4rem;
+        padding-top: 2.5rem;
         align-items: center;
         text-align: center;
     }
-    .hero-ctas  { justify-content: center; }
-    .hero-stats { justify-content: center; }
-    .hero-sub   { margin: 0 auto 2.5rem; }
+    .hero-text       { max-width: 100%; }
+    .hero-text h1    { font-size: clamp(2rem, 9vw, 3.2rem); }
+    .hero-sub        { font-size: 1rem; margin: 0 auto 2rem; }
+    .hero-ctas       { justify-content: center; flex-direction: column; align-items: center; }
+    .hero-ctas a     { width: 100%; max-width: 320px; justify-content: center; }
+    .hero-stats      { justify-content: center; gap: 1.25rem; }
+    .hero-badge      { font-size: .7rem; }
+    .sante-canada-badge {
+        flex-direction: column;
+        text-align: center;
+        gap: .5rem;
+        padding: .65rem 1rem;
+    }
+    .hero-ctas { margin-top: 2rem; }
 
+    /* ── Menu mobile ── */
     .nav-links {
         display: none;
         position: fixed;
@@ -1090,25 +1110,50 @@ img { max-width: 100%; display: block; }
         align-items: center;
         gap: 2.5rem;
         font-size: 1.3rem;
-        z-index: 90;
+        z-index: 9990;
     }
     .nav-links.open { display: flex; }
-    .hamburger { display: flex; z-index: 101; }
+    .hamburger      { display: flex; z-index: 10000; }
 
+    /* ── Grilles ── */
     .produits-grid { grid-template-columns: 1fr; }
     .zones-grid    { grid-template-columns: 1fr 1fr; }
 
+    /* ── Formulaire ── */
     .form-row { grid-template-columns: 1fr; }
 
-    .footer-inner {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
+    /* ── Footer ── */
+    .footer-inner  { grid-template-columns: 1fr; gap: 2rem; }
     .footer-bottom { flex-direction: column; text-align: center; }
-    .disclaimer    { text-align: center; }
+    .disclaimer    { text-align: center; max-width: 100%; }
+
+    /* ── Témoignages ── */
+    .trust-card--2 { transform: none; }
+
+    /* ── Zone de commande ── */
+    .contact-channels { gap: .75rem; }
+    .channel          { padding: .7rem 1rem; }
 }
 
 @media (max-width: 480px) {
-    .zones-grid { grid-template-columns: 1fr; }
-    .hero-stats { flex-wrap: wrap; }
+    /* ── Navbar encore plus compact ── */
+    .logo-img    { height: 46px; }
+    .navbar      { padding: .45rem 0; }
+    .ticker-wrap { top: 62px; }
+    .hero        { padding-top: 104px; }
+
+    /* ── Hero ── */
+    .hero-text h1 { font-size: clamp(1.8rem, 10vw, 2.6rem); }
+    .hero-sub     { font-size: .95rem; }
+    .stat-num     { font-size: 1.6rem; }
+    .stat-label   { font-size: .7rem; }
+    .hero-stats   { flex-wrap: wrap; gap: 1rem; }
+    .stat-divider { display: none; }
+
+    /* ── Grilles ── */
+    .zones-grid    { grid-template-columns: 1fr; }
+    .produits-grid { grid-template-columns: 1fr; }
+
+    /* ── Container ── */
+    .container { padding: 0 1.25rem; }
 }
