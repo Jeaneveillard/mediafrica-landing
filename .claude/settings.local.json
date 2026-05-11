@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where msedge *)",
+      "Read(//c/Program Files \\(x86\\)/Microsoft/Edge/Application/**)",
+      "Bash(npm --version)",
+      "Bash(node generate_catalogue_fr.js)",
+      "Bash(node generate_with_photos.js)",
+      "Bash(node -e \"const j = require\\('jimp'\\); console.log\\(Object.keys\\(j\\).slice\\(0,20\\)\\)\")",
+      "Bash('C:/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe' --headless=old --disable-gpu --print-to-pdf=c:/Users/jeane/Desktop/Amboul/mediafrica-landing/pdfs_fr/C1.pdf --print-to-pdf-no-header file:///c:/Users/jeane/Desktop/Amboul/mediafrica-landing/pdfs_fr/C1.html)",
+      "Bash('C:/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe' --headless=old --disable-gpu --print-to-pdf=c:/Users/jeane/Desktop/Amboul/mediafrica-landing/pdfs_fr/C1_new.pdf --print-to-pdf-no-header file:///c:/Users/jeane/Desktop/Amboul/mediafrica-landing/pdfs_fr/C1.html)",
+      "Bash(node generate_img_only.js)",
+      "WebSearch"
+    ]
+  }
+}

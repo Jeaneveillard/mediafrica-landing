@@ -701,6 +701,7 @@ img { max-width: 100%; display: block; }
     overflow: hidden;
 }
 .zones .section-header h2 { color: #fff; }
+.zones .section-header h2 em { color: #FBBF24; }
 .zones .section-header p  { color: rgba(255,255,255,.92); font-weight: 500; }
 .zones .section-tag { background: rgba(255,255,255,.15); color: #FBBF24; }
 .zones-note { color: rgba(255,255,255,.9); font-weight: 500; }
