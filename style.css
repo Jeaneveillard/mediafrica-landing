@@ -162,6 +162,18 @@ img { max-width: 100%; display: block; }
     box-shadow: 0 4px 16px rgba(0,0,0,.35);
 }
 
+.footer-logo-div {
+    width: 108px;
+    height: 108px;
+    border-radius: 16px;
+    background-image: url('assets/logo-clean.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-color: #0d3320;
+    box-shadow: 0 4px 16px rgba(0,0,0,.35);
+    flex-shrink: 0;
+}
+
 /* ===== TICKER ===== */
 .ticker-wrap {
     position: fixed;
