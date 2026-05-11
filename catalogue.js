@@ -64,4 +64,171 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Init count
     filterCards();
+
+    // ── MODAL PRODUIT ──────────────────────────────────────────
+    const modal      = document.getElementById('productModal');
+    const modalImg   = document.getElementById('modalImg');
+    const modalTag   = document.getElementById('modalTag');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc  = document.getElementById('modalDesc');
+    const modalDose  = document.getElementById('modalDosage');
+    const modalClose = document.getElementById('modalClose');
+    const qtyInput   = document.getElementById('qtyInput');
+    const unitPrice  = document.getElementById('unitPrice');
+    const modalTotal = document.getElementById('modalTotal');
+    const modalOrderBtn = document.getElementById('modalOrderBtn');
+    const modalForm  = document.getElementById('modalForm');
+    const mfSummary  = document.getElementById('mfSummary');
+    const mfBack     = document.getElementById('mfBack');
+
+    let currentProduct = '';
+
+    /* ── Calcul du total ── */
+    function updateTotal() {
+        const qty   = parseInt(qtyInput.value) || 0;
+        const price = parseFloat(unitPrice.value) || 0;
+        if (qty > 0 && price > 0) {
+            const total = (qty * price).toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' });
+            modalTotal.textContent = total;
+        } else {
+            modalTotal.textContent = '—';
+        }
+    }
+
+    qtyInput.addEventListener('input', updateTotal);
+    unitPrice.addEventListener('input', updateTotal);
+
+    document.getElementById('qtyMinus').addEventListener('click', () => {
+        const v = Math.max(1, (parseInt(qtyInput.value) || 1) - 1);
+        qtyInput.value = v; updateTotal();
+    });
+    document.getElementById('qtyPlus').addEventListener('click', () => {
+        qtyInput.value = (parseInt(qtyInput.value) || 1) + 1; updateTotal();
+    });
+
+    /* ── Ouvrir modal ── */
+    function openModal(card) {
+        const header = card.querySelector('.cat-card-header');
+        modalImg.style.backgroundImage = header ? header.style.backgroundImage : '';
+
+        const tag = card.querySelector('.cat-tag');
+        if (tag) {
+            modalTag.textContent  = tag.textContent;
+            modalTag.style.cssText = `background:${window.getComputedStyle(tag).background};color:${window.getComputedStyle(tag).color}`;
+        }
+
+        const h3 = card.querySelector('h3');
+        currentProduct = h3 ? h3.textContent : '';
+        modalTitle.textContent = currentProduct;
+
+        const p = card.querySelector('.cat-card-body p');
+        modalDesc.innerHTML = p ? p.innerHTML : '';
+
+        const doses = card.querySelectorAll('.cat-dosage span');
+        modalDose.innerHTML = '';
+        doses.forEach(d => {
+            const s = document.createElement('span');
+            s.textContent = d.textContent;
+            modalDose.appendChild(s);
+        });
+
+        // Reset étape 1
+        qtyInput.value  = 1000;
+        unitPrice.value = '';
+        modalTotal.textContent = '—';
+        modalForm.classList.add('modal-form--hidden');
+        modalOrderBtn.style.display = '';
+
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    /* ── Étape 1 → 2 ── */
+    modalOrderBtn.addEventListener('click', () => {
+        const qty   = parseInt(qtyInput.value) || 0;
+        const price = parseFloat(unitPrice.value) || 0;
+        const total = qty > 0 && price > 0
+            ? (qty * price).toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })
+            : 'Sur devis';
+
+        mfSummary.innerHTML =
+            `<strong>${currentProduct}</strong><br>` +
+            `Quantité : ${qty} unités &nbsp;·&nbsp; ` +
+            `Prix unitaire : ${price > 0 ? '$' + price.toFixed(2) : 'Sur devis'} &nbsp;·&nbsp; ` +
+            `<strong>Total : ${total}</strong>`;
+
+        modalOrderBtn.style.display = 'none';
+        modalForm.classList.remove('modal-form--hidden');
+        modal.querySelector('.modal-card').scrollTop = 0;
+    });
+
+    /* ── Retour étape 1 ── */
+    mfBack.addEventListener('click', () => {
+        modalForm.classList.add('modal-form--hidden');
+        modalOrderBtn.style.display = '';
+    });
+
+    /* ── Soumission → WhatsApp ── */
+    modalForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const qty   = parseInt(qtyInput.value) || 0;
+        const price = parseFloat(unitPrice.value) || 0;
+        const total = qty > 0 && price > 0
+            ? (qty * price).toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })
+            : 'Sur devis';
+
+        const nom      = document.getElementById('mf-nom').value;
+        const email    = document.getElementById('mf-email').value;
+        const tel      = document.getElementById('mf-tel').value;
+        const pays     = document.getElementById('mf-pays').value;
+        const adresse  = document.getElementById('mf-adresse').value;
+        const ville    = document.getElementById('mf-ville').value;
+        const cp       = document.getElementById('mf-cp').value;
+        const shipping = document.getElementById('mf-shipping').value;
+        const notes    = document.getElementById('mf-notes').value;
+
+        const msg = [
+            '🛒 *Nouvelle commande MediAfrica*',
+            '',
+            `📦 *Produit :* ${currentProduct}`,
+            `📊 *Quantité :* ${qty} unités`,
+            `💲 *Prix unitaire :* ${price > 0 ? '$' + price.toFixed(2) + ' CAD' : 'Sur devis'}`,
+            `💰 *Total :* ${total}`,
+            '',
+            '👤 *Client*',
+            `Nom : ${nom}`,
+            `Tél/WhatsApp : ${tel}`,
+            `Courriel : ${email}`,
+            '',
+            '📍 *Adresse de livraison*',
+            `${adresse}`,
+            `${ville}${cp ? ', ' + cp : ''}`,
+            `${pays}`,
+            '',
+            `🚚 *Expédition :* ${shipping}`,
+            notes ? `📝 *Notes :* ${notes}` : ''
+        ].filter(Boolean).join('\n');
+
+        window.open(`https://wa.me/14384029247?text=${encodeURIComponent(msg)}`, '_blank');
+        closeModal();
+    });
+
+    /* ── Clic sur une carte ── */
+    cards.forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', e => {
+            if (e.target.closest('.cat-btn')) return;
+            openModal(card);
+        });
+    });
+
+    /* ── Fermer ── */
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 });

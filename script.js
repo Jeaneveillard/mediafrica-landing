@@ -38,11 +38,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.reveal, .reveal-right, .reveal-up')
         .forEach(el => observer.observe(el));
 
-    // Form submission
+    // Form submission → WhatsApp
     const form    = document.getElementById('orderForm');
     const success = document.getElementById('orderSuccess');
     form.addEventListener('submit', e => {
         e.preventDefault();
+        const nom      = form.querySelector('input[type="text"]').value;
+        const tel      = form.querySelector('input[type="tel"]').value;
+        const pays     = form.querySelector('select').value;
+        const produits = form.querySelector('textarea').value;
+        const msg = `Nouvelle commande MediAfrica\n\nNom : ${nom}\nTél : ${tel}\nPays : ${pays}\nMédicaments : ${produits}`;
+        window.open(`https://wa.me/14384029247?text=${encodeURIComponent(msg)}`, '_blank');
         form.style.display    = 'none';
         success.style.display = 'block';
     });

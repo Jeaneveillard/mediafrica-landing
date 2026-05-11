@@ -18,7 +18,7 @@
     <nav class="navbar scrolled" id="navbar">
         <div class="nav-inner">
             <a href="index.html" class="logo">
-                <img src="assets/logo.jpeg" alt="MediAfrica Solutions Santé" class="logo-img">
+                <img src="assets/logo-clean.jpeg" alt="MediAfrica Solutions Santé" class="logo-img">
             </a>
             <div class="nav-links" id="navLinks">
                 <a href="index.html">Accueil</a>
@@ -87,7 +87,7 @@
 
                 <!-- ===== GAMME CHEVEUX (M1) ===== -->
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('M1.jpeg'); background-size: cover; background-position: center; height: 160px; border-bottom: none; background-color: #fff8f1;">
+                    <div class="cat-card-header" style="background-image: url('assets/hair-growth-product.jpeg'); background-size: cover; background-position: center center; height: 230px; border-bottom: none;">
                     </div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#D97706">Cheveux</span>
@@ -938,7 +938,7 @@
         <div class="container footer-inner">
             <div class="footer-brand">
                 <div class="logo">
-                    <img src="assets/logo.jpeg" alt="MediAfrica Solutions Santé" class="logo-img">
+                    <img src="assets/logo-clean.jpeg" alt="MediAfrica Solutions Santé" class="logo-img">
                 </div>
                 <p>Médicaments de qualité, livrés au Canada et en Afrique de l'Ouest.</p>
             </div>
@@ -960,6 +960,124 @@
             <p class="disclaimer">Les médicaments proposés sont en vente libre (sans ordonnance). Consultez un professionnel de santé si nécessaire.</p>
         </div>
     </footer>
+
+    <!-- MODAL PRODUIT -->
+    <div class="modal-backdrop" id="productModal" role="dialog" aria-modal="true">
+        <div class="modal-card">
+            <button type="button" class="modal-close" id="modalClose" aria-label="Fermer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="modal-img" id="modalImg"></div>
+            <div class="modal-body">
+                <span class="modal-tag" id="modalTag"></span>
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <p class="modal-desc" id="modalDesc"></p>
+                <div class="modal-dosage" id="modalDosage"></div>
+
+                <!-- Quantité & Prix -->
+                <div class="modal-order">
+                    <div class="modal-order-row">
+                        <label class="modal-order-label">Quantité</label>
+                        <div class="qty-ctrl">
+                            <button type="button" class="qty-btn" id="qtyMinus">−</button>
+                            <input type="number" id="qtyInput" min="1" value="1000" aria-label="Quantité souhaitée" title="Quantité">
+                            <button type="button" class="qty-btn" id="qtyPlus">+</button>
+                        </div>
+                    </div>
+                    <div class="modal-order-row">
+                        <label class="modal-order-label" for="unitPrice">Prix unitaire (CAD)</label>
+                        <div class="price-ctrl">
+                            <span class="price-symbol">$</span>
+                            <input type="number" id="unitPrice" min="0" step="0.01" placeholder="0.00" aria-label="Prix unitaire en dollars canadiens" title="Prix unitaire">
+                        </div>
+                    </div>
+                    <div class="modal-total" id="modalTotalWrap">
+                        <span>Total estimé :</span>
+                        <strong id="modalTotal">—</strong>
+                    </div>
+                </div>
+
+                <button type="button" class="modal-btn" id="modalOrderBtn">
+                    <i class="fa-solid fa-arrow-right"></i> Continuer la commande
+                </button>
+
+                <!-- Étape 2 : Formulaire client -->
+                <form class="modal-form modal-form--hidden" id="modalForm">
+                    <h3 class="modal-form-title">Informations de livraison</h3>
+
+                    <div class="mf-row">
+                        <div class="mf-group">
+                            <label for="mf-nom">Nom complet *</label>
+                            <input type="text" id="mf-nom" placeholder="Jean Dupont" required>
+                        </div>
+                        <div class="mf-group">
+                            <label for="mf-email">Courriel *</label>
+                            <input type="email" id="mf-email" placeholder="jean@exemple.com" required>
+                        </div>
+                    </div>
+
+                    <div class="mf-row">
+                        <div class="mf-group">
+                            <label for="mf-tel">Téléphone / WhatsApp *</label>
+                            <input type="tel" id="mf-tel" placeholder="+1 438 000 0000" required>
+                        </div>
+                        <div class="mf-group">
+                            <label for="mf-pays">Pays de livraison *</label>
+                            <select id="mf-pays" required>
+                                <option value="" disabled selected>Choisir…</option>
+                                <option>Canada</option>
+                                <option>Guinée Conakry</option>
+                                <option>Burkina Faso</option>
+                                <option>Côte d'Ivoire</option>
+                                <option>Autre</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mf-group">
+                        <label for="mf-adresse">Adresse complète *</label>
+                        <input type="text" id="mf-adresse" placeholder="123 Rue Principale" required>
+                    </div>
+
+                    <div class="mf-row">
+                        <div class="mf-group">
+                            <label for="mf-ville">Ville *</label>
+                            <input type="text" id="mf-ville" placeholder="Montréal" required>
+                        </div>
+                        <div class="mf-group">
+                            <label for="mf-cp">Code postal</label>
+                            <input type="text" id="mf-cp" placeholder="H1A 1A1">
+                        </div>
+                    </div>
+
+                    <div class="mf-group">
+                        <label for="mf-shipping">Mode d'expédition</label>
+                        <select id="mf-shipping">
+                            <option value="Standard">Standard (7–30 jours)</option>
+                            <option value="Express">Express (3–7 jours)</option>
+                            <option value="Ramassage">Ramassage en personne</option>
+                        </select>
+                    </div>
+
+                    <div class="mf-group">
+                        <label for="mf-notes">Notes / instructions supplémentaires</label>
+                        <textarea id="mf-notes" rows="2" placeholder="Précisions sur la livraison, dosages spécifiques…"></textarea>
+                    </div>
+
+                    <div class="mf-summary" id="mfSummary"></div>
+
+                    <div class="mf-actions">
+                        <button type="button" class="mf-back" id="mfBack">
+                            <i class="fa-solid fa-arrow-left"></i> Retour
+                        </button>
+                        <button type="submit" class="modal-btn mf-submit">
+                            <i class="fa-brands fa-whatsapp"></i> Envoyer la commande
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="catalogue.js"></script>
 </body>
