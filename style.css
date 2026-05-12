@@ -146,12 +146,9 @@ img { max-width: 100%; display: block; }
 .logo { display: flex; align-items: center; gap: .75rem; }
 
 .logo-img {
-    height: 80px;
+    height: 140px;
     width: auto;
-    border-radius: 14px;
-    object-fit: cover;
-    background-color: #0d3320;
-    box-shadow: 0 4px 16px rgba(0,0,0,.35);
+    object-fit: contain;
 }
 
 .footer .logo-img {
@@ -166,18 +163,17 @@ img { max-width: 100%; display: block; }
     width: 108px;
     height: 108px;
     border-radius: 16px;
-    background-image: url('assets/logo-clean.jpeg');
+    background-image: url('assets/logo-clean.png');
     background-size: cover;
     background-position: center;
-    background-color: #0d3320;
-    box-shadow: 0 4px 16px rgba(0,0,0,.35);
+    background-color: transparent;
     flex-shrink: 0;
 }
 
 /* ===== TICKER ===== */
 .ticker-wrap {
     position: fixed;
-    top: 108px;
+    top: 168px;
     left: 0; right: 0;
     z-index: 9998;
     background: #0A2E18;
@@ -267,18 +263,87 @@ img { max-width: 100%; display: block; }
     transition: all .3s;
 }
 
+/* ===== NEW DESKTOP MENU ===== */
+.nav-more {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.hamburger-desktop {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: var(--ivory);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 12px;
+    transition: all .2s;
+}
+.hamburger-desktop:hover { background: var(--green-pale); border-color: var(--green); }
+.hamburger-desktop span {
+    display: block;
+    width: 20px; height: 2px;
+    background: var(--green);
+    border-radius: 2px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%; right: 0;
+    margin-top: 1rem;
+    background: #fff;
+    min-width: 220px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    padding: .75rem;
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all .3s ease;
+    z-index: 100;
+}
+.nav-more:hover .dropdown-menu,
+.dropdown-menu.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .85rem 1rem;
+    border-radius: 10px;
+    font-size: .95rem;
+    color: var(--text) !important;
+    font-weight: 500;
+    transition: background .2s;
+}
+.dropdown-menu a:hover {
+    background: var(--green-pale);
+    color: var(--green) !important;
+}
+.dropdown-menu i { color: var(--gold); font-size: 1rem; }
+
 /* ===== HERO ===== */
 .hero {
     position: relative;
     min-height: 100vh;
     background:
-        linear-gradient(rgba(14,53,29,.88), rgba(10,46,24,.93)),
+        linear-gradient(rgba(14,53,29,.75), rgba(10,46,24,.85)),
         url('assets/pharmacy-bg.jpeg') center/cover no-repeat fixed;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     overflow: hidden;
-    padding-top: 148px;
+    padding-top: 208px;
     padding-bottom: 6rem;
 }
 
@@ -374,6 +439,7 @@ img { max-width: 100%; display: block; }
     color: #fff;
     margin-bottom: 1.5rem;
     font-weight: 700;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 .hero-text h1 em { color: #FBBF24; font-style: italic; }
 
@@ -390,7 +456,7 @@ img { max-width: 100%; display: block; }
     gap: 1rem;
     flex-wrap: wrap;
     justify-content: flex-start;
-    margin-top: 8rem;
+    margin-top: 2.5rem;
     margin-bottom: 3rem;
 }
 .hero-ctas .btn-primary {
@@ -1059,6 +1125,8 @@ img { max-width: 100%; display: block; }
 }
 
 /* ===== RESPONSIVE ===== */
+.mobile-only { display: none; }
+
 @media (max-width: 1024px) {
     .produits-grid   { grid-template-columns: repeat(2, 1fr); }
     .zones-grid      { grid-template-columns: repeat(2, 1fr); }
@@ -1099,6 +1167,9 @@ img { max-width: 100%; display: block; }
     .hero-ctas { margin-top: 2rem; }
 
     /* ── Menu mobile ── */
+    .mobile-only { display: block; }
+    .nav-more    { display: none; }
+    
     .nav-links {
         display: none;
         position: fixed;

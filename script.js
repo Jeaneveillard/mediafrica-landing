@@ -25,6 +25,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // New Desktop Menu Toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const dropdown   = document.getElementById('dropdownMenu');
+    if (menuToggle) {
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('open');
+        });
+        document.addEventListener('click', () => dropdown.classList.remove('open'));
+    }
+
     // Scroll reveal
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -43,12 +54,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const success = document.getElementById('orderSuccess');
     form.addEventListener('submit', e => {
         e.preventDefault();
-        const nom      = form.querySelector('input[type="text"]').value;
-        const tel      = form.querySelector('input[type="tel"]').value;
-        const pays     = form.querySelector('select').value;
-        const produits = form.querySelector('textarea').value;
-        const msg = `Nouvelle commande MediAfrica\n\nNom : ${nom}\nTél : ${tel}\nPays : ${pays}\nMédicaments : ${produits}`;
+        
+        const formData = new FormData(form);
+        const nom      = formData.get('nom');
+        const tel      = formData.get('telephone');
+        const email    = formData.get('email');
+        const pays     = formData.get('pays');
+        const produits = formData.get('message');
+
+        // 1. Envoi vers Netlify (pour l'Email automatique)
+        fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams(formData).toString(),
+        })
+        .then(() => console.log("Formulaire envoyé avec succès à Netlify"))
+        .catch((error) => console.error("Erreur Netlify:", error));
+
+        // 2. Ouverture de WhatsApp
+        const msg = `Nouvelle commande MediAfrica\n\nNom : ${nom}\nTél : ${tel}\nEmail : ${email}\nPays : ${pays}\nMédicaments : ${produits}`;
         window.open(`https://wa.me/14384029247?text=${encodeURIComponent(msg)}`, '_blank');
+        
+        // 3. Interface
         form.style.display    = 'none';
         success.style.display = 'block';
     });

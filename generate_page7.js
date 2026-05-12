@@ -12,6 +12,9 @@ async function processPage7() {
   const buf = await imgObj.getBuffer('image/jpeg');
   const b64 = buf.toString('base64');
 
+  const logoBuf = fs.readFileSync(path.join(__dirname, 'assets', 'logo-clean.jpeg'));
+  const logoB64 = logoBuf.toString('base64');
+
   const htmlStr = `<!DOCTYPE html>
 <html lang="fr"><head><meta charset="UTF-8">
 <style>
@@ -21,8 +24,29 @@ body { width: 210mm; font-family: Arial, Helvetica, sans-serif; }
 .wrap { position: relative; width: 100%; }
 .bg   { width: 100%; display: block; height: auto; }
 
+/* Logo Overlay */
+.logo-overlay { 
+  position: absolute; 
+  top: 15px; 
+  left: 20px; 
+  width: 140px; 
+  height: 140px; 
+  background: white; 
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.logo-overlay img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
 /* Obscuring text while keeping photos */
 .box { position: absolute; background: rgba(255, 255, 255, 1); padding: 8px 14px; overflow: hidden; }
+
 
 /* 1. Stat Temp (Top Left) */
 .b1 { top: 3%; left: 4%; width: 55%; height: 27%; }
@@ -46,6 +70,10 @@ tr:nth-child(even) td { background: #f5f5f5; }
 <div class="wrap">
   <img class="bg" src="data:image/jpeg;base64,${b64}">
   
+  <div class="logo-overlay">
+    <img src="data:image/jpeg;base64,${logoB64}" alt="Logo">
+  </div>
+
   <div class="box b1">
     <h2>Capteur Réfrigérateur/Congélateur Certifié NIST — Stat Temp 3.0</h2>
     <ul>

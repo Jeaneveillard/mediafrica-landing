@@ -17,16 +17,27 @@
     <nav class="navbar" id="navbar">
         <div class="nav-inner">
             <a href="#home" class="logo">
-                <img src="assets/logo-clean.jpeg" alt="MediAfrica Solutions Santé" class="logo-img">
+                <img src="assets/logo-clean.png" alt="MediAfrica Solutions Santé" class="logo-img">
             </a>
             <div class="nav-links" id="navLinks">
                 <a href="#produits">Produits</a>
                 <a href="catalogue.html">Catalogue</a>
-                <a href="#zones">Zones</a>
-                <a href="#pourquoi">Nos avantages</a>
+                <a href="livraison.html">Livraison</a>
+                <a href="aide.html" class="mobile-only">Aide & À Propos</a>
+                <a href="communaute.html" class="mobile-only">Communauté</a>
                 <a href="#commander" class="btn-nav">Commander</a>
+                
+                <div class="nav-more">
+                    <button class="hamburger-desktop" id="menuToggle" aria-label="Plus de menu">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="aide.html"><i class="fa-solid fa-circle-question"></i> Aide & À Propos</a>
+                        <a href="communaute.html"><i class="fa-solid fa-users"></i> Communauté</a>
+                    </div>
+                </div>
             </div>
-            <button class="hamburger" id="hamburger" aria-label="Menu">
+            <button class="hamburger" id="hamburger" aria-label="Menu Mobile">
                 <span></span><span></span><span></span>
             </button>
         </div>
@@ -85,7 +96,7 @@
                 <h1>Votre santé,<br><em>livrée partout</em></h1>
                 <p class="hero-sub">Des médicaments de qualité, sans ordonnance, disponibles au Canada et en Afrique de l'Ouest. Commandez depuis chez vous, recevez à domicile.</p>
                 <div class="hero-ctas">
-                    <a href="#produits" class="btn-primary">
+                    <a href="catalogue.html" class="btn-primary">
                         <i class="fa-solid fa-pills"></i> Voir les produits
                     </a>
                     <a href="#commander" class="btn-ghost">
@@ -373,21 +384,21 @@
                     </div>
                 </div>
                 <div class="commander-form reveal-right">
-                    <form class="order-form" id="orderForm">
+                    <form class="order-form" id="orderForm" name="commande-mediafrica" method="POST" data-netlify="true">
                         <h3>Formulaire de commande</h3>
                         <div class="form-row">
                             <div class="fgroup">
                                 <label>Nom complet</label>
-                                <input type="text" placeholder="Votre nom" required>
+                                <input type="text" name="nom" placeholder="Votre nom" required>
                             </div>
                             <div class="fgroup">
                                 <label>Téléphone / WhatsApp</label>
-                                <input type="tel" placeholder="+1 438 000 0000" required>
+                                <input type="tel" name="telephone" placeholder="+1 438 000 0000" required>
                             </div>
                         </div>
                         <div class="fgroup">
                             <label>Pays de livraison</label>
-                            <select required>
+                            <select name="pays" required>
                                 <option value="" disabled selected>Choisir un pays</option>
                                 <option>Canada</option>
                                 <option>Guinée Conakry</option>
@@ -397,12 +408,12 @@
                             </select>
                         </div>
                         <div class="fgroup">
-                            <label>Email (facultatif)</label>
-                            <input type="email" placeholder="votre@email.com">
+                            <label>Email</label>
+                            <input type="email" name="email" placeholder="votre@email.com" required>
                         </div>
                         <div class="fgroup">
                             <label>Médicaments souhaités</label>
-                            <textarea rows="4" placeholder="Ex : Paracétamol 500mg × 2 boîtes, Vitamine C × 1 boîte — précisez les quantités si possible" required></textarea>
+                            <textarea name="message" rows="4" placeholder="Ex : Paracétamol 500mg × 2 boîtes, Vitamine C × 1 boîte — précisez les quantités si possible" required></textarea>
                         </div>
                         <button type="submit" class="btn-submit">
                             <i class="fa-solid fa-paper-plane"></i> Envoyer la commande
@@ -427,9 +438,10 @@
                 <p>Médicaments de qualité, livrés au Canada et en Afrique de l'Ouest.</p>
             </div>
             <div class="footer-links">
-                <a href="#produits">Produits</a>
-                <a href="#zones">Zones</a>
-                <a href="#pourquoi">Nos avantages</a>
+                <a href="catalogue.html">Catalogue</a>
+                <a href="livraison.html">Livraison & Suivi</a>
+                <a href="aide.html">Aide & FAQ</a>
+                <a href="communaute.html">Communauté</a>
                 <a href="#commander">Commander</a>
             </div>
             <div class="footer-flags">

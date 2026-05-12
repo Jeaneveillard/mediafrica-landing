@@ -342,9 +342,11 @@
 
 .modal-img {
     width: 100%;
-    height: 320px;
-    background-size: cover;
-    background-position: center;
+    height: 380px;
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: #fff;
     border-radius: 20px 20px 0 0;
 }
 
@@ -636,6 +638,31 @@
     .modal-img  { height: 240px; }
     .modal-body { padding: 1.25rem; }
     .modal-title { font-size: 1.5rem; }
+}
+
+/* M1 — 2 photos côte à côte sans l'entête */
+.m1-photos {
+    display: flex;
+    height: 200px;
+    padding: 0;
+    gap: 2px;
+    background: #f8f8f8;
+    border-bottom: none;
+}
+.m1-photo {
+    flex: 1;
+    background-image: url('assets/M1.jpeg');
+    background-repeat: no-repeat;
+}
+/* Photo gauche */
+.m1-photo--left {
+    background-size: 240% auto;
+    background-position: 22% 85%;
+}
+/* Photo droite */
+.m1-photo--right {
+    background-size: 240% auto;
+    background-position: 78% 85%;
 }
 
 /* ===== RESPONSIVE ===== */

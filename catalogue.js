@@ -109,7 +109,16 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ── Ouvrir modal ── */
     function openModal(card) {
         const header = card.querySelector('.cat-card-header');
-        modalImg.style.backgroundImage = header ? header.style.backgroundImage : '';
+        modalImg.style.backgroundImage    = header ? header.style.backgroundImage : '';
+        modalImg.style.backgroundRepeat   = 'no-repeat';
+        // Copier le recadrage de la carte si défini, sinon valeurs par défaut
+        if (header && header.style.backgroundPosition) {
+            modalImg.style.backgroundSize     = '100% 145%';
+            modalImg.style.backgroundPosition = 'center 50%';
+        } else {
+            modalImg.style.backgroundSize     = 'contain';
+            modalImg.style.backgroundPosition = 'center center';
+        }
 
         const tag = card.querySelector('.cat-tag');
         if (tag) {

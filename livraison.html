@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livraison & Suivi | MediAfrica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            padding: 160px 0 80px;
+            background: linear-gradient(rgba(180,83,9,.85), rgba(10,46,24,.95)), url('assets/pharmacy-bg.jpeg') center/cover no-repeat;
+            text-align: center;
+            color: #fff;
+        }
+        .page-header h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+
+        /* Suivi de Colis */
+        .tracking-section { background: #fff; }
+        .tracking-card {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--cream);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .tracking-form { margin-top: 2rem; display: flex; gap: 1rem; }
+        .tracking-form input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            font-family: var(--font-body);
+        }
+        .tracking-form button {
+            background: var(--gold);
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Zones Detail */
+        .zones-detail { background: var(--ivory); }
+        .zones-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .country-card {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 16px;
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            border: 1px solid var(--border);
+        }
+        .country-flag { width: 60px; height: 40px; border-radius: 4px; object-fit: cover; }
+        .country-info h3 { font-size: 1.5rem; margin-bottom: .5rem; }
+        .country-info ul { list-style: none; color: var(--muted); font-size: .9rem; }
+        .country-info li { margin-bottom: .4rem; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="logo">
+                <img src="assets/logo-clean.png" alt="MediAfrica" class="logo-img">
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Accueil</a>
+                <a href="catalogue.html">Catalogue</a>
+                <a href="aide.html">Aide</a>
+                <a href="communaute.html">Communauté</a>
+                <a href="index.html#commander" class="btn-nav">Commander</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Livraison & Suivi</h1>
+            <p>Une logistique transparente du Canada vers l'Afrique de l'Ouest.</p>
+        </div>
+    </header>
+
+    <!-- SECTION 4: SUIVI DE COLIS -->
+    <section class="section tracking-section">
+        <div class="container">
+            <div class="tracking-card">
+                <i class="fa-solid fa-box-open" style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;"></i>
+                <h2>Suivez votre <em>commande</em></h2>
+                <p>Entrez votre numéro de suivi pour connaître l'état actuel de votre expédition.</p>
+                <form class="tracking-form" onsubmit="alert('Service de suivi en cours de déploiement. Contactez le 438-402-9247 pour assistance immédiate.'); return false;">
+                    <input type="text" placeholder="Ex: MA-123456" required>
+                    <button type="submit">Tracer</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: ZONES DE LIVRAISON -->
+    <section class="section zones-detail">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Destinations</span>
+                <h2>Nos zones <em>desservies</em></h2>
+                <p>Nous couvrons les principales métropoles et régions rurales.</p>
+            </div>
+            <div class="zones-list">
+                <div class="country-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ed/Flag_of_Guinea.svg" class="country-flag">
+                    <div class="country-info">
+                        <h3>Guinée Conakry</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Conakry (Grand-Conakry)</li>
+                            <li><i class="fa-solid fa-check"></i> Kindia, Kankan, Labé</li>
+                            <li><i class="fa-solid fa-clock"></i> 7–15 jours par avion</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="country-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Flag_of_Burkina_Faso.svg" class="country-flag">
+                    <div class="country-info">
+                        <h3>Burkina Faso</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Ouagadougou</li>
+                            <li><i class="fa-solid fa-check"></i> Bobo-Dioulasso, Koudougou</li>
+                            <li><i class="fa-solid fa-clock"></i> 10–20 jours</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="country-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Flag_of_C%C3%B4te_d%27Ivoire.svg" class="country-flag">
+                    <div class="country-info">
+                        <h3>Côte d'Ivoire</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Abidjan (Toutes communes)</li>
+                            <li><i class="fa-solid fa-check"></i> Yamoussoukro, San-Pédro</li>
+                            <li><i class="fa-solid fa-clock"></i> 7–12 jours express</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="country-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Canada.svg" class="country-flag">
+                    <div class="country-info">
+                        <h3>Canada</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Québec, Ontario, BC</li>
+                            <li><i class="fa-solid fa-check"></i> Livraison à domicile</li>
+                            <li><i class="fa-solid fa-clock"></i> 2–5 jours ouvrables</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-bottom">
+            <p>&copy; 2026 MediAfrica — Solution Santé. Tous droits réservés.</p>
+            <a href="index.html" style="color: #FBBF24; font-weight: 600;">Retour à l'accueil</a>
+        </div>
+    </footer>
+
+</body>
+</html>
