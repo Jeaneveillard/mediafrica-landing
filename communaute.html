@@ -39,28 +39,6 @@
         .blog-body h3 { font-size: 1.4rem; margin-bottom: .75rem; color: var(--text); }
         .blog-body p { font-size: .9rem; color: var(--muted); margin-bottom: 1.5rem; }
         .blog-link { color: var(--gold); font-weight: 700; font-size: .9rem; text-transform: uppercase; }
-
-        /* Testimonials */
-        .testimonials-page { background: #fff; }
-        .testi-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        .testi-card {
-            background: var(--cream);
-            padding: 2.5rem;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            position: relative;
-        }
-        .testi-card i.quote { position: absolute; top: 1.5rem; right: 2rem; font-size: 2.5rem; color: var(--green-pale); }
-        .testi-card p { font-style: italic; color: var(--text); font-size: 1.1rem; margin-bottom: 1.5rem; line-height: 1.6; }
-        .testi-user { display: flex; align-items: center; gap: 1rem; }
-        .testi-avatar { width: 50px; height: 50px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; }
-        .testi-info strong { display: block; font-size: 1rem; }
-        .testi-info span { font-size: .8rem; color: var(--muted); }
     </style>
 </head>
 <body>
@@ -125,16 +103,16 @@
     </section>
 
     <!-- SECTION 6: TÉMOIGNAGES -->
-    <section class="section testimonials-page">
+    <section class="section testimonials">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Confiance</span>
                 <h2>Ils nous font <em>confiance</em></h2>
                 <p>Découvrez les retours de la communauté MediAfrica.</p>
             </div>
-            <div class="testi-grid">
+            <div class="testimonials-grid">
                 <div class="testi-card">
-                    <i class="fa-solid fa-quote-right quote"></i>
+                    <i class="fa-solid fa-quote-left quote-icon"></i>
                     <p>"J'envoie régulièrement des médicaments à mes parents à Abidjan. Avec MediAfrica, je suis serein sur la qualité des produits."</p>
                     <div class="testi-user">
                         <div class="testi-avatar">JD</div>
@@ -145,10 +123,10 @@
                     </div>
                 </div>
                 <div class="testi-card">
-                    <i class="fa-solid fa-quote-right quote"></i>
+                    <i class="fa-solid fa-quote-left quote-icon"></i>
                     <p>"Enfin une solution fiable pour Conakry. Les délais sont respectés et l'équipe est très disponible sur WhatsApp."</p>
                     <div class="testi-user">
-                        <div class="testi-avatar" style="background:var(--green)">MB</div>
+                        <div class="testi-avatar" style="background:var(--green); color:#fff;">MB</div>
                         <div class="testi-info">
                             <strong>Mamadou B.</strong>
                             <span>Québec → Guinée</span>
@@ -156,24 +134,13 @@
                     </div>
                 </div>
                 <div class="testi-card">
-                    <i class="fa-solid fa-quote-right quote"></i>
+                    <i class="fa-solid fa-quote-left quote-icon"></i>
                     <p>"Le paiement par Mobile Money est un vrai plus pour nos familles là-bas. Très pratique !"</p>
                     <div class="testi-user">
                         <div class="testi-avatar" style="background:var(--border); color:var(--text)">FS</div>
                         <div class="testi-info">
                             <strong>Fatoumata S.</strong>
                             <span>Toronto → Burkina Faso</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="testi-card">
-                    <i class="fa-solid fa-quote-right quote"></i>
-                    <p>"Produits authentiques et emballage très soigné. Je recommande MediAfrica les yeux fermés."</p>
-                    <div class="testi-user">
-                        <div class="testi-avatar" style="background:var(--gold-light); color:var(--gold)">AK</div>
-                        <div class="testi-info">
-                            <strong>Alain K.</strong>
-                            <span>Laval → Côte d'Ivoire</span>
                         </div>
                     </div>
                 </div>
