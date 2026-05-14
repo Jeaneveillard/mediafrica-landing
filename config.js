@@ -24,4 +24,6 @@ const CONFIG = {
 // Initialise Firebase dès que les clés sont renseignées
 if (typeof firebase !== 'undefined' && CONFIG.firebase.apiKey) {
     firebase.initializeApp(CONFIG.firebase);
+} else if (typeof firebase !== 'undefined' && !CONFIG.firebase.apiKey) {
+    console.warn('⚠️ MediAfrica: Clés Firebase manquantes dans config.js — comptes et commandes désactivés.');
 }
