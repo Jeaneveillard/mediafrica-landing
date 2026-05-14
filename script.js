@@ -49,6 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.reveal, .reveal-right, .reveal-up')
         .forEach(el => observer.observe(el));
 
+    // Init cart + auth (must run on all pages, before form guard)
+    if (typeof Cart !== 'undefined') Cart.init();
+    if (typeof Auth !== 'undefined') Auth.init();
+
     // Form submission → WhatsApp
     const form    = document.getElementById('orderForm');
     const success = document.getElementById('orderSuccess');
@@ -80,10 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
         form.style.display    = 'none';
         success.style.display = 'block';
     });
-
-    // Init cart + auth
-    if (typeof Cart !== 'undefined') Cart.init();
-    if (typeof Auth !== 'undefined') Auth.init();
 
     // Add-to-cart sur les cartes produits de index.html
     document.querySelectorAll('.add-to-cart-btn[data-name]').forEach(btn => {

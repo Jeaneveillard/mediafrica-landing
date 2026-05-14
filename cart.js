@@ -20,6 +20,7 @@ const Cart = (() => {
         _save(items);
         _renderItems();
         _flash();
+        openPanel();
     }
     function remove(id) {
         _save(getItems().filter(i => i.id !== id));
