@@ -1,4 +1,5 @@
 const CONFIG = {
+    adminEmail: 'admin@mediafrica.com', // ← Changer par l'email de l'administrateur
     paypal: {
         handle: 'TON_COMPTE_PAYPAL', // ex: 'mediafrica' → paypal.me/mediafrica
         currency: 'CAD'

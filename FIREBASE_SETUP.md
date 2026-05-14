@@ -28,17 +28,27 @@ Dans **Firestore → Règles**, remplacer le contenu par :
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Commandes : chaque client voit seulement les siennes
     match /orders/{orderId} {
       allow create: if request.auth != null
                     && request.resource.data.userId == request.auth.uid;
       allow read:   if request.auth != null
                     && resource.data.userId == request.auth.uid;
-      allow update: if false;
-      allow delete: if false;
+      allow update, delete: if false;
+    }
+
+    // Prix : lecture publique, écriture admin seulement
+    match /config/{doc} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.token.email == "VOTRE_EMAIL_ADMIN";
     }
   }
 }
 ```
+
+> **Important :** Remplacer `VOTRE_EMAIL_ADMIN` par l'email exact de l'administrateur (le même que dans `config.js` → `adminEmail`).
 
 Cliquer **Publier**.
 
@@ -64,9 +74,10 @@ firebase: {
 },
 ```
 
-Et renseigner votre handle PayPal :
+Renseigner votre handle PayPal et l'email administrateur :
 
 ```js
+adminEmail: 'votre-email@exemple.com', // email du gestionnaire des prix
 paypal: {
     handle: 'votre-handle-paypal',  // ex: 'mediafrica'
     currency: 'CAD'
@@ -88,7 +99,20 @@ prices: {
 
 > **Note :** Les produits sans prix dans cette liste afficheront "Sur devis" dans le panier et redirigeront vers WhatsApp au lieu de PayPal.
 
-## 8. Gérer les statuts des commandes
+## 8. Gérer les prix via la page Admin
+
+Une page d'administration est disponible pour mettre à jour les prix sans toucher au code :
+
+1. Ouvrir `admin.html` dans le navigateur (ex : `https://votre-site.com/admin.html`)
+2. Se connecter avec l'email administrateur configuré dans `config.js → adminEmail`
+3. Entrer le prix unitaire (CAD) pour chaque produit
+4. Cliquer **Sauvegarder tous les prix**
+
+Les prix sont sauvegardés dans Firestore et pris en compte immédiatement sur le site.
+
+> Les produits sans prix affichent "Sur devis" — la commande passe par WhatsApp.
+
+## 9. Gérer les statuts des commandes
 
 Les statuts des commandes (`sent`, `processing`, `delivered`) se changent manuellement dans la console Firebase :
 

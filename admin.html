@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration — MediAfrica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background: var(--ivory); }
+
+        .admin-nav {
+            background: var(--green);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .admin-nav h1 { color: #fff; font-size: 1.4rem; margin: 0; }
+        .admin-nav-right { display: flex; align-items: center; gap: 1rem; }
+        .admin-email { color: rgba(255,255,255,.75); font-size: .9rem; }
+        .btn-logout-admin {
+            background: rgba(255,255,255,.15);
+            border: 1px solid rgba(255,255,255,.3);
+            color: #fff;
+            padding: .5rem 1rem;
+            border-radius: 999px;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-size: .85rem;
+            transition: background .2s;
+        }
+        .btn-logout-admin:hover { background: rgba(255,255,255,.25); }
+
+        .admin-main {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .admin-card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .admin-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: .5rem;
+            color: var(--green);
+        }
+        .admin-card p { color: var(--muted); font-size: .9rem; margin-bottom: 1.5rem; }
+
+        .price-table { width: 100%; border-collapse: collapse; }
+        .price-table thead th {
+            text-align: left;
+            padding: .6rem 1rem;
+            font-size: .8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: var(--muted);
+            border-bottom: 2px solid var(--border);
+        }
+        .price-table tbody tr:hover { background: var(--ivory); }
+        .price-table td {
+            padding: .6rem 1rem;
+            font-size: .9rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        .price-table td:first-child { color: var(--text); font-weight: 500; }
+        .price-table td .cat-badge {
+            font-size: .7rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: var(--green-pale);
+            color: var(--green);
+            font-weight: 600;
+            margin-left: .5rem;
+        }
+        .price-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+        .price-input-wrap span { color: var(--muted); font-size: .9rem; }
+        .price-input {
+            width: 110px;
+            padding: .45rem .75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: .9rem;
+            text-align: right;
+            transition: border-color .2s;
+        }
+        .price-input:focus { outline: none; border-color: var(--green); }
+        .price-input.changed { border-color: var(--gold); background: #fffbeb; }
+
+        .status-badge {
+            font-size: .75rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+        .status-set   { background: #dcfce7; color: #166534; }
+        .status-unset { background: #f3f4f6; color: #6b7280; }
+
+        .admin-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .btn-save {
+            background: var(--green);
+            color: #fff;
+            border: none;
+            padding: .85rem 2rem;
+            border-radius: 999px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            transition: opacity .2s;
+        }
+        .btn-save:hover { opacity: .9; }
+        .btn-save:disabled { opacity: .5; cursor: default; }
+        .save-feedback { font-size: .9rem; color: var(--muted); }
+        .save-feedback.success { color: #16a34a; font-weight: 600; }
+        .save-feedback.error   { color: #ef4444; font-weight: 600; }
+
+        /* Login overlay */
+        .login-overlay {
+            position: fixed; inset: 0;
+            background: var(--ivory);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 999;
+        }
+        .login-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: min(420px, 95vw);
+            box-shadow: var(--shadow-lg);
+        }
+        .login-box h2 { font-size: 2rem; margin-bottom: .25rem; }
+        .login-box p { color: var(--muted); font-size: .9rem; margin-bottom: 1.5rem; }
+        .login-group { display: flex; flex-direction: column; gap: .35rem; margin-bottom: 1rem; }
+        .login-group label { font-size: .85rem; font-weight: 600; }
+        .login-group input {
+            padding: .75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: .95rem;
+        }
+        .login-group input:focus { outline: none; border-color: var(--green); }
+        .login-error { color: #ef4444; font-size: .85rem; min-height: 1.2em; margin-bottom: .5rem; }
+        .btn-login {
+            width: 100%;
+            padding: .85rem;
+            background: var(--green);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Loading */
+        #loadingOverlay {
+            position: fixed; inset: 0;
+            background: rgba(255,255,255,.8);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; font-size: 1.1rem; color: var(--muted);
+            gap: .75rem;
+        }
+        .search-bar {
+            padding: .6rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-family: var(--font-body);
+            font-size: .9rem;
+            width: 260px;
+            margin-bottom: 1.5rem;
+        }
+        .search-bar:focus { outline: none; border-color: var(--green); }
+    </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loadingOverlay">
+    <i class="fa-solid fa-spinner fa-spin"></i> Chargement…
+</div>
+
+<!-- Login overlay (shown if not admin) -->
+<div class="login-overlay" id="loginOverlay" style="display:none">
+    <div class="login-box">
+        <h2>Administration</h2>
+        <p>Connectez-vous avec votre compte administrateur MediAfrica.</p>
+        <div class="login-group">
+            <label for="adminLoginEmail">Email</label>
+            <input type="email" id="adminLoginEmail" placeholder="admin@mediafrica.com" autocomplete="email">
+        </div>
+        <div class="login-group">
+            <label for="adminLoginPassword">Mot de passe</label>
+            <input type="password" id="adminLoginPassword" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <p class="login-error" id="loginError"></p>
+        <button type="button" class="btn-login" id="btnAdminLogin">
+            <i class="fa-solid fa-lock"></i> Se connecter
+        </button>
+    </div>
+</div>
+
+<!-- Admin interface (shown if admin) -->
+<div id="adminInterface" style="display:none">
+
+    <nav class="admin-nav">
+        <h1><i class="fa-solid fa-shield-check"></i> MediAfrica Admin</h1>
+        <div class="admin-nav-right">
+            <span class="admin-email" id="adminEmailDisplay"></span>
+            <button type="button" class="btn-logout-admin" id="btnAdminLogout">
+                <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+            </button>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+
+        <div class="admin-card">
+            <h2><i class="fa-solid fa-tag"></i> Prix des produits</h2>
+            <p>Entrez le prix unitaire en CAD pour chaque produit. Laissez vide = "Sur devis" (commande via WhatsApp). Cliquez <strong>Sauvegarder</strong> pour appliquer.</p>
+
+            <input type="text" class="search-bar" id="priceSearch" placeholder="🔍 Rechercher un produit…">
+
+            <table class="price-table" id="priceTable">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Prix unitaire (CAD)</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody id="priceTableBody">
+                    <!-- Rempli par JS -->
+                </tbody>
+            </table>
+
+            <div class="admin-actions">
+                <button type="button" class="btn-save" id="btnSavePrices">
+                    <i class="fa-solid fa-floppy-disk"></i> Sauvegarder tous les prix
+                </button>
+                <span class="save-feedback" id="saveFeedback"></span>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="config.js"></script>
+<script>
+
+// ── Liste complète des produits du catalogue ──────────────────────────────────
+const PRODUCTS = [
+    // Cheveux
+    { name: 'Hair Growth Formula',                              cat: 'Cheveux' },
+    // Collagène
+    { name: 'Collagène en Poudre',                             cat: 'Peau / Articulations' },
+    { name: 'Collagène Caplets',                               cat: 'Peau / Articulations' },
+    { name: 'Collagène Gummies',                               cat: 'Peau / Articulations' },
+    { name: 'Collagène Liquide',                               cat: 'Peau / Articulations' },
+    // Vitamines M3
+    { name: 'Vitamine C',                                      cat: 'Vitamines' },
+    { name: 'Vitamine D3',                                     cat: 'Vitamines' },
+    { name: 'Multivitamines (Comprimés)',                      cat: 'Vitamines' },
+    { name: 'Mélatonine',                                      cat: 'Vitamines' },
+    // Vitamines M4
+    { name: 'Multivitamines Gummies',                          cat: 'Vitamines' },
+    { name: 'Magnésium',                                       cat: 'Minéraux' },
+    { name: 'Fer',                                             cat: 'Minéraux' },
+    { name: 'Omega-3',                                         cat: 'Oméga' },
+    // Liquides
+    { name: 'Vitamine B12 Liquide (5000 mcg)',                 cat: 'Vitamine Liquide' },
+    { name: 'Complexe Vitamine B Liquide',                     cat: 'Vitamine Liquide' },
+    { name: 'Formule Immunité Liquide',                        cat: 'Vitamine Liquide' },
+    { name: 'Mélatonine Liquide',                              cat: 'Vitamine Liquide' },
+    // Gummies
+    { name: 'Multivitamines Adultes',                          cat: 'Gummies' },
+    { name: 'Multivitamines Enfants',                          cat: 'Gummies' },
+    { name: 'Multivitamines Femmes',                           cat: 'Gummies' },
+    { name: 'Vitamine C Gummies',                              cat: 'Gummies' },
+    { name: 'Vitamine D3 Gummies',                             cat: 'Gummies' },
+    { name: 'Vitamine B12 Gummies',                            cat: 'Gummies' },
+    { name: 'B-Complex Gummies',                               cat: 'Gummies' },
+    { name: 'Magnésium Gummies',                               cat: 'Gummies' },
+    // Antidouleurs
+    { name: 'Paracétamol 500mg',                               cat: 'Antidouleur' },
+    { name: 'Paracétamol 1000mg',                              cat: 'Antidouleur' },
+    { name: 'Ibuprofène 400mg',                                cat: 'Antidouleur' },
+    // Antipaludéens
+    { name: 'Chloroquine 250mg',                               cat: 'Antipaludéen' },
+    { name: 'Quinine 500mg',                                   cat: 'Antipaludéen' },
+    // Digestif
+    { name: 'Sels de Réhydratation Orale (SRO)',               cat: 'Digestif' },
+    { name: 'Lopéramide 2mg',                                  cat: 'Digestif' },
+    // Antiseptiques
+    { name: 'Bétadine Solution 10%',                           cat: 'Antiseptique' },
+    { name: 'Alcool Isopropylique 70%',                        cat: 'Antiseptique' },
+    // Vitamines catalogue
+    { name: 'Vitamine C 1000mg',                               cat: 'Vitamines' },
+    { name: 'Zinc 20mg',                                       cat: 'Vitamines' },
+    { name: 'Fer + Acide Folique',                             cat: 'Vitamines' },
+    // Allergie
+    { name: 'Cétirizine 10mg',                                 cat: 'Allergie' },
+    { name: 'Loratadine 10mg',                                 cat: 'Allergie' },
+    // Fournitures
+    { name: 'Pansements adhésifs',                             cat: 'Fourniture' },
+    { name: 'Thermomètre digital',                             cat: 'Fourniture' },
+    { name: 'Gants latex — Boîte 100',                         cat: 'Fourniture' },
+    // Seringues
+    { name: 'Sol-M® Seringue Luer Lock 1ml',                   cat: 'Seringue' },
+    { name: 'Sol-M® Seringue Luer Lock 3ml',                   cat: 'Seringue' },
+    { name: 'Sol-Care® Aiguille de Sécurité — Adulte 1"',      cat: 'Aiguille' },
+    { name: 'Sol-Care® Aiguille de Sécurité 1½" — Population à risque', cat: 'Aiguille' },
+    { name: 'Sol-Care® Aiguille de Sécurité 5/8" — Adolescent / Nourrisson', cat: 'Aiguille' },
+    { name: 'Étiquette Confidentialité Patient — Réf. 7039',   cat: 'Étiquette' },
+    // Cartes index
+    { name: 'Paracétamol & Ibuprofène',                        cat: 'Antidouleur' },
+    { name: 'Antipaludéens',                                   cat: 'Antipaludéen' },
+    { name: 'Antidiarrhéiques & Réhydratation',                cat: 'Digestif' },
+    { name: 'Antiseptiques & Pansements',                      cat: 'Antiseptique' },
+    { name: 'Vitamines & Suppléments',                         cat: 'Nutrition' },
+    { name: 'Antiallergiques',                                 cat: 'Allergie' },
+];
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const loading   = document.getElementById('loadingOverlay');
+const loginEl   = document.getElementById('loginOverlay');
+const adminEl   = document.getElementById('adminInterface');
+const tbody     = document.getElementById('priceTableBody');
+const saveFb    = document.getElementById('saveFeedback');
+const searchEl  = document.getElementById('priceSearch');
+let currentPrices = {};
+
+function hide(el) { el.style.display = 'none'; }
+function show(el, display = 'block') { el.style.display = display; }
+
+// ── Construire le tableau ─────────────────────────────────────────────────────
+function buildTable(prices) {
+    currentPrices = { ...prices };
+    renderRows(PRODUCTS);
+}
+
+function renderRows(list) {
+    tbody.innerHTML = list.map(p => {
+        const val = currentPrices[p.name] != null ? currentPrices[p.name].toFixed(2) : '';
+        const status = val
+            ? `<span class="status-badge status-set">✓ Défini</span>`
+            : `<span class="status-badge status-unset">Sur devis</span>`;
+        return `
+        <tr data-name="${p.name.replace(/"/g, '&quot;')}">
+            <td>${p.name}<span class="cat-badge">${p.cat}</span></td>
+            <td>
+                <div class="price-input-wrap">
+                    <input type="number" class="price-input" min="0" step="0.01"
+                           placeholder="0.00" value="${val}"
+                           data-name="${p.name.replace(/"/g, '&quot;')}">
+                    <span>CAD</span>
+                </div>
+            </td>
+            <td class="status-cell">${status}</td>
+        </tr>`;
+    }).join('');
+
+    // Marquer les champs modifiés
+    tbody.querySelectorAll('.price-input').forEach(inp => {
+        inp.addEventListener('input', () => {
+            inp.classList.add('changed');
+            const row = inp.closest('tr');
+            const val = parseFloat(inp.value);
+            row.querySelector('.status-cell').innerHTML = inp.value.trim()
+                ? `<span class="status-badge status-set">✎ Modifié</span>`
+                : `<span class="status-badge status-unset">Sur devis</span>`;
+        });
+    });
+}
+
+// ── Recherche ─────────────────────────────────────────────────────────────────
+searchEl.addEventListener('input', () => {
+    const q = searchEl.value.toLowerCase().trim();
+    const filtered = q ? PRODUCTS.filter(p =>
+        p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q)
+    ) : PRODUCTS;
+    renderRows(filtered);
+});
+
+// ── Sauvegarder ───────────────────────────────────────────────────────────────
+document.getElementById('btnSavePrices').addEventListener('click', () => {
+    const btn = document.getElementById('btnSavePrices');
+    btn.disabled = true;
+    saveFb.className = 'save-feedback';
+    saveFb.textContent = 'Sauvegarde en cours…';
+
+    const prices = {};
+    document.querySelectorAll('.price-input').forEach(inp => {
+        const val = parseFloat(inp.value);
+        if (!isNaN(val) && val >= 0) {
+            prices[inp.dataset.name] = val;
+        }
+        // Si vide → pas dans le document (= Sur devis)
+    });
+
+    firebase.firestore().collection('config').doc('prices').set(prices)
+        .then(() => {
+            currentPrices = prices;
+            saveFb.className = 'save-feedback success';
+            saveFb.textContent = '✓ Prix sauvegardés avec succès !';
+            // Enlever la marque "modifié"
+            document.querySelectorAll('.price-input').forEach(i => i.classList.remove('changed'));
+            // Rebâtir le statut
+            document.querySelectorAll('tr[data-name]').forEach(row => {
+                const name = row.dataset.name;
+                const hasPrice = prices[name] != null;
+                row.querySelector('.status-cell').innerHTML = hasPrice
+                    ? `<span class="status-badge status-set">✓ Défini</span>`
+                    : `<span class="status-badge status-unset">Sur devis</span>`;
+            });
+            setTimeout(() => { saveFb.textContent = ''; }, 4000);
+        })
+        .catch(err => {
+            saveFb.className = 'save-feedback error';
+            saveFb.textContent = '✗ Erreur : ' + err.message;
+        })
+        .finally(() => { btn.disabled = false; });
+});
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+if (typeof firebase === 'undefined' || !firebase.apps.length) {
+    hide(loading);
+    show(loginEl);
+    document.getElementById('loginError').textContent =
+        'Firebase non configuré. Remplissez config.js d\'abord.';
+} else {
+
+    firebase.auth().onAuthStateChanged(user => {
+        hide(loading);
+
+        if (!user) {
+            show(loginEl);
+            return;
+        }
+
+        const adminEmail = (typeof CONFIG !== 'undefined') ? CONFIG.adminEmail : '';
+        if (user.email !== adminEmail) {
+            firebase.auth().signOut();
+            show(loginEl);
+            document.getElementById('loginError').textContent =
+                'Accès refusé. Connectez-vous avec le compte administrateur.';
+            return;
+        }
+
+        hide(loginEl);
+        show(adminEl);
+        document.getElementById('adminEmailDisplay').textContent = user.email;
+
+        // Charger les prix existants
+        firebase.firestore().collection('config').doc('prices').get()
+            .then(doc => buildTable(doc.exists ? doc.data() : {}))
+            .catch(() => buildTable({}));
+    });
+
+    // Login
+    document.getElementById('btnAdminLogin').addEventListener('click', () => {
+        const email    = document.getElementById('adminLoginEmail').value.trim();
+        const password = document.getElementById('adminLoginPassword').value;
+        const errEl    = document.getElementById('loginError');
+        errEl.textContent = '';
+        firebase.auth().signInWithEmailAndPassword(email, password)
+            .catch(err => {
+                const msgs = {
+                    'auth/user-not-found':     'Aucun compte avec cet email.',
+                    'auth/wrong-password':     'Mot de passe incorrect.',
+                    'auth/invalid-credential': 'Email ou mot de passe incorrect.',
+                    'auth/invalid-email':      'Adresse email invalide.',
+                };
+                errEl.textContent = msgs[err.code] || err.message;
+            });
+    });
+
+    // Appuyer Entrée dans les champs de login
+    ['adminLoginEmail', 'adminLoginPassword'].forEach(id => {
+        document.getElementById(id).addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('btnAdminLogin').click();
+        });
+    });
+
+    // Logout
+    document.getElementById('btnAdminLogout').addEventListener('click', () => {
+        firebase.auth().signOut();
+    });
+}
+</script>
+</body>
+</html>

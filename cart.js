@@ -230,11 +230,38 @@ const Cart = (() => {
         }
     }
 
+    /* ── Chargement des prix depuis Firestore ── */
+    function _loadPrices() {
+        if (typeof firebase === 'undefined' || !firebase.apps.length) return;
+        firebase.firestore().collection('config').doc('prices').get()
+            .then(doc => {
+                if (!doc.exists) return;
+                const firestorePrices = doc.data() || {};
+                // Fusionner avec CONFIG.prices (Firestore a la priorité)
+                if (typeof CONFIG !== 'undefined') {
+                    CONFIG.prices = { ...CONFIG.prices, ...firestorePrices };
+                }
+                // Mettre à jour les prix déjà dans le panier
+                const items = getItems();
+                let updated = false;
+                items.forEach(item => {
+                    const p = firestorePrices[item.name];
+                    if (p != null && item.unitPrice !== p) {
+                        item.unitPrice = p;
+                        updated = true;
+                    }
+                });
+                if (updated) { _save(items); _renderItems(); }
+            })
+            .catch(() => {}); // Silencieux si hors ligne
+    }
+
     /* ── Init ── */
     function init() {
         _injectHTML();
         _updateBadge();
         _renderItems();
+        _loadPrices();
 
         document.getElementById('cartToggle')  ?.addEventListener('click', openPanel);
         document.getElementById('cartClose')   ?.addEventListener('click', closePanel);
