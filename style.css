@@ -1238,6 +1238,9 @@ img { max-width: 100%; display: block; }
         gap: 2.5rem;
         font-size: 1.3rem;
         z-index: 9990;
+        /* Reset des overrides desktop */
+        flex: none;
+        padding-left: 0;
     }
     .nav-links.open { display: flex; }
     .hamburger      { display: flex; z-index: 10000; }

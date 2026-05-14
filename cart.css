@@ -445,3 +445,50 @@
 }
 .add-to-cart-btn:hover { opacity: .85; }
 .add-to-cart-btn:disabled { opacity: .6; cursor: default; }
+
+/* ── Responsive 768px ── */
+@media (max-width: 768px) {
+    /* Icônes navbar plus compactes sur mobile */
+    .nav-actions { margin-right: .5rem; gap: .2rem; }
+    .nav-cart-btn,
+    .nav-account-btn { font-size: 1.05rem; padding: .3rem; }
+
+    /* Panneau panier plein écran sur mobile */
+    .cart-panel { width: 100vw; }
+    .cart-header { padding: 1.25rem 1rem .75rem; }
+    .cart-items  { padding: .75rem 1rem; }
+    .cart-footer { padding: 1rem; }
+
+    /* Dropdown compte moins large */
+    .account-dropdown { min-width: 180px; }
+
+    /* Modal auth padding réduit */
+    .auth-modal { padding: 1.5rem; }
+
+    /* Page Mon Compte : marge top selon hauteur navbar mobile */
+    .account-page { margin-top: 90px; }
+}
+
+/* ── Responsive 480px ── */
+@media (max-width: 480px) {
+    /* Panneau panier */
+    .cart-item { gap: .5rem; }
+    .cart-item-name { font-size: .88rem; }
+    .cart-qty span { min-width: 1.25rem; }
+
+    /* Modal auth */
+    .auth-modal { padding: 1.25rem; }
+    .auth-tabs { padding: 3px; }
+    .auth-tab { padding: .5rem .6rem; font-size: .82rem; }
+
+    /* Profil page : bouton déco en bas sur petit écran */
+    .profile-row { flex-direction: column; align-items: flex-start; }
+    .btn-logout { margin-left: 0; margin-top: .75rem; }
+    .account-page { margin-top: 80px; }
+
+    /* Dropdown compte repositionné */
+    .account-dropdown { right: -1rem; }
+
+    /* Admin login box */
+    .login-box { padding: 1.75rem 1.25rem; }
+}

@@ -1,5 +1,6 @@
 const CONFIG = {
-    adminEmail: 'admin@mediafrica.com', // ← Changer par l'email de l'administrateur
+    adminEmail:      'admin@mediafrica.com',  // ← Email de l'administrateur
+    whatsappNumber:  '14384029247',           // ← Numéro WhatsApp sans + ni espaces
     paypal: {
         handle: 'TON_COMPTE_PAYPAL', // ex: 'mediafrica' → paypal.me/mediafrica
         currency: 'CAD'

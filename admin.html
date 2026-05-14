@@ -419,13 +419,16 @@ document.getElementById('btnSavePrices').addEventListener('click', () => {
     saveFb.className = 'save-feedback';
     saveFb.textContent = 'Sauvegarde en cours…';
 
-    const prices = {};
+    // Partir des prix existants, puis appliquer les valeurs du DOM
+    // → les produits absents de la vue filtrée gardent leur prix actuel
+    const prices = { ...currentPrices };
     document.querySelectorAll('.price-input').forEach(inp => {
         const val = parseFloat(inp.value);
         if (!isNaN(val) && val >= 0) {
-            prices[inp.dataset.name] = val;
+            prices[inp.dataset.name] = val;      // Ajouter / mettre à jour
+        } else if (inp.value.trim() === '') {
+            delete prices[inp.dataset.name];     // Vider = Sur devis
         }
-        // Si vide → pas dans le document (= Sur devis)
     });
 
     firebase.firestore().collection('config').doc('prices').set(prices)

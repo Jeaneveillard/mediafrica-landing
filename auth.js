@@ -1,7 +1,13 @@
 const Auth = (() => {
     let _user          = null;
-    let _pendingAction = null; // 'checkout' ou null
-    let _initialized    = false;
+    let _pendingAction = null;
+    let _initialized   = false;
+
+    function _esc(str) {
+        return String(str ?? '')
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+            .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
 
     /* ── Erreurs Firebase → FR ── */
     function _err(code) {
@@ -24,7 +30,7 @@ const Auth = (() => {
         if (!dropdown) return;
 
         if (user) {
-            const name = user.displayName || user.email.split('@')[0];
+            const name = _esc(user.displayName || user.email.split('@')[0]);
             dropdown.innerHTML = `
                 <span class="account-greeting">Bonjour, <strong>${name}</strong></span>
                 <a href="mon-compte.html"><i class="fa-solid fa-user"></i> Mon Compte</a>
@@ -165,7 +171,7 @@ const Auth = (() => {
         // Login
         document.getElementById('loginForm')?.addEventListener('submit', e => {
             e.preventDefault();
-            const email    = document.getElementById('loginEmail').value;
+            const email    = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             firebase.auth().signInWithEmailAndPassword(email, password)
                 .catch(err => {
@@ -177,7 +183,7 @@ const Auth = (() => {
         document.getElementById('registerForm')?.addEventListener('submit', e => {
             e.preventDefault();
             const name     = document.getElementById('regName').value.trim();
-            const email    = document.getElementById('regEmail').value;
+            const email    = document.getElementById('regEmail').value.trim();
             const password = document.getElementById('regPassword').value;
             firebase.auth().createUserWithEmailAndPassword(email, password)
                 .then(cred => cred.user.updateProfile({ displayName: name }))
