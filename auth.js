@@ -1,6 +1,7 @@
 const Auth = (() => {
     let _user          = null;
     let _pendingAction = null; // 'checkout' ou null
+    let _initialized    = false;
 
     /* ── Erreurs Firebase → FR ── */
     function _err(code) {
@@ -125,6 +126,8 @@ const Auth = (() => {
     /* ── Init ── */
     function init() {
         if (typeof firebase === 'undefined' || !firebase.apps.length) return;
+        if (_initialized) return;
+        _initialized = true;
 
         _injectHTML();
 
