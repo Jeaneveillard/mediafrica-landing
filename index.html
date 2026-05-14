@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cart.css">
 </head>
 <body>
 
@@ -147,7 +148,11 @@
                     <div class="produit-tags">
                         <span>500mg</span><span>1000mg</span><span>Sirop</span>
                     </div>
-                    <a href="#commander" class="produit-btn">Commander</a>
+                    <button type="button" class="add-to-cart-btn"
+                            data-name="Paracétamol & Ibuprofène"
+                            data-category="Antidouleur">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
                 </div>
 
                 <div class="produit-card reveal-up" style="--d:.2s">
@@ -160,7 +165,11 @@
                     <div class="produit-tags">
                         <span>Chloroquine</span><span>Quinine</span>
                     </div>
-                    <a href="#commander" class="produit-btn">Commander</a>
+                    <button type="button" class="add-to-cart-btn"
+                            data-name="Antipaludéens"
+                            data-category="Antipaludéen">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
                 </div>
 
                 <div class="produit-card reveal-up" style="--d:.3s">
@@ -173,7 +182,11 @@
                     <div class="produit-tags">
                         <span>SRO</span><span>Lopéramide</span>
                     </div>
-                    <a href="#commander" class="produit-btn">Commander</a>
+                    <button type="button" class="add-to-cart-btn"
+                            data-name="Antidiarrhéiques & Réhydratation"
+                            data-category="Digestif">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
                 </div>
 
                 <div class="produit-card reveal-up" style="--d:.4s">
@@ -186,7 +199,11 @@
                     <div class="produit-tags">
                         <span>Bétadine</span><span>Mercurochrome</span>
                     </div>
-                    <a href="#commander" class="produit-btn">Commander</a>
+                    <button type="button" class="add-to-cart-btn"
+                            data-name="Antiseptiques & Pansements"
+                            data-category="Antiseptique">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
                 </div>
 
                 <div class="produit-card reveal-up" style="--d:.5s">
@@ -199,7 +216,11 @@
                     <div class="produit-tags">
                         <span>Vit. C</span><span>Zinc</span><span>Fer</span>
                     </div>
-                    <a href="#commander" class="produit-btn">Commander</a>
+                    <button type="button" class="add-to-cart-btn"
+                            data-name="Vitamines & Suppléments"
+                            data-category="Nutrition">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
                 </div>
 
                 <div class="produit-card reveal-up" style="--d:.6s">
@@ -212,7 +233,11 @@
                     <div class="produit-tags">
                         <span>Cétirizine</span><span>Loratadine</span>
                     </div>
-                    <a href="#commander" class="produit-btn">Commander</a>
+                    <button type="button" class="add-to-cart-btn"
+                            data-name="Antiallergiques"
+                            data-category="Allergie">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
                 </div>
 
             </div>
@@ -415,7 +440,6 @@
                             <i class="fa-solid fa-phone"></i>
                             <span>438-402-9247</span>
                         </a>
-                        <!-- TODO: remplacer par le vrai email MediAfrica -->
                         <a href="mailto:contact@mediafrica.com" class="channel">
                             <i class="fa-solid fa-envelope"></i>
                             <span>contact@mediafrica.com</span>
@@ -440,8 +464,8 @@
                             </div>
                         </div>
                         <div class="fgroup">
-                            <label>Pays de livraison</label>
-                            <select name="pays" required>
+                            <label for="pays">Pays de livraison</label>
+                            <select name="pays" id="pays" required>
                                 <option value="" disabled selected>Choisir un pays</option>
                                 <option>Canada</option>
                                 <option>Guinée Conakry</option>
@@ -500,6 +524,12 @@
         </div>
     </footer>
 
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="config.js"></script>
+    <script src="cart.js"></script>
+    <script src="auth.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
