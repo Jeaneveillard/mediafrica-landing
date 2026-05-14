@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Compte | MediAfrica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cart.css">
+</head>
+<body>
+
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="logo">
+                <img src="assets/logo-clean.png" alt="MediAfrica Solutions Santé" class="logo-img">
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html">Accueil</a>
+                <a href="catalogue.html">Catalogue</a>
+                <a href="livraison.html">Livraison</a>
+                <a href="index.html#commander" class="btn-nav">Commander</a>
+            </div>
+            <button type="button" class="hamburger" id="hamburger" aria-label="Menu Mobile">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="account-page" id="accountPage" style="display:none">
+
+        <h1>Mon <em>Compte</em></h1>
+
+        <!-- Profil -->
+        <div class="account-section">
+            <h2><i class="fa-solid fa-user"></i> Profil</h2>
+            <div class="profile-row">
+                <div class="profile-avatar" id="profileAvatar">?</div>
+                <div class="profile-info">
+                    <strong id="profileName">—</strong>
+                    <span id="profileEmail">—</span>
+                </div>
+                <button type="button" class="btn-logout" id="logoutBtn">
+                    <i class="fa-solid fa-right-from-bracket"></i> Se déconnecter
+                </button>
+            </div>
+        </div>
+
+        <!-- Historique -->
+        <div class="account-section">
+            <h2><i class="fa-solid fa-clock-rotate-left"></i> Historique des commandes</h2>
+            <div id="ordersContainer">
+                <p class="orders-empty">Chargement…</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Redirect si non connecté -->
+    <div id="notLoggedIn" style="display:none; text-align:center; padding: 160px 2rem;">
+        <i class="fa-solid fa-lock" style="font-size:3rem; color:var(--muted); margin-bottom:1rem; display:block;"></i>
+        <h2>Accès réservé</h2>
+        <p style="color:var(--muted); margin: 1rem 0 2rem;">Vous devez être connecté pour accéder à votre compte.</p>
+        <a href="index.html" class="btn-primary"><i class="fa-solid fa-arrow-left"></i> Retour à l'accueil</a>
+    </div>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <div class="logo-img footer-logo-div" role="img" aria-label="MediAfrica Solutions Santé"></div>
+                </a>
+                <p>Médicaments de qualité, livrés au Canada et en Afrique de l'Ouest.</p>
+            </div>
+            <div class="footer-links">
+                <a href="catalogue.html">Catalogue</a>
+                <a href="livraison.html">Livraison & Suivi</a>
+                <a href="aide.html">Aide & FAQ</a>
+                <a href="communaute.html">Communauté</a>
+                <a href="index.html#commander">Commander</a>
+            </div>
+            <div class="footer-flags">
+                <span title="Canada">🇨🇦</span>
+                <span title="Guinée Conakry">🇬🇳</span>
+                <span title="Burkina Faso">🇧🇫</span>
+                <span title="Côte d'Ivoire">🇨🇮</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 MediAfrica — Solution Santé. Tous droits réservés.</p>
+            <p class="disclaimer">Les médicaments proposés sont en vente libre (sans ordonnance). Consultez un professionnel de santé si nécessaire.</p>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="config.js"></script>
+    <script src="cart.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof firebase === 'undefined' || !firebase.apps.length) {
+            document.getElementById('notLoggedIn').style.display = 'block';
+            return;
+        }
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) {
+                document.getElementById('notLoggedIn').style.display = 'block';
+                return;
+            }
+            document.getElementById('accountPage').style.display = 'block';
+
+            // Profil
+            const name     = user.displayName || user.email.split('@')[0];
+            const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            document.getElementById('profileAvatar').textContent = initials;
+            document.getElementById('profileName').textContent   = user.displayName || '—';
+            document.getElementById('profileEmail').textContent  = user.email;
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                firebase.auth().signOut().then(() => { window.location.href = 'index.html'; });
+            });
+
+            // Orders
+            const container = document.getElementById('ordersContainer');
+            firebase.firestore()
+                .collection('orders')
+                .where('userId', '==', user.uid)
+                .orderBy('createdAt', 'desc')
+                .get()
+                .then(snap => {
+                    if (snap.empty) {
+                        container.innerHTML = '<p class="orders-empty">Aucune commande pour le moment.</p>';
+                        return;
+                    }
+                    const statusLabels = {
+                        sent:       '<span class="order-status status-sent">Envoyée</span>',
+                        processing: '<span class="order-status status-processing">En cours</span>',
+                        delivered:  '<span class="order-status status-delivered">Livrée</span>'
+                    };
+                    container.innerHTML = snap.docs.map(doc => {
+                        const o    = doc.data();
+                        const date = o.createdAt?.toDate().toLocaleDateString('fr-CA', {
+                            year: 'numeric', month: 'long', day: 'numeric'
+                        }) || '—';
+                        const items = (o.items || []).map(i => {
+                            const line = i.lineTotal != null ? i.lineTotal.toFixed(2) + ' CAD' : 'Sur devis';
+                            return `<li>${i.name} × ${i.qty} — ${line}</li>`;
+                        }).join('');
+                        const total  = o.total != null ? o.total.toFixed(2) + ' CAD' : 'Sur devis';
+                        const method = o.paymentMethod === 'paypal' ? 'PayPal' : 'WhatsApp';
+                        const status = statusLabels[o.status] || statusLabels['sent'];
+                        return `
+                        <div class="order-card">
+                            <div class="order-card-header">
+                                <span class="order-date">${date}</span>
+                                ${status}
+                            </div>
+                            <ul class="order-items">${items}</ul>
+                            <div class="order-total">Total : ${total}</div>
+                            <div class="order-method">Paiement : ${method}</div>
+                        </div>`;
+                    }).join('');
+                })
+                .catch(() => {
+                    container.innerHTML = '<p class="orders-empty">Impossible de charger les commandes.</p>';
+                });
+        });
+    });
+    </script>
+</body>
+</html>
