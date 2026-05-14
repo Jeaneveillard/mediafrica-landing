@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Form submission → WhatsApp
     const form    = document.getElementById('orderForm');
     const success = document.getElementById('orderSuccess');
+    if (!form) return;
     form.addEventListener('submit', e => {
         e.preventDefault();
         
@@ -78,6 +79,31 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Interface
         form.style.display    = 'none';
         success.style.display = 'block';
+    });
+
+    // Init cart + auth
+    if (typeof Cart !== 'undefined') Cart.init();
+    if (typeof Auth !== 'undefined') Auth.init();
+
+    // Add-to-cart sur les cartes produits de index.html
+    document.querySelectorAll('.add-to-cart-btn[data-name]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (typeof Cart === 'undefined') return;
+            const name      = btn.dataset.name;
+            const category  = btn.dataset.category || '';
+            const unitPrice = (typeof CONFIG !== 'undefined' && CONFIG.prices?.[name] != null)
+                ? CONFIG.prices[name]
+                : null;
+            const id = name.toLowerCase()
+                .normalize('NFD').replace(/[̀-ͯ]/g, '')
+                .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            Cart.add({ id, name, category, unitPrice });
+
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Ajouté !';
+            btn.disabled = true;
+            setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1500);
+        });
     });
 
 });

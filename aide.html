@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cart.css">
     <style>
         .page-header {
             padding: 160px 0 80px;
@@ -77,6 +78,11 @@
         .faq-item.active .faq-answer { padding: 0 2rem 1.5rem; max-height: 200px; }
         .faq-item.active .fa-chevron-down { transform: rotate(180deg); }
 
+        /* Stats section */
+        .about-stats { margin-top: 2rem; }
+        .about-stats .stat-num { color: var(--green); }
+        .about-stats .stat-divider { background: var(--border); }
+
         /* À Propos Detail */
         .about-detail { background: #fff; }
         .about-grid {
@@ -97,18 +103,21 @@
 <body>
 
     <!-- NAVBAR -->
-    <nav class="navbar">
+    <nav class="navbar" id="navbar">
         <div class="nav-inner">
             <a href="index.html" class="logo">
                 <img src="assets/logo-clean.png" alt="MediAfrica" class="logo-img">
             </a>
-            <div class="nav-links">
+            <div class="nav-links" id="navLinks">
                 <a href="index.html">Accueil</a>
                 <a href="catalogue.html">Catalogue</a>
                 <a href="livraison.html">Livraison</a>
                 <a href="communaute.html">Communauté</a>
                 <a href="index.html#commander" class="btn-nav">Commander</a>
             </div>
+            <button type="button" class="hamburger" id="hamburger" aria-label="Menu Mobile">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
 
@@ -131,10 +140,10 @@
                     <h2>La santé n'a <em>pas de frontières</em></h2>
                     <p>MediAfrica est née d'un constat simple : la diaspora africaine au Canada souhaite soutenir ses proches restés au pays avec des médicaments de qualité garantie.</p>
                     <p>Nous faisons le pont entre les normes pharmaceutiques canadiennes et les besoins locaux en Guinée, au Burkina Faso et en Côte d'Ivoire, en assurant une chaîne logistique sécurisée et rapide.</p>
-                    <div class="hero-stats" style="margin-top: 2rem;">
-                        <div class="stat"><span class="stat-num" style="color:var(--green)">100%</span><span class="stat-label">Certifié</span></div>
-                        <div class="stat-divider" style="background:var(--border)"></div>
-                        <div class="stat"><span class="stat-num" style="color:var(--green)">24h</span><span class="stat-label">Support</span></div>
+                    <div class="hero-stats about-stats">
+                        <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Certifié</span></div>
+                        <div class="stat-divider about-stats"></div>
+                        <div class="stat"><span class="stat-num">24h</span><span class="stat-label">Support</span></div>
                     </div>
                 </div>
             </div>
@@ -195,12 +204,40 @@
     </section>
 
     <footer class="footer">
-        <div class="container footer-bottom">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <div class="logo-img footer-logo-div" role="img" aria-label="MediAfrica Solutions Santé"></div>
+                </a>
+                <p>Médicaments de qualité, livrés au Canada et en Afrique de l'Ouest.</p>
+            </div>
+            <div class="footer-links">
+                <a href="catalogue.html">Catalogue</a>
+                <a href="livraison.html">Livraison & Suivi</a>
+                <a href="aide.html">Aide & FAQ</a>
+                <a href="communaute.html">Communauté</a>
+                <a href="index.html#commander">Commander</a>
+            </div>
+            <div class="footer-flags">
+                <span title="Canada">🇨🇦</span>
+                <span title="Guinée Conakry">🇬🇳</span>
+                <span title="Burkina Faso">🇧🇫</span>
+                <span title="Côte d'Ivoire">🇨🇮</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
             <p>&copy; 2026 MediAfrica — Solution Santé. Tous droits réservés.</p>
-            <a href="index.html" style="color: #FBBF24; font-weight: 600;">Retour à l'accueil</a>
+            <p class="disclaimer">Les médicaments proposés sont en vente libre (sans ordonnance). Consultez un professionnel de santé si nécessaire.</p>
         </div>
     </footer>
 
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="config.js"></script>
+    <script src="cart.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
     <script>
         document.querySelectorAll('.faq-question').forEach(q => {
             q.addEventListener('click', () => {

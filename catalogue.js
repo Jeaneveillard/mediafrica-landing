@@ -1,5 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Slugify for cart IDs
+    function slugify(str) {
+        return str.toLowerCase()
+            .normalize('NFD').replace(/[̀-ͯ]/g, '')
+            .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
     const grid        = document.getElementById('catGrid');
     const cards       = Array.from(grid.querySelectorAll('.cat-card'));
     const searchInput = document.getElementById('searchInput');
@@ -64,6 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Init count
     filterCards();
+    if (typeof Cart !== 'undefined') Cart.init();
+    if (typeof Auth !== 'undefined') Auth.init();
 
     // ── MODAL PRODUIT ──────────────────────────────────────────
     const modal      = document.getElementById('productModal');
@@ -231,9 +240,28 @@ document.addEventListener('DOMContentLoaded', () => {
     cards.forEach(card => {
         card.style.cursor = 'pointer';
         card.addEventListener('click', e => {
-            if (e.target.closest('.cat-btn')) return;
+            if (e.target.closest('.cat-btn') || e.target.closest('.add-to-cart-btn')) return;
             openModal(card);
         });
+    });
+
+    // Add-to-cart handler (event delegation sur le grid)
+    grid.addEventListener('click', e => {
+        const btn = e.target.closest('.add-to-cart-btn');
+        if (!btn || typeof Cart === 'undefined') return;
+        const card     = btn.closest('.cat-card');
+        if (!card) return;
+        const name     = card.querySelector('h3')?.textContent.trim() || '';
+        const category = card.querySelector('.cat-tag')?.textContent.trim() || '';
+        const id       = slugify(name);
+        const unitPrice = (typeof CONFIG !== 'undefined' && CONFIG.prices?.[name] != null)
+            ? CONFIG.prices[name]
+            : null;
+        Cart.add({ id, name, category, unitPrice });
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Ajouté !';
+        btn.disabled = true;
+        setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1500);
     });
 
     /* ── Fermer ── */
