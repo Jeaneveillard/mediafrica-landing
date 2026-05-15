@@ -150,7 +150,24 @@ const Cart = (() => {
         const total  = getTotal();
         const handle = typeof CONFIG !== 'undefined' ? CONFIG.paypal.handle : '';
 
-        // Save to Firestore (avec catch pour éviter perte silencieuse)
+        function _redirect() {
+            const waNumber = (typeof CONFIG !== 'undefined' && CONFIG.whatsappNumber)
+                ? CONFIG.whatsappNumber : '14384029247';
+            if (total !== null && handle && handle !== 'TON_COMPTE_PAYPAL') {
+                window.open(`https://paypal.me/${handle}/${total.toFixed(2)}`, '_blank');
+            } else {
+                const userName = user ? (user.displayName || user.email) : 'Client';
+                const lines = items.map(i => {
+                    const lineAmt = i.unitPrice != null ? (i.unitPrice * i.quantity).toFixed(2) + ' CAD' : 'Sur devis';
+                    return `• ${i.name} × ${i.quantity} — ${lineAmt}`;
+                }).join('\n');
+                const totalLine = total !== null ? `\n💰 *Total : ${total.toFixed(2)} CAD*` : '\n💰 *Total : Sur devis*';
+                const msg = `🛒 *Nouvelle commande MediAfrica*\n\n${lines}${totalLine}\n\n👤 *Client :* ${userName}`;
+                window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+            }
+        }
+
+        // Save to Firestore, puis vider le panier seulement après confirmation
         if (user && typeof firebase !== 'undefined' && firebase.apps.length) {
             firebase.firestore().collection('orders').add({
                 userId:        user.uid,
@@ -167,27 +184,14 @@ const Cart = (() => {
                 paymentMethod: (total !== null && handle && handle !== 'TON_COMPTE_PAYPAL') ? 'paypal' : 'whatsapp',
                 status:        'sent',
                 createdAt:     firebase.firestore.FieldValue.serverTimestamp()
-            }).catch(err => console.warn('⚠️ Sauvegarde commande Firestore échouée:', err.message));
+            }).catch(err => console.warn('⚠️ Sauvegarde commande Firestore échouée:', err.message))
+              .finally(() => { clear(); closePanel(); _redirect(); });
+            return;
         }
 
         clear();
         closePanel();
-
-        const waNumber = (typeof CONFIG !== 'undefined' && CONFIG.whatsappNumber)
-            ? CONFIG.whatsappNumber : '14384029247';
-
-        if (total !== null && handle && handle !== 'TON_COMPTE_PAYPAL') {
-            window.open(`https://paypal.me/${handle}/${total.toFixed(2)}`, '_blank');
-        } else {
-            const userName = user ? (user.displayName || user.email) : 'Client';
-            const lines = items.map(i => {
-                const p = i.unitPrice != null ? (i.unitPrice * i.quantity).toFixed(2) + ' CAD' : 'Sur devis';
-                return `• ${i.name} × ${i.quantity} — ${p}`;
-            }).join('\n');
-            const totalLine = total !== null ? `\n💰 *Total : ${total.toFixed(2)} CAD*` : '\n💰 *Total : Sur devis*';
-            const msg = `🛒 *Nouvelle commande MediAfrica*\n\n${lines}${totalLine}\n\n👤 *Client :* ${userName}`;
-            window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
+        _redirect();
     }
 
     /* ── DOM injection ── */
