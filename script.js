@@ -97,6 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
         success.style.display = 'block';
     });
 
+    // Lien WhatsApp contact (utilise CONFIG.whatsappNumber)
+    const waLink = document.getElementById('waContactLink');
+    if (waLink) {
+        const waNum = (typeof CONFIG !== 'undefined' && CONFIG.whatsappNumber) ? CONFIG.whatsappNumber : '14384029247';
+        waLink.href = `https://wa.me/${waNum}`;
+    }
+
     // Add-to-cart sur les cartes produits de index.html
     document.querySelectorAll('.add-to-cart-btn[data-name]').forEach(btn => {
         btn.addEventListener('click', () => {
