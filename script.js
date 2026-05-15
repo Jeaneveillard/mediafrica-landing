@@ -77,8 +77,20 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch((error) => console.error("Erreur Netlify:", error));
 
         // 2. Ouverture de WhatsApp
-        const msg = `Nouvelle commande MediAfrica\n\nNom : ${nom}\nTél : ${tel}\nEmail : ${email}\nPays : ${pays}\nMédicaments : ${produits}`;
-        window.open(`https://wa.me/14384029247?text=${encodeURIComponent(msg)}`, '_blank');
+        const waNum = (typeof CONFIG !== 'undefined' && CONFIG.whatsappNumber) ? CONFIG.whatsappNumber : '14384029247';
+        const msg = [
+            '🛒 *Nouvelle commande MediAfrica (Formulaire)*',
+            '',
+            `👤 *Nom :* ${nom}`,
+            `📞 *Tél :* ${tel}`,
+            `✉️ *Email :* ${email}`,
+            `📍 *Pays :* ${pays}`,
+            '',
+            '💊 *Médicaments souhaités :*',
+            `${produits}`
+        ].join('\n');
+
+        window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
         
         // 3. Interface
         form.style.display    = 'none';
