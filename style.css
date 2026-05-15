@@ -1232,27 +1232,9 @@ img { max-width: 100%; display: block; }
     .mobile-only { display: block; }
     .nav-more    { display: none; }
 
-    .nav-links {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(253,250,244,.99);
-        -webkit-backdrop-filter: none;
-        backdrop-filter: none;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 2.5rem;
-        font-size: 1.4rem;
-        z-index: 10001;
-        /* Reset des overrides desktop */
-        flex: none;
-        padding-left: 0;
-    }
-    .nav-links.open { display: flex; }
-    .nav-links.open a:not(.btn-nav) { color: var(--text); font-size: 1.4rem; font-weight: 500; }
-    .nav-links.open .btn-nav        { font-size: 1.1rem; padding: .75rem 2rem; }
-    .hamburger      { display: flex; position: relative; z-index: 10002; }
+    /* nav-links reste caché sur mobile — le menu passe par #mobileMenuOverlay */
+    .nav-links { display: none; flex: none; padding-left: 0; }
+    .hamburger { display: flex; }
 
     /* ── Grilles ── */
     .produits-grid { grid-template-columns: 1fr; }
@@ -1295,4 +1277,47 @@ img { max-width: 100%; display: block; }
 
     /* ── Container ── */
     .container { padding: 0 1.25rem; }
+}
+
+/* ===== MOBILE MENU OVERLAY (injecté dans <body> par JS) ===== */
+/* Placé hors de tout stacking context — z-index absolu sans conflit */
+#mobileMenuOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: var(--ivory);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+}
+#mobileMenuOverlay.open { display: flex; }
+
+#mobileMenuClose {
+    position: absolute;
+    top: 1.25rem; right: 1.5rem;
+    background: none; border: none;
+    font-size: 1.8rem; line-height: 1;
+    cursor: pointer;
+    color: var(--text);
+    padding: .5rem;
+}
+#mobileMenuClose:hover { color: var(--green); }
+
+#mobileMenuOverlay a:not(.btn-nav) {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    padding: .4rem 1rem;
+    transition: color .2s;
+}
+#mobileMenuOverlay a:not(.btn-nav):hover { color: var(--green); }
+#mobileMenuOverlay a.active:not(.btn-nav) { color: var(--green); }
+
+#mobileMenuOverlay .btn-nav {
+    font-size: 1.1rem;
+    padding: .75rem 2.5rem;
+    margin-top: .5rem;
 }

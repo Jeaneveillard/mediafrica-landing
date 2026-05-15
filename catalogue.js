@@ -42,16 +42,40 @@ document.addEventListener('DOMContentLoaded', () => {
         navbar.classList.toggle('scrolled', window.scrollY > 10);
     });
 
-    // Hamburger
+    // Hamburger → overlay injecté dans <body>
     const hamburger = document.getElementById('hamburger');
     const navLinks  = document.getElementById('navLinks');
-    const spans     = hamburger.querySelectorAll('span');
-    hamburger.addEventListener('click', () => {
-        const open = navLinks.classList.toggle('open');
-        spans[0].style.transform = open ? 'rotate(45deg) translate(5px,5px)' : '';
-        spans[1].style.opacity   = open ? '0' : '1';
-        spans[2].style.transform = open ? 'rotate(-45deg) translate(5px,-5px)' : '';
-    });
+    if (hamburger && navLinks) {
+        const spans = hamburger.querySelectorAll('span');
+
+        let overlay = document.getElementById('mobileMenuOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'mobileMenuOverlay';
+            overlay.innerHTML = '<button type="button" id="mobileMenuClose" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>';
+            navLinks.querySelectorAll('a').forEach(a => overlay.appendChild(a.cloneNode(true)));
+            document.body.appendChild(overlay);
+        }
+
+        const _openMenu = () => {
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            spans[0].style.transform = 'rotate(45deg) translate(5px,5px)';
+            spans[1].style.opacity   = '0';
+            spans[2].style.transform = 'rotate(-45deg) translate(5px,-5px)';
+        };
+        const _closeMenu = () => {
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+            spans.forEach(s => { s.style.transform = ''; s.style.opacity = '1'; });
+        };
+
+        hamburger.addEventListener('click', () =>
+            overlay.classList.contains('open') ? _closeMenu() : _openMenu()
+        );
+        document.getElementById('mobileMenuClose').addEventListener('click', _closeMenu);
+        overlay.querySelectorAll('a').forEach(a => a.addEventListener('click', _closeMenu));
+    }
 
     // Filters
     filterBtns.forEach(btn => {
