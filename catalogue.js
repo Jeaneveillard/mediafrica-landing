@@ -152,10 +152,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Reset étape 1
         qtyInput.value  = 1000;
-        const p = (typeof CONFIG !== 'undefined' && CONFIG.prices?.[currentProduct] != null)
+        const configPrice = (typeof CONFIG !== 'undefined' && CONFIG.prices?.[currentProduct] != null)
             ? CONFIG.prices[currentProduct]
             : '';
-        unitPrice.value = p;
+        unitPrice.value = configPrice;
         updateTotal();
         modalForm.classList.add('modal-form--hidden');
         modalOrderBtn.style.display = '';
