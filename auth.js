@@ -186,7 +186,9 @@ const Auth = (() => {
             const email    = document.getElementById('regEmail').value.trim();
             const password = document.getElementById('regPassword').value;
             firebase.auth().createUserWithEmailAndPassword(email, password)
-                .then(cred => cred.user.updateProfile({ displayName: name }))
+                .then(cred => cred.user.updateProfile({ displayName: name })
+                    .then(() => _updateNavbar(firebase.auth().currentUser))
+                )
                 .catch(err => {
                     document.getElementById('registerError').textContent = _err(err.code);
                 });
