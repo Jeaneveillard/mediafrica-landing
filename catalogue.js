@@ -152,8 +152,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Reset étape 1
         qtyInput.value  = 1000;
-        unitPrice.value = '';
-        modalTotal.textContent = '—';
+        const p = (typeof CONFIG !== 'undefined' && CONFIG.prices?.[currentProduct] != null)
+            ? CONFIG.prices[currentProduct]
+            : '';
+        unitPrice.value = p;
+        updateTotal();
         modalForm.classList.add('modal-form--hidden');
         modalOrderBtn.style.display = '';
 
@@ -232,7 +235,8 @@ document.addEventListener('DOMContentLoaded', () => {
             notes ? `📝 *Notes :* ${notes}` : ''
         ].filter(Boolean).join('\n');
 
-        window.open(`https://wa.me/14384029247?text=${encodeURIComponent(msg)}`, '_blank');
+        const waNum = (typeof CONFIG !== 'undefined' && CONFIG.whatsappNumber) ? CONFIG.whatsappNumber : '14384029247';
+        window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
         closeModal();
     });
 
