@@ -231,7 +231,7 @@
                     <button class="btn-save" style="font-size:12px;padding:7px 14px" id="btnClearOrders"><i class="fa-solid fa-trash"></i> Vider</button>
                 </div>
                 <table class="data-table">
-                    <thead><tr><th>ID</th><th>Client</th><th>Produits</th><th>Date</th><th>Total</th><th>Statut</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Client</th><th>Produits</th><th>Date</th><th>Total</th><th>Statut</th><th>Facture</th></tr></thead>
                     <tbody id="orders-body"></tbody>
                 </table>
             </div>
@@ -501,6 +501,7 @@ function loadOrders(){
             <td style="font-size:12px">${fmt(o.date)}</td>
             <td><strong>${fmtTotal(o.total)}</strong></td>
             <td><span class="badge badge-green">${o.status}</span></td>
+            <td><a href="facture.html?id=${o.id}" target="_blank" style="font-size:11px;color:var(--green);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px"><i class="fa-solid fa-file-invoice"></i> Facture</a></td>
         </tr>`).join('');
 }
 

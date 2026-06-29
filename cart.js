@@ -206,7 +206,40 @@ const Cart = (() => {
 
         clear();
         closePanel();
+        // Affiche une notification avec lien vers la facture
+        _showOrderConfirmation(newOrder.id);
         _redirect();
+    }
+
+    /* ── Notification post-commande avec lien facture ── */
+    function _showOrderConfirmation(orderId) {
+        if (!orderId) return;
+        if (document.getElementById('cartOrderConfirm')) return;
+        document.body.insertAdjacentHTML('beforeend', `
+        <div id="cartOrderConfirm" style="
+            position:fixed; bottom:1.5rem; right:1.5rem; z-index:99998;
+            background:#fff; border:1.5px solid #d1fae5; border-radius:14px;
+            padding:1.25rem 1.5rem; box-shadow:0 8px 32px rgba(0,0,0,.15);
+            max-width:320px; font-family:var(--font-body,sans-serif);
+            animation: slideUp .4s ease both;">
+            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;">
+                <i class="fa-solid fa-circle-check" style="color:#16a34a;font-size:1.2rem"></i>
+                <strong style="color:#0c2d1a">Commande envoyée !</strong>
+                <button onclick="document.getElementById('cartOrderConfirm').remove()"
+                    style="margin-left:auto;background:none;border:none;cursor:pointer;color:#9ca3af;font-size:1rem">✕</button>
+            </div>
+            <p style="font-size:.83rem;color:#4b5563;margin-bottom:.85rem">
+                Votre commande a été enregistrée. Consultez votre facture :
+            </p>
+            <a href="facture.html?id=${orderId}" target="_blank" style="
+                display:inline-flex;align-items:center;gap:.4rem;
+                background:#0c2d1a;color:#fff;padding:.55rem 1rem;
+                border-radius:8px;font-size:.85rem;font-weight:600;text-decoration:none;">
+                <i class="fa-solid fa-file-invoice"></i> Voir ma facture
+            </a>
+        </div>
+        <style>@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}</style>`);
+        setTimeout(() => document.getElementById('cartOrderConfirm')?.remove(), 12000);
     }
 
     /* ── DOM injection ── */

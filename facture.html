@@ -229,12 +229,33 @@
 
 <script>
 (function(){
-    const KEY = 'ssc_b2b_orders';
-
+    // Cherche dans B2B (B2B-xxx) puis dans panier (CMD-xxx)
     function getOrder(id){
         try{
-            const orders = JSON.parse(localStorage.getItem(KEY)||'[]');
-            return orders.find(o=>o.id===id)||null;
+            if(id.startsWith('B2B-')){
+                const b2b = JSON.parse(localStorage.getItem('ssc_b2b_orders')||'[]');
+                return b2b.find(o=>o.id===id)||null;
+            }
+            // Commande panier → convertit en structure de facture
+            const cart = JSON.parse(localStorage.getItem('ssc_orders')||'[]');
+            const raw  = cart.find(o=>o.id===id);
+            if(!raw) return null;
+            const user = (() => { try{ return JSON.parse(localStorage.getItem('ssc_session')||'null'); }catch{return null;} })();
+            return {
+                id:        raw.id,
+                date:      raw.date,
+                statut:    raw.status || 'envoyée',
+                contact:   { nom: raw.client||'', etablissement: '', email: raw.email||'', telephone: '' },
+                livraison: { pays: '', province: '', adresse: '' },
+                items:     (raw.items||[]).map(i=>({ name:i.name, qty:i.qty||i.quantity||1, unit:'unité(s)', unitPrice:i.prix??i.unitPrice??null })),
+                taxes:     [],
+                subtotal:  raw.total,
+                taxTotal:  null,
+                total:     raw.total,
+                notes:     '',
+                sourceRegion: '',
+                _isCart:   true
+            };
         }catch{ return null; }
     }
 

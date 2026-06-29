@@ -270,10 +270,63 @@ const B2BOrders = (() => {
             Notify.commande({ id: order.id, client: `${nom} (${etab})`, email, items: items.map(i => ({name:i.name, qty:i.qty, prix:i.unitPrice})), total: order.total });
         }
 
-        // Réinitialiser
+        // Réinitialiser → afficher succès + lien facture
+        const orderId = order.id;
         document.getElementById('orderForm').style.display = 'none';
         const s = document.getElementById('orderSuccess');
-        if (s) s.style.display = '';
+        if (s) {
+            s.style.display = '';
+            const link = document.createElement('a');
+            link.href = 'facture.html?id=' + orderId;
+            link.target = '_blank';
+            link.className = 'facture-link';
+            link.innerHTML = '<i class="fa-solid fa-file-invoice"></i> Voir / Imprimer ma facture pro forma';
+            s.appendChild(link);
+        }
+    }
+
+    // ── Contrôle d'accès : réservé aux grossistes validés ────────────────────
+    function _checkAccess() {
+        const form       = document.getElementById('orderForm');
+        const successEl  = document.getElementById('orderSuccess');
+        const wrap       = form?.parentElement;
+        if (!form || !wrap) return;
+
+        const user    = typeof Auth !== 'undefined' && Auth.currentUser ? Auth.currentUser() : null;
+        const isGros  = typeof Auth !== 'undefined' && Auth.isGrossiste && Auth.isGrossiste();
+
+        // Retire le message d'accès précédent si présent
+        wrap.querySelectorAll('.b2b-access-msg').forEach(el => el.remove());
+
+        if (!user) {
+            form.style.display = 'none';
+            if (successEl) successEl.style.display = 'none';
+            wrap.insertAdjacentHTML('afterbegin', `
+            <div class="b2b-access-msg b2b-access-login">
+                <i class="fa-solid fa-lock"></i>
+                <div>
+                    <strong>Formulaire réservé aux grossistes & revendeurs agréés</strong>
+                    <p>Connectez-vous avec votre compte grossiste pour accéder au formulaire de commande B2B.</p>
+                </div>
+                <button type="button" onclick="if(typeof Auth!=='undefined')Auth.openModal()" class="b2b-access-btn">
+                    <i class="fa-solid fa-right-to-bracket"></i> Se connecter
+                </button>
+            </div>`);
+        } else if (!isGros) {
+            form.style.display = 'none';
+            if (successEl) successEl.style.display = 'none';
+            wrap.insertAdjacentHTML('afterbegin', `
+            <div class="b2b-access-msg b2b-access-denied">
+                <i class="fa-solid fa-store"></i>
+                <div>
+                    <strong>Accès grossiste requis</strong>
+                    <p>Votre compte n'a pas encore le statut grossiste/revendeur. Pour commander à l'unité, visitez notre <a href="catalogue.html">catalogue</a>. Pour demander un accès grossiste, <a href="#commander" onclick="if(typeof Auth!=='undefined')Auth.openModal()">contactez-nous</a>.</p>
+                </div>
+            </div>`);
+        } else {
+            form.style.display = '';
+            wrap.querySelectorAll('.b2b-access-msg').forEach(el => el.remove());
+        }
     }
 
     // ── Init ─────────────────────────────────────────────────────────────────
@@ -282,12 +335,14 @@ const B2BOrders = (() => {
         const addBtn = document.getElementById('btnAddItem');
         if (!form) return;
 
+        _checkAccess();
+        document.addEventListener('auth:changed', _checkAccess);
+
         _addRow(); // une ligne par défaut
 
         if (addBtn) addBtn.addEventListener('click', _addRow);
         form.addEventListener('submit', _submit);
 
-        // Recalcul si pays/province change
         ['of-pays','of-province'].forEach(id => {
             document.getElementById(id)?.addEventListener('change', _updateSummary);
         });

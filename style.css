@@ -1326,6 +1326,44 @@ img { max-width: 100%; display: block; }
 .form-success i  { font-size: 3.5rem; margin-bottom: 1rem; }
 .form-success p  { font-size: 1.15rem; font-weight: 600; }
 
+/* ── Messages d'accès B2B ── */
+.b2b-access-msg {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1.5rem; border-radius: 14px; margin-bottom: 1.5rem;
+}
+.b2b-access-login {
+    background: #f0f9ff; border: 1.5px solid #bae6fd;
+}
+.b2b-access-denied {
+    background: #fefce8; border: 1.5px solid #fde68a;
+}
+.b2b-access-msg > i {
+    font-size: 1.75rem; margin-top: .1rem;
+    color: var(--green);
+}
+.b2b-access-msg strong { display: block; font-size: 1rem; color: var(--green); margin-bottom: .3rem; }
+.b2b-access-msg p { font-size: .88rem; color: #4b5563; line-height: 1.55; }
+.b2b-access-msg p a { color: var(--green); font-weight: 600; text-decoration: underline; }
+.b2b-access-btn {
+    margin-left: auto; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: var(--green); color: #fff; border: none;
+    padding: .6rem 1.1rem; border-radius: 9px; font-size: .88rem;
+    font-weight: 600; cursor: pointer; font-family: var(--font-body);
+    transition: opacity .2s;
+}
+.b2b-access-btn:hover { opacity: .85; }
+
+/* Lien facture après commande */
+.facture-link {
+    display: inline-flex; align-items: center; gap: .5rem;
+    margin-top: 1.25rem; padding: .65rem 1.25rem;
+    background: var(--green); color: #fff !important;
+    border-radius: 10px; font-size: .9rem; font-weight: 600;
+    text-decoration: none; transition: opacity .2s;
+}
+.facture-link:hover { opacity: .85; }
+
 /* ── Formulaire B2B ── */
 .form-subtitle { color: #6b7280; font-size:.85rem; margin: -.5rem 0 1.25rem; }
 .form-section-title {
