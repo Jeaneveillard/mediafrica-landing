@@ -1,6 +1,7 @@
 const CONFIG = {
     domain:          'medipharma.ca',         // ← Domaine GoDaddy
     adminEmail:      'admin@medipharma.ca',   // ← Email de l'administrateur
+    adminUsername:   'eltajoseph29',          // ← Nom d'utilisateur de l'administrateur
     whatsappNumber:  '14384029247',           // ← Numéro WhatsApp sans + ni espaces
     paypal: {
         handle: 'TON_COMPTE_PAYPAL', // ex: 'mediafrica' → paypal.me/mediafrica

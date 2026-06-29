@@ -44,6 +44,15 @@ const Auth = (() => {
         document.dispatchEvent(new CustomEvent('auth:changed', { detail: { user: user || null } }));
     }
 
+    /* ── L'utilisateur connecté est-il l'administrateur ? ── */
+    function _isAdmin(user) {
+        if (!user) return false;
+        const ae = (typeof CONFIG !== 'undefined' && CONFIG.adminEmail)    ? CONFIG.adminEmail.toLowerCase()    : '';
+        const au = (typeof CONFIG !== 'undefined' && CONFIG.adminUsername) ? CONFIG.adminUsername.toLowerCase() : '';
+        return (!!ae && (user.email || '').toLowerCase() === ae)
+            || (!!au && (user.username || '').toLowerCase() === au);
+    }
+
     function _getAdminSession() {
         try { return JSON.parse(localStorage.getItem('ssc_admin_session') || 'null'); } catch { return null; }
     }
@@ -74,20 +83,28 @@ const Auth = (() => {
         btn.classList.remove('is-admin');
 
         if (user) {
+            const admin = _isAdmin(user);
             const name = _esc(user.username || user.displayName || user.email.split('@')[0]);
-            const gros = user.isGrossiste ? ' <span class="grossiste-badge">Grossiste</span>' : '';
-            btn.innerHTML = `<i class="fa-solid fa-circle-user"></i><span class="nav-account-label">${name}</span>`;
-            btn.classList.toggle('is-grossiste', !!user.isGrossiste);
+            const badge = admin
+                ? ' <span class="admin-badge">Admin</span>'
+                : (user.isGrossiste ? ' <span class="grossiste-badge">Grossiste</span>' : '');
+            const adminLink = admin
+                ? '<a href="admin.html"><i class="fa-solid fa-shield-halved"></i> Panneau Admin</a>'
+                : '';
+            btn.innerHTML = `<i class="fa-solid fa-circle-user"></i><span class="nav-account-label">${name}</span>${badge}`;
+            btn.classList.toggle('is-grossiste', !!user.isGrossiste && !admin);
+            btn.classList.toggle('is-admin', admin);
             btn.classList.add('logged-in');
             dropdown.innerHTML = `
-                <span class="account-greeting">Bonjour, <strong>${name}</strong> 👋${gros}</span>
+                <span class="account-greeting">Bonjour, <strong>${name}</strong> 👋${badge}</span>
+                ${adminLink}
                 <a href="mon-compte.html"><i class="fa-solid fa-user"></i> Mon Compte</a>
                 <button type="button" data-action="logout">
                     <i class="fa-solid fa-right-from-bracket"></i> Se déconnecter
                 </button>`;
         } else {
             btn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i><span class="nav-account-label">Se connecter</span>`;
-            btn.classList.remove('logged-in', 'is-grossiste');
+            btn.classList.remove('logged-in', 'is-grossiste', 'is-admin');
             dropdown.innerHTML = '';
         }
     }
@@ -415,8 +432,9 @@ const Auth = (() => {
 
     function currentUser() { return _user; }
     function isGrossiste() { return !!(_user && _user.isGrossiste); }
+    function isAdmin() { return _isAdmin(_user); }
 
-    return { init, openModal, closeModal, currentUser, isGrossiste };
+    return { init, openModal, closeModal, currentUser, isGrossiste, isAdmin };
 })();
 
 if (document.readyState === 'loading') {

@@ -881,6 +881,20 @@ img { max-width: 100%; display: block; }
     vertical-align: middle;
 }
 .nav-account-btn.is-grossiste { box-shadow: 0 0 0 2px #FBBF24 inset; }
+
+/* Badge « Admin » dans le menu compte */
+.admin-badge {
+    display: inline-block;
+    background: var(--green, #166534);
+    color: #fff;
+    font-size: .68rem;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: .1rem .5rem;
+    margin-left: .35rem;
+    vertical-align: middle;
+}
+.nav-account-btn.is-admin { box-shadow: 0 0 0 2px var(--green, #166534) inset; }
 .nav-account-btn.is-admin { box-shadow: 0 0 0 2px #dc2626 inset; }
 .nav-account-btn.is-admin i { color: #dc2626; }
 .produit-card--photo .add-to-cart-btn {
