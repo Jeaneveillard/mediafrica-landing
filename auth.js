@@ -250,6 +250,11 @@ const Auth = (() => {
         if (password.length < 6) return { error: 'Mot de passe trop court (minimum 6 caractères).' };
         if (!/^[a-zA-Z0-9._-]{3,20}$/.test(username))
             return { error: 'Username : 3-20 caractères, lettres, chiffres, . _ - uniquement.' };
+        // Identité admin réservée : empêche l'usurpation du badge/lien Admin
+        const _ae = (typeof CONFIG !== 'undefined' && CONFIG.adminEmail)    ? CONFIG.adminEmail.toLowerCase()    : '';
+        const _au = (typeof CONFIG !== 'undefined' && CONFIG.adminUsername) ? CONFIG.adminUsername.toLowerCase() : '';
+        if ((_ae && email.toLowerCase() === _ae) || (_au && username.toLowerCase() === _au))
+            return { error: 'Cet identifiant est réservé.' };
 
         const record = { displayName: name, username, email, pwd: _hash(password), isGrossiste: false, createdAt: Date.now() };
         users[emailKey]    = record;
