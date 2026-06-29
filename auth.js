@@ -323,14 +323,19 @@ const Auth = (() => {
         _updateNavbar(null);
     }
 
-    /* ── Après connexion : diriger selon le statut (prix adaptés dans le catalogue) ── */
+    /* ── Après connexion : diriger selon le statut ── */
     function _afterAuthSuccess() {
         closeModal();
         if (_pendingAction === 'checkout' && typeof Cart !== 'undefined') {
             Cart.openPanel();
             return;
         }
-        // Dirige vers le catalogue où les prix reflètent le statut (client / grossiste)
+        // Admin → tableau de bord
+        if (_isAdmin(_user)) {
+            location.href = 'admin.html';
+            return;
+        }
+        // Client / grossiste → catalogue (prix adaptés au statut)
         if (!/catalogue\.html(\?|#|$)/.test(location.pathname + location.search)) {
             location.href = 'catalogue.html';
         }
