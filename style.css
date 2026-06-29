@@ -895,6 +895,14 @@ img { max-width: 100%; display: block; }
     vertical-align: middle;
 }
 .nav-account-btn.is-admin { box-shadow: 0 0 0 2px var(--green, #166534) inset; }
+
+/* Lien « Grossistes » dans le menu */
+.nav-links a.nav-gros {
+    color: #B45309;
+    font-weight: 600;
+}
+.nav-links a.nav-gros i { font-size: .85em; margin-right: .15rem; }
+.nav-links a.nav-gros:hover { color: #92400E; }
 .nav-account-btn.is-admin { box-shadow: 0 0 0 2px #dc2626 inset; }
 .nav-account-btn.is-admin i { color: #dc2626; }
 .produit-card--photo .add-to-cart-btn {
