@@ -193,6 +193,7 @@ const Cart = (() => {
         const orders = JSON.parse(localStorage.getItem('ssc_orders') || '[]');
         const newOrder = {
             id: 'CMD-' + Date.now(),
+            factureNum: typeof InvoiceNum !== 'undefined' ? InvoiceNum.next() : 'FACT-'+Date.now(),
             date: new Date().toISOString(),
             client: user ? (user.displayName || user.username || user.email) : 'Anonyme',
             email: user ? user.email : '',

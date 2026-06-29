@@ -255,6 +255,17 @@ const Auth = (() => {
                         </label>
                     </div>
                 </div>
+                <!-- Champs supplémentaires pour les grossistes -->
+                <div id="regGrossistFields" style="display:none">
+                    <div class="auth-group">
+                        <label for="regEtablissement">Nom de l'établissement / entreprise <span style="color:#dc2626">*</span></label>
+                        <input type="text" id="regEtablissement" placeholder="Pharmacie Centrale, Mag Santé…">
+                    </div>
+                    <div class="auth-group">
+                        <label for="regNumEntreprise">Numéro de l'entreprise <span style="color:#dc2626">*</span></label>
+                        <input type="text" id="regNumEntreprise" placeholder="NEQ / Matricule — ex : 1234567890">
+                    </div>
+                </div>
                 <p class="auth-error" id="registerError"></p>
                 <button type="submit" class="btn-auth">Créer mon compte</button>
             </form>
@@ -278,7 +289,7 @@ const Auth = (() => {
     }
 
     /* ── Logique auth locale ── */
-    function _register(name, username, email, password, isGrossiste) {
+    function _register(name, username, email, password, isGrossiste, etablissement, numEntreprise) {
         const users = _getUsers();
         const emailKey    = 'email:' + email.toLowerCase();
         const usernameKey = 'user:'  + username.toLowerCase();
@@ -295,11 +306,11 @@ const Auth = (() => {
             return { error: 'Cet identifiant est réservé.' };
 
         // grossisteValidated = false : l'admin doit valider avant que les prix gros s'affichent
-        const record = { displayName: name, username, email, pwd: _hash(password), isGrossiste: !!isGrossiste, grossisteValidated: false, createdAt: Date.now() };
+        const record = { displayName: name, username, email, pwd: _hash(password), isGrossiste: !!isGrossiste, grossisteValidated: false, etablissement: etablissement||'', numeroEntreprise: numEntreprise||'', createdAt: Date.now() };
         users[emailKey]    = record;
         users[usernameKey] = record;
         _saveUsers(users);
-        const user = { displayName: name, username, email, isGrossiste: !!isGrossiste, grossisteValidated: false };
+        const user = { displayName: name, username, email, isGrossiste: !!isGrossiste, grossisteValidated: false, etablissement: etablissement||'', numeroEntreprise: numEntreprise||'' };
         _saveSession(user);
         return { user };
     }
@@ -350,6 +361,14 @@ const Auth = (() => {
         document.querySelectorAll('.auth-tab').forEach(tab =>
             tab.addEventListener('click', () => _switchTab(tab.dataset.tab))
         );
+
+        // Affiche/masque les champs grossiste selon le statut choisi
+        document.querySelectorAll('input[name="regStatus"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const gf = document.getElementById('regGrossistFields');
+                if (gf) gf.style.display = radio.value === 'grossiste' ? 'block' : 'none';
+            });
+        });
 
         document.querySelectorAll('.pwd-toggle').forEach(btn =>
             btn.addEventListener('click', () => _togglePwd(btn.dataset.target, btn))
@@ -446,8 +465,12 @@ const Auth = (() => {
             if (!name)     { _setError('registerError', 'Entrez votre nom complet.'); return; }
             if (!username) { _setError('registerError', 'Choisissez un nom d\'utilisateur.'); return; }
             if (!email)    { _setError('registerError', 'Entrez votre email.'); return; }
-            const isGrossiste = document.querySelector('input[name="regStatus"]:checked')?.value === 'grossiste';
-            const result = _register(name, username, email, password, isGrossiste);
+            const isGrossiste   = document.querySelector('input[name="regStatus"]:checked')?.value === 'grossiste';
+            const etablissement = (document.getElementById('regEtablissement')?.value||'').trim();
+            const numEntreprise = (document.getElementById('regNumEntreprise')?.value||'').trim();
+            if (isGrossiste && !etablissement) { _setError('registerError', 'Entrez le nom de votre établissement.'); return; }
+            if (isGrossiste && !numEntreprise)  { _setError('registerError', 'Entrez le numéro de votre entreprise.'); return; }
+            const result = _register(name, username, email, password, isGrossiste, etablissement, numEntreprise);
             if (result.error) { _setError('registerError', result.error); return; }
             _user = result.user;
             _updateNavbar(_user);

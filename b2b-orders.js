@@ -250,6 +250,7 @@ const B2BOrders = (() => {
 
         const order = {
             id:           'B2B-' + Date.now(),
+            factureNum:   typeof InvoiceNum !== 'undefined' ? InvoiceNum.next() : 'FACT-'+Date.now(),
             date:         new Date().toISOString(),
             statut:       'Nouveau',
             contact:      { nom, etablissement: etab, numeroEntreprise: numEntreprise, email, telephone: tel },

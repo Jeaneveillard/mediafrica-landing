@@ -336,8 +336,12 @@
                 <div class="inv-title">FACTURE PRO FORMA</div>
                 <div class="inv-subtitle">Document non fiscal — à valeur indicative</div>
                 <div class="inv-ref-box">
-                    <label>Référence commande</label>
-                    <span>${o.id}</span>
+                    <label>N° Facture</label>
+                    <span>${o.factureNum||o.id}</span>
+                </div>
+                <div class="inv-ref-box" style="margin-top:6px;font-size:.78rem;opacity:.7">
+                    <label>Réf. commande</label>
+                    <span style="font-size:.85rem">${o.id}</span>
                 </div>
             </div>
         </div>
@@ -347,6 +351,10 @@
 
             <!-- Infos dates/statut -->
             <div class="inv-info-strip">
+                <div class="inv-info-item">
+                    <label>N° Facture</label>
+                    <span style="font-weight:800;color:#0c2d1a;font-size:1.05rem">${o.factureNum||o.id}</span>
+                </div>
                 <div class="inv-info-item">
                     <label>Date de commande</label>
                     <span>${dateStr}</span>
@@ -381,13 +389,14 @@
                     <div class="inv-party-label">Destinataire</div>
                     <h3>${c.etablissement||'—'}</h3>
                     <p>
-                        ${c.numeroEntreprise ? 'N° entreprise : <strong>'+c.numeroEntreprise+'</strong><br>' : ''}
+                        ${c.numeroEntreprise ? '<strong>N° entreprise : '+c.numeroEntreprise+'</strong><br>' : ''}
+                        ${l.licence ? 'Licence : <strong>'+l.licence+'</strong><br>' : ''}
                         Contact : ${c.nom||'—'}<br>
-                        ${c.email||''}<br>
+                        ${c.email ? '<a href="mailto:'+c.email+'" style="color:#0c2d1a">'+c.email+'</a><br>' : ''}
                         ${c.telephone||''}<br>
-                        ${l.adresse||''}${l.province?', '+l.province:''}<br>
+                        ${l.adresse ? l.adresse+'<br>' : ''}
+                        ${l.province ? l.province+'<br>' : ''}
                         ${l.pays||''}
-                        ${l.licence?'<br>Licence : '+l.licence:''}
                     </p>
                 </div>
             </div>

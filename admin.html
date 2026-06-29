@@ -247,7 +247,7 @@
                     <span id="clients-count" style="font-size:13px;color:var(--muted)"></span>
                 </div>
                 <table class="data-table">
-                    <thead><tr><th>Nom</th><th>Username</th><th>Email</th><th>Inscrit le</th><th>Méthode</th><th>Grossiste</th></tr></thead>
+                    <thead><tr><th>Nom</th><th>Username</th><th>Établissement</th><th>N° Entreprise</th><th>Email</th><th>Inscrit le</th><th>Méthode</th><th>Grossiste</th></tr></thead>
                     <tbody id="clients-body"></tbody>
                 </table>
             </div>
@@ -547,6 +547,8 @@ function loadClients(){
         <tr>
             <td><strong>${u.displayName||'—'}</strong></td>
             <td>${u.username ? '<span class="badge badge-blue">@'+u.username+'</span>' : '—'}</td>
+            <td>${u.etablissement||'—'}</td>
+            <td style="font-size:12px">${u.numeroEntreprise||'—'}</td>
             <td>${u.email}</td>
             <td style="font-size:12px">${u.createdAt ? fmt(u.createdAt) : '—'}</td>
             <td><span class="badge ${u.provider==='google'?'badge-red':'badge-gold'}">${u.provider==='google'?'Google':'Email'}</span></td>
