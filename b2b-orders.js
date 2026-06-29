@@ -210,15 +210,16 @@ const B2BOrders = (() => {
         e.preventDefault();
         const err = document.getElementById('ofError');
         const val = id => (document.getElementById(id) || {}).value?.trim() || '';
-        const nom   = val('of-nom');
-        const etab  = val('of-etablissement');
-        const email = val('of-email');
-        const tel   = val('of-telephone');
-        const pays  = val('of-pays');
-        const adr   = val('of-adresse');
-        const rows  = [...document.querySelectorAll('.b2b-item-row')];
+        const nom         = val('of-nom');
+        const etab        = val('of-etablissement');
+        const numEntreprise = val('of-numero-entreprise');
+        const email       = val('of-email');
+        const tel         = val('of-telephone');
+        const pays        = val('of-pays');
+        const adr         = val('of-adresse');
+        const rows        = [...document.querySelectorAll('.b2b-item-row')];
 
-        if (!nom || !etab || !email || !tel || !pays || !adr) {
+        if (!nom || !etab || !numEntreprise || !email || !tel || !pays || !adr) {
             err.textContent = 'Veuillez remplir tous les champs obligatoires (*).';
             return;
         }
@@ -251,7 +252,7 @@ const B2BOrders = (() => {
             id:           'B2B-' + Date.now(),
             date:         new Date().toISOString(),
             statut:       'Nouveau',
-            contact:      { nom, etablissement: etab, email, telephone: tel },
+            contact:      { nom, etablissement: etab, numeroEntreprise: numEntreprise, email, telephone: tel },
             livraison:    { pays: pays2, province, adresse: adr, licence: val('of-licence') },
             items,
             taxes:        txList,

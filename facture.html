@@ -381,6 +381,7 @@
                     <div class="inv-party-label">Destinataire</div>
                     <h3>${c.etablissement||'—'}</h3>
                     <p>
+                        ${c.numeroEntreprise ? 'N° entreprise : <strong>'+c.numeroEntreprise+'</strong><br>' : ''}
                         Contact : ${c.nom||'—'}<br>
                         ${c.email||''}<br>
                         ${c.telephone||''}<br>
