@@ -500,44 +500,88 @@
                     </div>
                 </div>
                 <div class="commander-form reveal-right">
-                    <form class="order-form" id="orderForm" name="commande-MediPharma" method="POST" data-netlify="true">
-                        <h3>Formulaire de commande</h3>
+                    <form class="order-form" id="orderForm" novalidate>
+                        <h3>Formulaire de commande B2B</h3>
+                        <p class="form-subtitle">Grossistes · Pharmacies · Revendeurs</p>
+
+                        <!-- Identité -->
+                        <div class="form-section-title">Vos coordonnées</div>
                         <div class="form-row">
                             <div class="fgroup">
-                                <label>Nom complet</label>
-                                <input type="text" name="nom" placeholder="Votre nom" required>
+                                <label>Nom complet du contact <span class="req">*</span></label>
+                                <input type="text" id="of-nom" placeholder="Jean Dupont" required>
                             </div>
                             <div class="fgroup">
-                                <label>Téléphone / WhatsApp</label>
-                                <input type="tel" name="telephone" placeholder="+1 438 000 0000" required>
+                                <label>Nom de l'établissement <span class="req">*</span></label>
+                                <input type="text" id="of-etablissement" placeholder="Pharmacie Central, Mag Santé…" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="fgroup">
+                                <label>Email professionnel <span class="req">*</span></label>
+                                <input type="email" id="of-email" placeholder="contact@votrepharmacy.com" required>
+                            </div>
+                            <div class="fgroup">
+                                <label>Téléphone / WhatsApp <span class="req">*</span></label>
+                                <input type="tel" id="of-telephone" placeholder="+1 438 000 0000" required>
+                            </div>
+                        </div>
+
+                        <!-- Livraison -->
+                        <div class="form-section-title">Adresse de livraison</div>
+                        <div class="form-row">
+                            <div class="fgroup">
+                                <label>Pays <span class="req">*</span></label>
+                                <select id="of-pays" required>
+                                    <option value="" disabled selected>Choisir un pays</option>
+                                    <option>Canada</option>
+                                    <option>Guinée Conakry</option>
+                                    <option>Burkina Faso</option>
+                                    <option>Côte d'Ivoire</option>
+                                    <option>Autre</option>
+                                </select>
+                            </div>
+                            <div class="fgroup">
+                                <label>Province / État</label>
+                                <input type="text" id="of-province" placeholder="Québec, Ontario…">
                             </div>
                         </div>
                         <div class="fgroup">
-                            <label for="pays">Pays de livraison</label>
-                            <select name="pays" id="pays" required>
-                                <option value="" disabled selected>Choisir un pays</option>
-                                <option>Canada</option>
-                                <option>Guinée Conakry</option>
-                                <option>Burkina Faso</option>
-                                <option>Côte d'Ivoire</option>
-                                <option>Autre</option>
-                            </select>
+                            <label>Adresse complète <span class="req">*</span></label>
+                            <input type="text" id="of-adresse" placeholder="123 rue de la Santé, Montréal, H1A 2B3" required>
                         </div>
                         <div class="fgroup">
-                            <label>Email</label>
-                            <input type="email" name="email" placeholder="votre@email.com" required>
+                            <label>Numéro de licence (pharmacien / revendeur agréé)</label>
+                            <input type="text" id="of-licence" placeholder="Optionnel — ex : QC-PHR-12345">
                         </div>
-                        <div class="fgroup">
-                            <label>Médicaments souhaités</label>
-                            <textarea name="message" rows="4" placeholder="Ex : Paracétamol 500mg × 2 boîtes, Vitamine C × 1 boîte — précisez les quantités si possible" required></textarea>
+
+                        <!-- Articles -->
+                        <div class="form-section-title">Articles commandés <span class="req">*</span></div>
+                        <div class="b2b-items" id="b2bItems"></div>
+                        <button type="button" class="btn-add-item" id="btnAddItem">
+                            <i class="fa-solid fa-plus"></i> Ajouter un article
+                        </button>
+
+                        <!-- Récap & taxes -->
+                        <div class="b2b-summary" id="b2bSummary" style="display:none">
+                            <table class="b2b-recap-table" id="b2bRecapTable"></table>
+                            <div class="b2b-taxes" id="b2bTaxes"></div>
                         </div>
-                        <button type="submit" class="btn-submit">
+
+                        <!-- Notes -->
+                        <div class="fgroup" style="margin-top:1rem">
+                            <label>Instructions / notes de livraison</label>
+                            <textarea id="of-notes" rows="3" placeholder="Délais souhaités, modalités de paiement, remarques particulières…"></textarea>
+                        </div>
+
+                        <p class="of-error" id="ofError"></p>
+                        <button type="submit" class="btn-submit" id="btnOrderSubmit">
                             <i class="fa-solid fa-paper-plane"></i> Envoyer la commande
                         </button>
                     </form>
-                    <div class="form-success" id="orderSuccess">
+                    <div class="form-success" id="orderSuccess" style="display:none">
                         <i class="fa-solid fa-circle-check"></i>
-                        <p>Commande reçue ! Nous vous contactons dans les 24h.</p>
+                        <p>Commande B2B reçue ! Notre équipe vous contacte dans les 24h avec la facture pro forma.</p>
                     </div>
                 </div>
             </div>
@@ -582,6 +626,7 @@
     <script src="pricing.js"></script>
     <script src="notify.js"></script>
     <script src="region.js"></script>
+    <script src="b2b-orders.js"></script>
     <script src="script.js"></script>
     <script>
       (function() {

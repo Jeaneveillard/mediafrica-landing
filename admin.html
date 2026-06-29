@@ -85,6 +85,21 @@
         .empty-state{text-align:center;padding:48px 20px;color:var(--muted)}
         .empty-state i{font-size:36px;opacity:.3;display:block;margin-bottom:12px}
 
+        /* ── B2B ORDERS ── */
+        .b2b-order-card{border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden}
+        .b2b-order-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#f9fafb;border-bottom:1px solid var(--border)}
+        .b2b-order-body{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:14px 16px}
+        .b2b-order-info{display:flex;flex-direction:column;gap:5px;font-size:13px}
+        .b2b-order-info span{display:flex;align-items:center;gap:6px;color:#374151}
+        .b2b-order-info i{color:var(--green);width:14px}
+        .b2b-order-items{font-size:13px}
+        .b2b-order-items ul{margin:4px 0 8px;padding-left:16px;color:#374151}
+        .b2b-order-items li{margin-bottom:3px}
+        .b2b-total{display:flex;flex-direction:column;gap:2px;font-size:13px}
+        .b2b-total strong{color:var(--green);font-size:14px}
+        .b2b-order-footer{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#f9fafb;border-top:1px solid var(--border)}
+        .badge-red{background:#fee2e2;color:#991b1b}
+
         /* ── PRIX ── */
         .search-input{border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;width:100%;max-width:320px;outline:none;margin-bottom:16px}
         .search-input:focus{border-color:var(--green)}
@@ -155,6 +170,7 @@
         <nav>
             <button class="nav-item active" data-page="dashboard"><i class="fa-solid fa-gauge"></i> Tableau de bord</button>
             <button class="nav-item" data-page="orders"><i class="fa-solid fa-bag-shopping"></i> Commandes</button>
+            <button class="nav-item" data-page="b2b"><i class="fa-solid fa-building"></i> Commandes B2B</button>
             <button class="nav-item" data-page="clients"><i class="fa-solid fa-users"></i> Clients</button>
             <button class="nav-item" data-page="prices"><i class="fa-solid fa-tag"></i> Prix</button>
             <button class="nav-item" data-page="settings"><i class="fa-solid fa-gear"></i> Paramètres</button>
@@ -234,6 +250,24 @@
                     <thead><tr><th>Nom</th><th>Username</th><th>Email</th><th>Inscrit le</th><th>Méthode</th><th>Grossiste</th></tr></thead>
                     <tbody id="clients-body"></tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- ── COMMANDES B2B ── -->
+        <div class="page" id="page-b2b">
+            <div class="page-title">Commandes B2B</div>
+            <div class="page-sub">Commandes grossistes / revendeurs — <strong>archivées, non supprimables</strong></div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Toutes les commandes B2B</h3>
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <span id="b2b-count" style="font-size:13px;color:var(--muted)"></span>
+                        <button class="btn-save" style="font-size:12px;padding:7px 14px" id="btnExportB2B">
+                            <i class="fa-solid fa-file-csv"></i> Exporter CSV
+                        </button>
+                    </div>
+                </div>
+                <div id="b2b-orders-list" style="padding:8px 0"></div>
             </div>
         </div>
 
@@ -403,6 +437,7 @@ function showAdmin(){
     loadDashboard();
     loadOrders();
     loadClients();
+    loadB2B();
     loadPrices();
     loadSettings();
 }
@@ -646,6 +681,109 @@ document.getElementById('btnSavePrices').addEventListener('click', () => {
     fb.className = 'save-msg ok';
     fb.textContent = '✓ Prix sauvegardés !';
     setTimeout(()=>fb.textContent='', 3000);
+});
+
+// ══════════════════════════════
+//  COMMANDES B2B
+// ══════════════════════════════
+const B2B_KEY = 'ssc_b2b_orders';
+function getB2BOrders(){ try{ return JSON.parse(localStorage.getItem(B2B_KEY)||'[]'); }catch{ return []; } }
+
+const B2B_STATUTS = ['Nouveau','En traitement','Devis envoyé','Confirmée','Expédiée','Livrée','Annulée'];
+const B2B_COLORS  = {'Nouveau':'badge-blue','En traitement':'badge-gold','Devis envoyé':'badge-gold','Confirmée':'badge-green','Expédiée':'badge-green','Livrée':'badge-green','Annulée':'badge-red'};
+
+function loadB2B(){
+    const orders = getB2BOrders();
+    const list   = document.getElementById('b2b-orders-list');
+    document.getElementById('b2b-count').textContent = orders.length + ' commande(s)';
+    if (!list) return;
+    if (orders.length === 0){
+        list.innerHTML = '<div class="empty-state" style="padding:32px"><i class="fa-solid fa-building"></i>Aucune commande B2B</div>';
+        return;
+    }
+    list.innerHTML = orders.map(o => {
+        const c = o.contact || {};
+        const l = o.livraison || {};
+        const items = (o.items||[]).map(i=>`<li>${i.qty} ${i.unit} × ${i.name}${i.unitPrice!=null?' — '+(i.unitPrice*i.qty).toFixed(2)+' $':''}</li>`).join('');
+        const total = o.total != null ? o.total.toFixed(2)+' $' : 'Sur devis';
+        const taxInfo = (o.taxes||[]).map(t=>`${t.label}`).join(', ') || 'Sans taxe';
+        const badge = B2B_COLORS[o.statut] || 'badge-blue';
+        const statOpts = B2B_STATUTS.map(s=>`<option value="${s}" ${s===o.statut?'selected':''}>${s}</option>`).join('');
+        return `
+        <div class="b2b-order-card" id="b2b-${o.id}">
+            <div class="b2b-order-head">
+                <div>
+                    <strong>${c.etablissement||'—'}</strong>
+                    <span style="color:#6b7280;font-size:13px;margin-left:8px">${c.nom||''}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span class="badge ${badge}">${o.statut||'Nouveau'}</span>
+                    <span style="font-size:12px;color:#9ca3af">${new Date(o.date).toLocaleString('fr-CA',{dateStyle:'short',timeStyle:'short'})}</span>
+                </div>
+            </div>
+            <div class="b2b-order-body">
+                <div class="b2b-order-info">
+                    <span><i class="fa-solid fa-envelope"></i> ${c.email||'—'}</span>
+                    <span><i class="fa-solid fa-phone"></i> ${c.telephone||'—'}</span>
+                    <span><i class="fa-solid fa-location-dot"></i> ${l.adresse||''}, ${l.pays||''}</span>
+                    ${l.licence?`<span><i class="fa-solid fa-id-card"></i> Licence : ${l.licence}</span>`:''}
+                    ${o.notes?`<span><i class="fa-solid fa-note-sticky"></i> ${o.notes}</span>`:''}
+                </div>
+                <div class="b2b-order-items">
+                    <strong>Articles :</strong>
+                    <ul>${items}</ul>
+                    <div class="b2b-total">
+                        ${taxInfo ? '<small>Taxes : '+taxInfo+'</small>': ''}
+                        <strong>Total : ${total}</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="b2b-order-footer">
+                <label style="font-size:13px;font-weight:600">Statut :</label>
+                <select class="b2b-statut-sel" data-id="${o.id}" style="padding:5px 8px;border-radius:6px;border:1px solid #e5e7eb;font-size:13px">
+                    ${statOpts}
+                </select>
+                <span class="b2b-statut-saved" id="b2b-saved-${o.id}" style="font-size:12px;color:var(--green);display:none">✓ Sauvegardé</span>
+                <span style="font-size:12px;color:#9ca3af;margin-left:auto">Réf. ${o.id}</span>
+            </div>
+        </div>`;
+    }).join('');
+
+    list.querySelectorAll('.b2b-statut-sel').forEach(sel => {
+        sel.addEventListener('change', () => {
+            const orders = getB2BOrders();
+            const o = orders.find(x => x.id === sel.dataset.id);
+            if (o) { o.statut = sel.value; o.updatedAt = new Date().toISOString(); }
+            localStorage.setItem(B2B_KEY, JSON.stringify(orders));
+            const saved = document.getElementById('b2b-saved-'+sel.dataset.id);
+            if (saved){ saved.style.display='inline'; setTimeout(()=>saved.style.display='none',2000); }
+            loadB2B();
+        });
+    });
+}
+
+// Export CSV
+document.getElementById('btnExportB2B')?.addEventListener('click', () => {
+    const orders = getB2BOrders();
+    if (orders.length === 0){ alert('Aucune commande B2B à exporter.'); return; }
+    const rows = [['Réf.','Date','Statut','Établissement','Contact','Email','Téléphone','Pays','Province','Adresse','Licence','Article','Qté','Unité','Prix unit.','Sous-ligne','Sous-total HT','Taxes','Total TTC','Notes']];
+    orders.forEach(o => {
+        const c = o.contact||{}, l = o.livraison||{};
+        const base = [o.id, new Date(o.date).toLocaleString('fr-CA'), o.statut||'', c.etablissement||'', c.nom||'', c.email||'', c.telephone||'', l.pays||'', l.province||'', l.adresse||'', l.licence||''];
+        (o.items||[]).forEach((it,i) => {
+            const line = it.unitPrice != null ? (it.unitPrice*it.qty).toFixed(2) : 'Sur devis';
+            const taxes = (o.taxes||[]).map(t=>t.label+'('+((o.subtotal||0)*t.rate).toFixed(2)+'$)').join(' + ');
+            if (i===0) rows.push([...base, it.name, it.qty, it.unit, it.unitPrice!=null?it.unitPrice.toFixed(2):'', line, o.subtotal!=null?o.subtotal.toFixed(2):'', taxes, o.total!=null?o.total.toFixed(2):'', o.notes||'']);
+            else        rows.push(['','','','','','','','','','','', it.name, it.qty, it.unit, it.unitPrice!=null?it.unitPrice.toFixed(2):'', line,'','','','']);
+        });
+        if (!o.items || o.items.length === 0) rows.push([...base, '—','','','','','','','', o.notes||'']);
+    });
+    const csv = rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+    const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'commandes_b2b_'+new Date().toISOString().slice(0,10)+'.csv';
+    a.click();
 });
 
 // ══════════════════════════════
