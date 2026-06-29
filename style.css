@@ -900,6 +900,14 @@ img { max-width: 100%; display: block; }
 }
 .pp-tag-gros i { font-size: .7rem; }
 
+/* Prix unité visible en référence pour les grossistes */
+.pp-unite-ref {
+    font-size: .72rem;
+    color: #9ca3af;
+    text-decoration: line-through;
+    margin-left: .1rem;
+}
+
 /* Badge « Grossiste » dans le menu compte */
 .grossiste-badge {
     display: inline-block;

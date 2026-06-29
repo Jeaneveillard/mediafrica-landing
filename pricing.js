@@ -55,7 +55,8 @@ const Pricing = (() => {
             const gros = CONFIG.priceFor(name, true);
             el.innerHTML =
                 `<span class="pp-amount pp-gros">${CONFIG.formatPrice(gros ?? unite)}</span>` +
-                `<span class="pp-tag pp-tag-gros"><i class="fa-solid fa-tags"></i> Prix grossiste</span>`;
+                `<span class="pp-tag pp-tag-gros"><i class="fa-solid fa-tags"></i> Prix grossiste</span>` +
+                `<span class="pp-unite-ref">${CONFIG.formatPrice(unite)} à l'unité</span>`;
             el.classList.add('is-gros');
         } else {
             el.innerHTML =
