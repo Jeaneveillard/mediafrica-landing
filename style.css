@@ -430,8 +430,10 @@ img { max-width: 100%; display: block; }
 /* Conteneur logo + texte circulaire */
 .intro-circle-wrap {
     position: relative;
-    width: 220px;
-    height: 220px;
+    width: 660px;
+    height: 660px;
+    max-width: 90vw;
+    max-height: 90vw;
 }
 
 /* SVG texte circulaire : tourne lentement */
@@ -454,10 +456,10 @@ img { max-width: 100%; display: block; }
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 120px;
-    width: 120px;
+    height: 360px;
+    width: 360px;
     object-fit: contain;
-    filter: drop-shadow(0 4px 24px rgba(228,201,106,.4));
+    filter: drop-shadow(0 8px 40px rgba(228,201,106,.45));
 }
 
 .intro-name {
