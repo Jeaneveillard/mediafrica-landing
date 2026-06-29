@@ -494,7 +494,8 @@ const Auth = (() => {
     }
 
     function currentUser() { return _user; }
-    function isGrossiste() { return !!(_user && _user.isGrossiste); }
+    // Prix de gros uniquement si l'admin a validé le compte (les deux flags requis)
+    function isGrossiste() { return !!(_user && _user.isGrossiste && _user.grossisteValidated); }
     function isAdmin() { return _isAdmin(_user); }
 
     return { init, openModal, closeModal, currentUser, isGrossiste, isAdmin };
