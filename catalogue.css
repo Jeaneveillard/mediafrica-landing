@@ -192,14 +192,32 @@
 }
 
 .cat-card-header {
-    background: color-mix(in srgb, var(--hc, #14532D) 12%, #fff);
-    padding: 1.5rem;
+    background:
+        radial-gradient(ellipse at 30% 0%, color-mix(in srgb, var(--hc, #14532D) 18%, #fff) 0%, #fff 70%),
+        #fff;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--hc, #14532D) 12%, transparent);
+    min-height: 160px;
+}
+
+/* Icône dans un cercle coloré */
+.cat-card-header > i {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--hc, #14532D) 14%, #fff);
+    border: 2px solid color-mix(in srgb, var(--hc, #14532D) 22%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    font-size: 1.75rem;
     color: var(--hc, #14532D);
-    border-bottom: 1px solid color-mix(in srgb, var(--hc, #14532D) 15%, transparent);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--hc, #14532D) 18%, transparent);
 }
 
 .cat-card-body {
