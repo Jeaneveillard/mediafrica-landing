@@ -896,6 +896,25 @@ img { max-width: 100%; display: block; }
 }
 .nav-account-btn.is-admin { box-shadow: 0 0 0 2px var(--green, #166534) inset; }
 
+/* Visiteur non connecté : invitation à se connecter à la place du prix */
+.pp-login-prompt {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    background: none;
+    border: 1px dashed var(--border, #e5e7eb);
+    border-radius: 8px;
+    padding: .3rem .7rem;
+    font-size: .78rem;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all .2s;
+    font-family: var(--font-body);
+}
+.pp-login-prompt:hover { border-color: var(--green); color: var(--green); }
+.pp-login-prompt i { font-size: .7rem; }
+
 /* Lien « Grossistes » dans le menu */
 .nav-links a.nav-gros {
     color: #B45309;

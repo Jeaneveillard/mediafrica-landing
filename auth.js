@@ -294,11 +294,12 @@ const Auth = (() => {
         if ((_ae && email.toLowerCase() === _ae) || (_au && username.toLowerCase() === _au))
             return { error: 'Cet identifiant est réservé.' };
 
-        const record = { displayName: name, username, email, pwd: _hash(password), isGrossiste: !!isGrossiste, createdAt: Date.now() };
+        // grossisteValidated = false : l'admin doit valider avant que les prix gros s'affichent
+        const record = { displayName: name, username, email, pwd: _hash(password), isGrossiste: !!isGrossiste, grossisteValidated: false, createdAt: Date.now() };
         users[emailKey]    = record;
-        users[usernameKey] = record; // double index pour retrouver par username
+        users[usernameKey] = record;
         _saveUsers(users);
-        const user = { displayName: name, username, email, isGrossiste: !!isGrossiste };
+        const user = { displayName: name, username, email, isGrossiste: !!isGrossiste, grossisteValidated: false };
         _saveSession(user);
         return { user };
     }
@@ -311,7 +312,7 @@ const Auth = (() => {
         const found   = users[key];
         if (!found) return { error: isEmail ? 'Aucun compte avec cet email.' : 'Nom d\'utilisateur introuvable.' };
         if (found.pwd !== _hash(password)) return { error: 'Mot de passe incorrect.' };
-        const user = { displayName: found.displayName, username: found.username, email: found.email, isGrossiste: !!found.isGrossiste };
+        const user = { displayName: found.displayName, username: found.username, email: found.email, isGrossiste: !!found.isGrossiste, grossisteValidated: !!found.grossisteValidated };
         _saveSession(user);
         return { user };
     }
@@ -465,7 +466,8 @@ const Auth = (() => {
                 const users = _getUsers();
                 const rec = users['email:' + session.email.toLowerCase()] || users[session.email.toLowerCase()];
                 if (rec) {
-                    _user.isGrossiste = !!rec.isGrossiste;
+                    _user.isGrossiste         = !!rec.isGrossiste;
+                    _user.grossisteValidated  = !!rec.grossisteValidated;
                     _saveSession(_user);
                 }
             }
