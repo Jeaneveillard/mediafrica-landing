@@ -273,8 +273,21 @@
 
         <!-- ── PRIX ── -->
         <div class="page" id="page-prices">
-            <div class="page-title">Gestion des prix</div>
-            <div class="page-sub">Deux prix par produit : <strong>unité</strong> (client au détail) et <strong>gros</strong> (réservé aux grossistes). Vide = « Sur devis ».</div>
+            <div class="page-title"><i class="fa-solid fa-lock" style="font-size:1rem;margin-right:8px;color:var(--gold)"></i>Gestion des prix</div>
+            <div class="page-sub">Réservé à l'administrateur · Deux prix par produit : <strong>unité</strong> (client) et <strong>gros</strong> (grossiste validé). Vide = « Sur devis ».</div>
+
+            <div class="card" style="border-left:4px solid var(--gold);background:#fffbeb;margin-bottom:16px">
+                <div style="padding:14px 20px;display:flex;align-items:flex-start;gap:12px">
+                    <i class="fa-solid fa-circle-info" style="color:#B45309;margin-top:2px"></i>
+                    <div style="font-size:13px;color:#92400E;line-height:1.6">
+                        <strong>Comment appliquer un changement de prix ?</strong><br>
+                        1. Modifiez les valeurs ci-dessous.<br>
+                        2. Cliquez <strong>Sauvegarder</strong> — les prix sont enregistrés.<br>
+                        3. Envoyez un message à votre développeur pour un redéploiement, ou activez Firebase pour une mise à jour instantanée sur tout le site.
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="card-header">
                     <h3>Tous les produits</h3>
@@ -288,7 +301,7 @@
                         <tbody id="priceTableBody"></tbody>
                     </table>
                     <div style="margin-top:16px;display:flex;align-items:center;gap:12px">
-                        <button class="btn-save" id="btnSavePrices"><i class="fa-solid fa-floppy-disk"></i> Sauvegarder</button>
+                        <button class="btn-save" id="btnSavePrices"><i class="fa-solid fa-floppy-disk"></i> Sauvegarder les prix</button>
                         <span class="save-msg" id="saveFeedback"></span>
                     </div>
                 </div>
