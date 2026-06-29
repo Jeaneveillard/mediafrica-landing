@@ -242,6 +242,19 @@ const Auth = (() => {
                         </button>
                     </div>
                 </div>
+                <div class="auth-group">
+                    <label>Je m'inscris en tant que</label>
+                    <div class="status-choice">
+                        <label class="status-opt">
+                            <input type="radio" name="regStatus" value="client" checked>
+                            <span><i class="fa-solid fa-user"></i> Client <small>(à l'unité)</small></span>
+                        </label>
+                        <label class="status-opt">
+                            <input type="radio" name="regStatus" value="grossiste">
+                            <span><i class="fa-solid fa-store"></i> Grossiste <small>(prix de gros)</small></span>
+                        </label>
+                    </div>
+                </div>
                 <p class="auth-error" id="registerError"></p>
                 <button type="submit" class="btn-auth">Créer mon compte</button>
             </form>
@@ -265,7 +278,7 @@ const Auth = (() => {
     }
 
     /* ── Logique auth locale ── */
-    function _register(name, username, email, password) {
+    function _register(name, username, email, password, isGrossiste) {
         const users = _getUsers();
         const emailKey    = 'email:' + email.toLowerCase();
         const usernameKey = 'user:'  + username.toLowerCase();
@@ -281,11 +294,11 @@ const Auth = (() => {
         if ((_ae && email.toLowerCase() === _ae) || (_au && username.toLowerCase() === _au))
             return { error: 'Cet identifiant est réservé.' };
 
-        const record = { displayName: name, username, email, pwd: _hash(password), isGrossiste: false, createdAt: Date.now() };
+        const record = { displayName: name, username, email, pwd: _hash(password), isGrossiste: !!isGrossiste, createdAt: Date.now() };
         users[emailKey]    = record;
         users[usernameKey] = record; // double index pour retrouver par username
         _saveUsers(users);
-        const user = { displayName: name, username, email, isGrossiste: false };
+        const user = { displayName: name, username, email, isGrossiste: !!isGrossiste };
         _saveSession(user);
         return { user };
     }
@@ -307,6 +320,19 @@ const Auth = (() => {
         _saveSession(null);
         _user = null;
         _updateNavbar(null);
+    }
+
+    /* ── Après connexion : diriger selon le statut (prix adaptés dans le catalogue) ── */
+    function _afterAuthSuccess() {
+        closeModal();
+        if (_pendingAction === 'checkout' && typeof Cart !== 'undefined') {
+            Cart.openPanel();
+            return;
+        }
+        // Dirige vers le catalogue où les prix reflètent le statut (client / grossiste)
+        if (!/catalogue\.html(\?|#|$)/.test(location.pathname + location.search)) {
+            location.href = 'catalogue.html';
+        }
     }
 
     /* ── Câblage événements ── */
@@ -373,8 +399,7 @@ const Auth = (() => {
             _saveSession(user);
             _user = user;
             _updateNavbar(user);
-            closeModal();
-            if (_pendingAction === 'checkout' && typeof Cart !== 'undefined') Cart.openPanel();
+            _afterAuthSuccess();
         });
 
         // Réinitialisation MDP
@@ -401,8 +426,7 @@ const Auth = (() => {
             if (result.error) { _setError('loginError', result.error); return; }
             _user = result.user;
             _updateNavbar(_user);
-            closeModal();
-            if (_pendingAction === 'checkout' && typeof Cart !== 'undefined') Cart.openPanel();
+            _afterAuthSuccess();
         });
 
         // INSCRIPTION
@@ -416,12 +440,12 @@ const Auth = (() => {
             if (!name)     { _setError('registerError', 'Entrez votre nom complet.'); return; }
             if (!username) { _setError('registerError', 'Choisissez un nom d\'utilisateur.'); return; }
             if (!email)    { _setError('registerError', 'Entrez votre email.'); return; }
-            const result = _register(name, username, email, password);
+            const isGrossiste = document.querySelector('input[name="regStatus"]:checked')?.value === 'grossiste';
+            const result = _register(name, username, email, password, isGrossiste);
             if (result.error) { _setError('registerError', result.error); return; }
             _user = result.user;
             _updateNavbar(_user);
-            closeModal();
-            if (_pendingAction === 'checkout' && typeof Cart !== 'undefined') Cart.openPanel();
+            _afterAuthSuccess();
         });
     }
 
