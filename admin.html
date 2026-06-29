@@ -744,7 +744,9 @@ function loadB2B(){
                     ${statOpts}
                 </select>
                 <span class="b2b-statut-saved" id="b2b-saved-${o.id}" style="font-size:12px;color:var(--green);display:none">✓ Sauvegardé</span>
-                <span style="font-size:12px;color:#9ca3af;margin-left:auto">Réf. ${o.id}</span>
+                <a href="facture.html?id=${o.id}" target="_blank" class="btn-save" style="margin-left:auto;font-size:12px;padding:6px 14px;text-decoration:none;display:inline-flex;align-items:center;gap:6px">
+                    <i class="fa-solid fa-file-invoice"></i> Voir la facture
+                </a>
             </div>
         </div>`;
     }).join('');

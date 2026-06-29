@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture Pro Forma — MediPharma</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --green:   #0c2d1a;
+            --gold:    #e8c96a;
+            --border:  #e5e7eb;
+            --text:    #1f2937;
+            --muted:   #6b7280;
+            --cream:   #fdfaf4;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f3f4f6;
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── Barre d'actions (masquée à l'impression) ── */
+        .action-bar {
+            background: var(--green);
+            padding: .75rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            print: none;
+        }
+        .action-bar a, .action-bar button {
+            display: inline-flex; align-items: center; gap: .4rem;
+            padding: .5rem 1rem; border-radius: 8px; font-size: .9rem;
+            font-weight: 600; cursor: pointer; text-decoration: none;
+            border: none; font-family: 'DM Sans', sans-serif;
+            transition: opacity .2s;
+        }
+        .action-bar a { background: rgba(255,255,255,.15); color: #fff; }
+        .action-bar button { background: var(--gold); color: var(--green); }
+        .action-bar a:hover, .action-bar button:hover { opacity: .85; }
+        .action-bar .title { color: rgba(255,255,255,.7); font-size: .9rem; margin-left: auto; }
+
+        /* ── Feuille de facture ── */
+        .invoice-wrap {
+            max-width: 860px;
+            margin: 2rem auto;
+            background: #fff;
+            box-shadow: 0 4px 32px rgba(0,0,0,.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* ── En-tête ── */
+        .inv-header {
+            background: var(--green);
+            padding: 2.5rem 3rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+        .inv-brand { display: flex; align-items: center; gap: 1.25rem; }
+        .inv-logo {
+            width: 90px; height: 90px;
+            object-fit: contain;
+            border-radius: 50%;
+            clip-path: circle(50%);
+            background: rgba(255,255,255,.08);
+        }
+        .inv-brand-text {}
+        .inv-brand-name {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 2rem; font-weight: 700; letter-spacing: 2px;
+            color: var(--gold); text-transform: uppercase;
+        }
+        .inv-brand-tagline { font-size: .8rem; color: rgba(255,255,255,.65); margin-top: 2px; }
+        .inv-brand-contact { margin-top: .6rem; font-size: .78rem; color: rgba(255,255,255,.55); line-height: 1.6; }
+
+        .inv-meta { text-align: right; }
+        .inv-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.75rem; color: #fff; font-weight: 700;
+        }
+        .inv-subtitle { font-size: .8rem; color: rgba(255,255,255,.6); margin-top: 2px; }
+        .inv-ref-box {
+            margin-top: 1rem; background: rgba(255,255,255,.1);
+            border: 1px solid rgba(255,255,255,.2); border-radius: 8px;
+            padding: .6rem 1rem; text-align: right;
+        }
+        .inv-ref-box label { font-size: .72rem; color: rgba(255,255,255,.5); display: block; }
+        .inv-ref-box span { font-size: 1rem; font-weight: 700; color: var(--gold); }
+
+        /* ── Corps ── */
+        .inv-body { padding: 2.5rem 3rem; }
+
+        /* Émetteur + Destinataire */
+        .inv-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+        .inv-party {}
+        .inv-party-label {
+            font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+            text-transform: uppercase; color: var(--green);
+            border-bottom: 2px solid var(--gold); padding-bottom: .3rem;
+            margin-bottom: .75rem;
+        }
+        .inv-party h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: .2rem; }
+        .inv-party p  { font-size: .85rem; color: var(--muted); line-height: 1.7; }
+
+        /* Statut + dates */
+        .inv-info-strip {
+            display: flex; gap: 1.5rem; flex-wrap: wrap;
+            background: var(--cream); border: 1px solid var(--border);
+            border-radius: 10px; padding: 1rem 1.5rem; margin-bottom: 2rem;
+        }
+        .inv-info-item label { font-size: .7rem; font-weight: 700; text-transform: uppercase; color: var(--muted); display: block; }
+        .inv-info-item span  { font-size: .92rem; font-weight: 600; color: var(--text); }
+        .inv-status-badge {
+            display: inline-block; padding: .2rem .75rem;
+            border-radius: 999px; font-size: .8rem; font-weight: 700;
+        }
+        .s-nouveau    { background: #dbeafe; color: #1e40af; }
+        .s-confirme   { background: #d1fae5; color: #065f46; }
+        .s-expediee   { background: #d1fae5; color: #065f46; }
+        .s-livre      { background: #d1fae5; color: #065f46; }
+        .s-traitement { background: #fef3c7; color: #92400e; }
+        .s-devis      { background: #fef3c7; color: #92400e; }
+        .s-annulee    { background: #fee2e2; color: #991b1b; }
+
+        /* Tableau articles */
+        .inv-items-title {
+            font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+            text-transform: uppercase; color: var(--green);
+            margin-bottom: .75rem;
+        }
+        .inv-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        .inv-table thead tr { background: var(--green); }
+        .inv-table thead th {
+            padding: .75rem 1rem; color: #fff; font-size: .78rem;
+            font-weight: 600; text-align: left; letter-spacing: .03em;
+        }
+        .inv-table thead th:last-child { text-align: right; }
+        .inv-table tbody tr { border-bottom: 1px solid var(--border); }
+        .inv-table tbody tr:nth-child(even) { background: #fafafa; }
+        .inv-table tbody td { padding: .75rem 1rem; font-size: .9rem; color: var(--text); }
+        .inv-table tbody td:last-child { text-align: right; font-weight: 600; }
+        .inv-table tfoot td { padding: .5rem 1rem; font-size: .88rem; }
+        .inv-table tfoot .total-label { color: var(--muted); text-align: right; }
+        .inv-table tfoot .total-amt { text-align: right; }
+        .inv-table tfoot tr.devis-row td { color: var(--muted); font-style: italic; }
+        .inv-table tfoot tr.subtotal-row td { font-weight: 600; }
+        .inv-table tfoot tr.tax-row td     { color: var(--muted); font-size: .83rem; }
+        .inv-table tfoot tr.total-row td   {
+            font-size: 1.05rem; font-weight: 700; color: var(--green);
+            border-top: 2px solid var(--green); padding-top: .75rem;
+        }
+
+        /* Notes */
+        .inv-notes {
+            background: #f9fafb; border-left: 3px solid var(--gold);
+            border-radius: 6px; padding: 1rem 1.25rem; margin-top: 1.5rem;
+            font-size: .85rem; color: var(--muted); line-height: 1.6;
+        }
+        .inv-notes strong { color: var(--text); display: block; margin-bottom: .3rem; }
+
+        /* Bas de page facture */
+        .inv-footer-strip {
+            margin-top: 2.5rem; padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+        }
+        .inv-footer-logo { display: flex; align-items: center; gap: .75rem; }
+        .inv-footer-logo img { width: 40px; height: 40px; object-fit: contain; clip-path: circle(50%); }
+        .inv-footer-logo span { font-size: .8rem; color: var(--muted); line-height: 1.4; }
+        .inv-footer-legal { font-size: .72rem; color: #9ca3af; text-align: right; line-height: 1.6; }
+
+        /* ── Bas de page HTML (masqué à l'impression) ── */
+        .page-footer {
+            background: var(--green); color: rgba(255,255,255,.6);
+            text-align: center; padding: 1rem; font-size: .82rem;
+            margin-top: 2rem;
+        }
+
+        /* ── Impression ── */
+        @media print {
+            body { background: #fff; }
+            .action-bar, .page-footer { display: none !important; }
+            .invoice-wrap {
+                margin: 0; box-shadow: none; border-radius: 0;
+                max-width: 100%;
+            }
+            @page { margin: 1.5cm; }
+        }
+
+        .not-found {
+            text-align: center; padding: 4rem 2rem;
+            color: var(--muted);
+        }
+        .not-found i { font-size: 3rem; margin-bottom: 1rem; color: var(--border); }
+    </style>
+</head>
+<body>
+
+<!-- Barre d'actions -->
+<div class="action-bar">
+    <a href="admin.html"><i class="fa-solid fa-arrow-left"></i> Retour admin</a>
+    <button onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimer / PDF</button>
+    <span class="title">Facture Pro Forma — MediPharma / Solutions Santé Canada</span>
+</div>
+
+<!-- Facture -->
+<div class="invoice-wrap" id="invoiceWrap">
+    <div class="not-found" id="notFound" style="display:none">
+        <i class="fa-solid fa-file-circle-xmark"></i>
+        <p>Commande introuvable.</p>
+        <a href="admin.html" style="color:#0c2d1a;text-decoration:underline">Retour au panneau admin</a>
+    </div>
+    <div id="invoiceContent"></div>
+</div>
+
+<footer class="page-footer">
+    &copy; 2026 MediPharma — Solutions Santé Canada · info@medipharma.ca · 438-402-9247
+</footer>
+
+<script>
+(function(){
+    const KEY = 'ssc_b2b_orders';
+
+    function getOrder(id){
+        try{
+            const orders = JSON.parse(localStorage.getItem(KEY)||'[]');
+            return orders.find(o=>o.id===id)||null;
+        }catch{ return null; }
+    }
+
+    function fmt(num){ return num!=null ? num.toFixed(2)+' $' : 'Sur devis'; }
+
+    function statusClass(s){
+        if(!s) return 's-nouveau';
+        const l=s.toLowerCase();
+        if(l.includes('confirm')) return 's-confirme';
+        if(l.includes('expédi')) return 's-expediee';
+        if(l.includes('livr'))   return 's-livre';
+        if(l.includes('trait'))  return 's-traitement';
+        if(l.includes('devis'))  return 's-devis';
+        if(l.includes('annul'))  return 's-annulee';
+        return 's-nouveau';
+    }
+
+    function render(o){
+        const c = o.contact   || {};
+        const l = o.livraison || {};
+        const date    = new Date(o.date);
+        const dateStr = date.toLocaleDateString('fr-CA',{day:'2-digit',month:'long',year:'numeric'});
+        const dueDate = new Date(date.getTime()+30*24*60*60*1000)
+                            .toLocaleDateString('fr-CA',{day:'2-digit',month:'long',year:'numeric'});
+
+        // Lignes articles
+        let allPriced = true;
+        const itemRows = (o.items||[]).map(it=>{
+            if(it.unitPrice==null){ allPriced=false; }
+            const line = it.unitPrice!=null ? fmt(it.unitPrice*it.qty) : 'Sur devis';
+            const up   = it.unitPrice!=null ? fmt(it.unitPrice) : '—';
+            return `<tr>
+                <td><strong>${it.name}</strong></td>
+                <td>${it.qty} ${it.unit||''}</td>
+                <td>${up}</td>
+                <td>${line}</td>
+            </tr>`;
+        }).join('');
+
+        // Pied de tableau (taxes + total)
+        let tfoot = '';
+        if(allPriced && o.subtotal!=null){
+            const taxes = (o.taxes||[]).map(t=>`
+                <tr class="tax-row">
+                    <td colspan="3" class="total-label">${t.label}</td>
+                    <td class="total-amt">${fmt(o.subtotal*t.rate)}</td>
+                </tr>`).join('');
+            tfoot = `<tfoot>
+                <tr class="subtotal-row"><td colspan="3" class="total-label">Sous-total HT</td><td class="total-amt">${fmt(o.subtotal)}</td></tr>
+                ${taxes}
+                <tr class="total-row"><td colspan="3" class="total-label">TOTAL TTC</td><td class="total-amt">${fmt(o.total)}</td></tr>
+            </tfoot>`;
+        } else if(!allPriced){
+            tfoot = `<tfoot><tr class="devis-row"><td colspan="4">Certains articles sont sur devis. Notre équipe vous transmettra le montant exact sous 24h.</td></tr></tfoot>`;
+        }
+
+        const notesHtml = o.notes ? `
+        <div class="inv-notes">
+            <strong><i class="fa-solid fa-note-sticky"></i> Notes de commande :</strong>
+            ${o.notes}
+        </div>` : '';
+
+        document.getElementById('invoiceContent').innerHTML = `
+        <!-- EN-TÊTE -->
+        <div class="inv-header">
+            <div class="inv-brand">
+                <img src="assets/logo-ssc.png" alt="MediPharma" class="inv-logo">
+                <div class="inv-brand-text">
+                    <div class="inv-brand-name">MediPharma</div>
+                    <div class="inv-brand-tagline">Solutions Santé Canada · Votre santé, notre priorité.</div>
+                    <div class="inv-brand-contact">
+                        info@medipharma.ca · 438-402-9247<br>
+                        medipharma.ca · Canada & International
+                    </div>
+                </div>
+            </div>
+            <div class="inv-meta">
+                <div class="inv-title">FACTURE PRO FORMA</div>
+                <div class="inv-subtitle">Document non fiscal — à valeur indicative</div>
+                <div class="inv-ref-box">
+                    <label>Référence commande</label>
+                    <span>${o.id}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CORPS -->
+        <div class="inv-body">
+
+            <!-- Infos dates/statut -->
+            <div class="inv-info-strip">
+                <div class="inv-info-item">
+                    <label>Date de commande</label>
+                    <span>${dateStr}</span>
+                </div>
+                <div class="inv-info-item">
+                    <label>Valable jusqu'au</label>
+                    <span>${dueDate}</span>
+                </div>
+                <div class="inv-info-item">
+                    <label>Statut</label>
+                    <span><span class="inv-status-badge ${statusClass(o.statut)}">${o.statut||'Nouveau'}</span></span>
+                </div>
+                <div class="inv-info-item">
+                    <label>Portail</label>
+                    <span>${o.sourceRegion==='international'?'🌍 International':'🍁 Canada'}</span>
+                </div>
+            </div>
+
+            <!-- Émetteur / Destinataire -->
+            <div class="inv-parties">
+                <div class="inv-party">
+                    <div class="inv-party-label">Émetteur</div>
+                    <h3>MediPharma / Solutions Santé Canada</h3>
+                    <p>
+                        info@medipharma.ca<br>
+                        Tél. : 438-402-9247<br>
+                        WhatsApp : +1 438-402-9247<br>
+                        Canada & International
+                    </p>
+                </div>
+                <div class="inv-party">
+                    <div class="inv-party-label">Destinataire</div>
+                    <h3>${c.etablissement||'—'}</h3>
+                    <p>
+                        Contact : ${c.nom||'—'}<br>
+                        ${c.email||''}<br>
+                        ${c.telephone||''}<br>
+                        ${l.adresse||''}${l.province?', '+l.province:''}<br>
+                        ${l.pays||''}
+                        ${l.licence?'<br>Licence : '+l.licence:''}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tableau articles -->
+            <div class="inv-items-title">Détail des articles commandés</div>
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th style="width:45%">Article</th>
+                        <th>Quantité</th>
+                        <th>Prix unitaire</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>${itemRows}</tbody>
+                ${tfoot}
+            </table>
+
+            ${notesHtml}
+
+            <!-- Bas de page facture -->
+            <div class="inv-footer-strip">
+                <div class="inv-footer-logo">
+                    <img src="assets/logo-ssc.png" alt="MediPharma">
+                    <span>
+                        <strong style="color:#0c2d1a">MediPharma</strong><br>
+                        Solutions Santé Canada<br>
+                        Votre santé, notre priorité.
+                    </span>
+                </div>
+                <div class="inv-footer-legal">
+                    Facture pro forma — Document non fiscal officiel.<br>
+                    Les prix sont indicatifs et soumis à confirmation.<br>
+                    &copy; 2026 MediPharma · medipharma.ca
+                </div>
+            </div>
+
+        </div>`;
+    }
+
+    // Lecture du paramètre ?id=
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    if(!id){
+        document.getElementById('notFound').style.display='block';
+        return;
+    }
+    const order = getOrder(id);
+    if(!order){
+        document.getElementById('notFound').style.display='block';
+        return;
+    }
+    render(order);
+    document.title = 'Facture '+id+' — MediPharma';
+})();
+</script>
+
+</body>
+</html>
