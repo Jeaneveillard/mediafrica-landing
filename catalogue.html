@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalogue — MediAfrica Solutions Santé</title>
-    <meta name="description" content="Catalogue complet de médicaments et fournitures médicales MediAfrica. Livraison au Canada, Guinée Conakry, Burkina Faso et Côte d'Ivoire.">
+    <title>Catalogue — MediPharma Solutions Santé</title>
+    <meta name="description" content="Catalogue complet de médicaments et fournitures médicales MediPharma. Livraison au Canada, Guinée Conakry, Burkina Faso et Côte d'Ivoire.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -18,8 +18,14 @@
     <!-- NAVBAR -->
     <nav class="navbar scrolled" id="navbar">
         <div class="nav-inner">
-            <a href="index.html" class="logo">
-                <img src="assets/logo-clean.png" alt="MediAfrica Solutions Santé" class="logo-img">
+            <a href="index.html" class="logo logo-ssc-block">
+                <div class="ssc-logo-inner">
+                    <img src="assets/logo-ssc.png" alt="Solutions Santé Canada" class="ssc-globe">
+                    <div class="ssc-text-wrap">
+                        <div class="ssc-name">Solutions<br>Santé Canada <span class="ssc-leaf">🍁</span></div>
+                        <div class="ssc-tagline">Votre santé, notre priorité.</div>
+                    </div>
+                </div>
             </a>
             <div class="nav-links" id="navLinks">
                 <a href="index.html">Accueil</a>
@@ -27,11 +33,56 @@
                 <a href="catalogue.html" class="active">Catalogue</a>
                 <a href="index.html#commander" class="btn-nav">Commander</a>
             </div>
+            <div class="nav-actions">
+                <div class="nav-account" id="navAccountWrap">
+                    <button type="button" class="nav-account-btn" id="accountToggle" aria-label="Mon compte">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span class="nav-account-label">Se connecter</span>
+                    </button>
+                    <div class="account-dropdown" id="accountDropdown"></div>
+                </div>
+            </div>
             <button class="hamburger" id="hamburger" aria-label="Menu">
                 <span></span><span></span><span></span>
             </button>
         </div>
     </nav>
+
+    <!-- TICKER DÉFILANT -->
+    <div class="ticker-wrap">
+        <div class="ticker-track">
+            <span>🛡️ Licencié &amp; Certifié Santé Canada</span>
+            <span class="ticker-dot">✦</span>
+            <span>🌍 Livraison au Canada &amp; à l'International · Guinée Conakry · Burkina Faso · Côte d'Ivoire</span>
+            <span class="ticker-dot">✦</span>
+            <span>💊 Médicaments sans ordonnance — Qualité pharmaceutique certifiée</span>
+            <span class="ticker-dot">✦</span>
+            <span>📦 Emballage sécurisé · Livraison rapide partout au Canada &amp; à l'International</span>
+            <span class="ticker-dot">✦</span>
+            <span>💬 Support bilingue FR · EN — 7 jours sur 7</span>
+            <span class="ticker-dot">✦</span>
+            <span>📞 Commandez maintenant : 438-402-9247</span>
+            <span class="ticker-dot">✦</span>
+            <span>🛡️ Licencié &amp; Certifié Santé Canada</span>
+            <span class="ticker-dot">✦</span>
+            <span>🌍 Livraison au Canada &amp; à l'International · Guinée Conakry · Burkina Faso · Côte d'Ivoire</span>
+            <span class="ticker-dot">✦</span>
+            <span>💊 Médicaments sans ordonnance — Qualité pharmaceutique certifiée</span>
+            <span class="ticker-dot">✦</span>
+            <span>📦 Emballage sécurisé · Livraison rapide partout au Canada &amp; à l'International</span>
+            <span class="ticker-dot">✦</span>
+            <span>💬 Support bilingue FR · EN — 7 jours sur 7</span>
+            <span class="ticker-dot">✦</span>
+            <span>📞 Commandez maintenant : 438-402-9247</span>
+            <span class="ticker-dot">✦</span>
+        </div>
+    </div>
+
+    <!-- INTRO BANNIÈRE -->
+    <div class="cat-intro-banner">
+        <h2>Vitamines &amp; Suppléments <em>Liquides</em></h2>
+        <p>Formules premium à absorption rapide — certifiées, sans OGM, sans gluten, sans colorant ajouté.</p>
+    </div>
 
     <!-- PAGE HERO -->
     <div class="cat-hero">
@@ -39,7 +90,7 @@
             <div class="cat-hero-text">
                 <span class="section-tag">Catalogue complet</span>
                 <h1>Nos <em>Médicaments</em><br>& Fournitures</h1>
-                <p>Tous nos produits sont certifiés, sans ordonnance, livrés partout au Canada et en Afrique de l'Ouest.</p>
+                <p>Tous nos produits sont certifiés, sans ordonnance, livrés partout au Canada &amp; à l'International.</p>
             </div>
             <div class="cat-hero-badge">
                 <i class="fa-solid fa-shield-check"></i>
@@ -316,85 +367,137 @@
                 </div>
 
 
-                <!-- ===== GAMME VITAMINES LIQUIDES ===== -->
+                <!-- ===== GAMME VITAMINES LIQUIDES (dossier SSC) ===== -->
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('Medicaments_1.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f8fcf8;">
-                    </div>
+                    <div class="cat-card-header" style="background-image: url('ssc_vitC.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0f8f4;"></div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
-                        <h3>Vitamine B12 Liquide (5000 mcg)</h3>
-                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Booster naturel contre la fatigue, améliore la concentration.</p>
-                        <div class="cat-dosage">
-                            <span>Format Liquide</span>
-                            <span>MOQ: 1500 unités</span>
-                        </div>
+                        <h3>Vitamine C Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutient le système immunitaire, aide à réduire la fatigue. 1500 ml.</p>
+                        <div class="cat-dosage"><span>1500 ml</span><span>12,99 $ / 24,99 $</span></div>
                     </div>
-                    <button type="button" class="add-to-cart-btn">
-                    <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
-                </button>
-                <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
+                    <button type="button" class="add-to-cart-btn"><i class="fa-solid fa-cart-plus"></i> Ajouter au panier</button>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
                 </div>
+
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('Medicaments_2.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f8fcf8;">
-                    </div>
+                    <div class="cat-card-header" style="background-image: url('ssc_vitD3.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0f8f4;"></div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
-                        <h3>Complexe Vitamine B Liquide</h3>
-                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Idéal pour le stress et la fatigue chronique.</p>
-                        <div class="cat-dosage">
-                            <span>Format Liquide</span>
-                            <span>MOQ: 1500 unités</span>
-                        </div>
+                        <h3>Vitamine D3 Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Favorise la santé osseuse et soutient l'immunité. 1500 ml.</p>
+                        <div class="cat-dosage"><span>1500 ml</span><span>12,99 $ / 24,99 $</span></div>
                     </div>
-                    <button type="button" class="add-to-cart-btn">
-                    <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
-                </button>
-                <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
+                    <button type="button" class="add-to-cart-btn"><i class="fa-solid fa-cart-plus"></i> Ajouter au panier</button>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
                 </div>
+
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('Medicaments_3.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f8fcf8;">
-                    </div>
+                    <div class="cat-card-header" style="background-image: url('ssc_zinc.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0f8f4;"></div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
-                        <h3>Formule Immunité Liquide</h3>
-                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Vitamine C + Zinc + Sureau. Anti-grippe et protection globale.</p>
-                        <div class="cat-dosage">
-                            <span>Format Liquide</span>
-                            <span>MOQ: 1500 unités</span>
-                        </div>
+                        <h3>Zinc Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutient le système immunitaire, aide la cicatrisation et la santé de la peau. 1500 ml.</p>
+                        <div class="cat-dosage"><span>1500 ml</span><span>12,99 $ / 24,99 $</span></div>
                     </div>
-                    <button type="button" class="add-to-cart-btn">
-                    <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
-                </button>
-                <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
+                    <button type="button" class="add-to-cart-btn"><i class="fa-solid fa-cart-plus"></i> Ajouter au panier</button>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
                 </div>
+
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('Medicaments_4.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f8fcf8;">
+                    <div class="cat-card-header" style="background-image: url('ssc_multi.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0f8f4;"></div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
+                        <h3>Multivitamines Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Formule complète, énergie et vitalité au quotidien. 1500 ml.</p>
+                        <div class="cat-dosage"><span>1500 ml</span><span>12,99 $ / 24,99 $</span></div>
                     </div>
+                    <button type="button" class="add-to-cart-btn"><i class="fa-solid fa-cart-plus"></i> Ajouter au panier</button>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
+                </div>
+
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('ssc_melato.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0f8f4;"></div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
                         <h3>Mélatonine Liquide</h3>
-                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Aide à dormir rapidement et mieux. Renforce cheveux, peau et ongles.</p>
-                        <div class="cat-dosage">
-                            <span>Format Liquide</span>
-                        </div>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Aide à s'endormir plus rapidement et améliore la qualité du sommeil. 1500 ml.</p>
+                        <div class="cat-dosage"><span>1500 ml</span><span>10,99 $ / 19,99 $</span></div>
                     </div>
-                    <button type="button" class="add-to-cart-btn">
-                    <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
-                </button>
-                <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
+                    <button type="button" class="add-to-cart-btn"><i class="fa-solid fa-cart-plus"></i> Ajouter au panier</button>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
+                </div>
+
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('ssc_b12.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0f8f4;"></div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
+                        <h3>Vitamine B12 Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Booster naturel contre la fatigue, améliore la concentration. 1500 ml.</p>
+                        <div class="cat-dosage"><span>1500 ml</span><span>14,99 $ / 29,99 $</span></div>
+                    </div>
+                    <button type="button" class="add-to-cart-btn"><i class="fa-solid fa-cart-plus"></i> Ajouter au panier</button>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
+                </div>
+
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('ssc_bcomplex.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0f8f4;"></div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
+                        <h3>B-Complexe Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Idéal pour le stress et la fatigue chronique, soutient le système nerveux. 1500 ml.</p>
+                        <div class="cat-dosage"><span>1500 ml</span><span>13,99 $ / 24,99 $</span></div>
+                    </div>
+                    <button type="button" class="add-to-cart-btn"><i class="fa-solid fa-cart-plus"></i> Ajouter au panier</button>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
+                </div>
+
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('ssc_hsn.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0f8f4;"></div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
+                        <h3>Hair, Skin &amp; Nails Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Renforce les cheveux, la peau et les ongles. Formule naturelle complète. 1500 ml.</p>
+                        <div class="cat-dosage"><span>1500 ml</span><span>12,99 $ / 24,99 $</span></div>
+                    </div>
+                    <button type="button" class="add-to-cart-btn"><i class="fa-solid fa-cart-plus"></i> Ajouter au panier</button>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
+                </div>
+
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('ssc_elder.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0f8f4;"></div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
+                        <h3>Elderberry (Sureau) Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Anti-viral naturel, renforce l'immunité contre rhumes et grippes. 1500 ml.</p>
+                        <div class="cat-dosage"><span>1500 ml</span><span>15,99 $ / 34,99 $</span></div>
+                    </div>
+                    <button type="button" class="add-to-cart-btn"><i class="fa-solid fa-cart-plus"></i> Ajouter au panier</button>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
+                </div>
+
+                <div class="cat-card" data-cat="vitamines">
+                    <div class="cat-card-header" style="background-image: url('ssc_collagene.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f0f8f4;"></div>
+                    <div class="cat-card-body">
+                        <span class="cat-tag" style="--tc:#0E7490">Vitamine Liquide</span>
+                        <h3>Collagène Liquide</h3>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Santé de la peau et des articulations, formule à absorption rapide. 1500 ml.</p>
+                        <div class="cat-dosage"><span>1500 ml</span><span>15,99 $ / 34,99 $</span></div>
+                    </div>
+                    <button type="button" class="add-to-cart-btn"><i class="fa-solid fa-cart-plus"></i> Ajouter au panier</button>
+                    <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
                 </div>
 
                 <!-- ===== GAMME GUMMIES ===== -->
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('Medicaments_5.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    <div class="cat-card-header" style="background-image: url('gummies_jar.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
                     </div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
                         <h3>Multivitamines Adultes</h3>
-                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Maintien de la santé générale.</p>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Formule complète pour la santé générale et la vitalité au quotidien.</p>
                         <div class="cat-dosage">
-                            <span>Gummies</span>
+                            <span>Multivitamines</span>
                             <span>Adultes</span>
                         </div>
                     </div>
@@ -404,14 +507,14 @@
                 <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
                 </div>
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('Medicaments_6.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    <div class="cat-card-header" style="background-image: url('gummies_jar.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
                     </div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
                         <h3>Multivitamines Enfants</h3>
-                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutien pour la croissance & l'immunité.</p>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutient la croissance et renforce l'immunité des enfants.</p>
                         <div class="cat-dosage">
-                            <span>Gummies</span>
+                            <span>Multivitamines</span>
                             <span>Enfants</span>
                         </div>
                     </div>
@@ -421,14 +524,14 @@
                 <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
                 </div>
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('Medicaments_7.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    <div class="cat-card-header" style="background-image: url('gummies_jar.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
                     </div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
                         <h3>Multivitamines Femmes</h3>
-                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Équilibre hormonal & énergie.</p>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Équilibre hormonal, énergie et éclat de la peau.</p>
                         <div class="cat-dosage">
-                            <span>Gummies</span>
+                            <span>Multivitamines</span>
                             <span>Femmes</span>
                         </div>
                     </div>
@@ -438,14 +541,14 @@
                 <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
                 </div>
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('Medicaments_8.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    <div class="cat-card-header" style="background-image: url('gummies_jar.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
                     </div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
                         <h3>Vitamine C Gummies</h3>
-                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutien de l'immunité.</p>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutient le système immunitaire et aide à réduire la fatigue.</p>
                         <div class="cat-dosage">
-                            <span>500 mg / 1000 mg</span>
+                            <span>500 – 1000 mg</span>
                             <span>Gummies</span>
                         </div>
                     </div>
@@ -455,14 +558,14 @@
                 <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
                 </div>
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('Medicaments_9.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    <div class="cat-card-header" style="background-image: url('gummies_jar.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
                     </div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
                         <h3>Vitamine D3 Gummies</h3>
-                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutien de l'immunité et des os.</p>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Favorise la santé des os et soutient l'immunité.</p>
                         <div class="cat-dosage">
-                            <span>50 mcg / 125 mcg</span>
+                            <span>50 – 125 mcg</span>
                             <span>Gummies</span>
                         </div>
                     </div>
@@ -472,14 +575,14 @@
                 <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
                 </div>
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('Medicaments_10.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    <div class="cat-card-header" style="background-image: url('gummies_jar.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
                     </div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
                         <h3>Vitamine B12 Gummies</h3>
-                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Énergie, os & système immunitaire.</p>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Booster d'énergie, soutient les os et le système immunitaire.</p>
                         <div class="cat-dosage">
-                            <span>500 à 5000 mcg</span>
+                            <span>500 – 5000 mcg</span>
                             <span>Gummies</span>
                         </div>
                     </div>
@@ -489,12 +592,12 @@
                 <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
                 </div>
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('Medicaments_11.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    <div class="cat-card-header" style="background-image: url('gummies_jar.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
                     </div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
                         <h3>B-Complex Gummies</h3>
-                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Métabolisme & énergie.</p>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Soutient le métabolisme énergétique et le système nerveux.</p>
                         <div class="cat-dosage">
                             <span>Complexe B</span>
                             <span>Gummies</span>
@@ -506,14 +609,14 @@
                 <a href="index.html#commander" class="cat-btn"><i class="fa-solid fa-file-alt"></i> Devis B2B</a>
                 </div>
                 <div class="cat-card" data-cat="vitamines">
-                    <div class="cat-card-header" style="background-image: url('Medicaments_12.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
+                    <div class="cat-card-header" style="background-image: url('gummies_jar.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; height: 160px; border-bottom: none; background-color: #f4f8fc;">
                     </div>
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#0E7490">Gummies</span>
                         <h3>Magnésium Gummies</h3>
-                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Anti-stress et relaxation musculaire.</p>
+                        <p><strong style="color:var(--green)">✓ Déjà en stock.</strong> Anti-stress, favorise la relaxation musculaire et le sommeil.</p>
                         <div class="cat-dosage">
-                            <span>100-250 mg</span>
+                            <span>100 – 250 mg</span>
                             <span>Gummies</span>
                         </div>
                     </div>
@@ -589,7 +692,7 @@
                     <div class="cat-card-body">
                         <span class="cat-tag" style="--tc:#B45309">Antipaludéen</span>
                         <h3>Chloroquine 250mg</h3>
-                        <p>Prévention et traitement du paludisme. Usage adapté Afrique de l'Ouest.</p>
+                        <p>Prévention et traitement du paludisme. Usage adapté International (Guinée Conakry · Burkina Faso · Côte d'Ivoire).</p>
                         <div class="cat-dosage">
                             <span>250mg</span>
                             <span>Adulte</span>
@@ -1037,9 +1140,9 @@
         <div class="container footer-inner">
             <div class="footer-brand">
                 <a href="index.html" class="logo">
-                    <div class="logo-img footer-logo-div" role="img" aria-label="MediAfrica Solutions Santé"></div>
+                    <div class="logo-img footer-logo-div" role="img" aria-label="MediPharma Solutions Santé"></div>
                 </a>
-                <p>Médicaments de qualité, livrés au Canada et en Afrique de l'Ouest.</p>
+                <p>Médicaments de qualité, livrés au Canada &amp; à l'International.</p>
             </div>
             <div class="footer-links">
                 <a href="index.html">Accueil</a>
@@ -1055,7 +1158,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 MediAfrica — Solution Santé. Tous droits réservés.</p>
+            <p>&copy; 2026 MediPharma — Solution Santé. Tous droits réservés.</p>
             <p class="disclaimer">Les médicaments proposés sont en vente libre (sans ordonnance). Consultez un professionnel de santé si nécessaire.</p>
         </div>
     </footer>
@@ -1184,6 +1287,30 @@
     <script src="config.js"></script>
     <script src="cart.js"></script>
     <script src="auth.js"></script>
+    <script src="pricing.js"></script>
+    <script src="region.js"></script>
     <script src="catalogue.js"></script>
+    <script>
+      // Aligne le ticker pile sous la navbar (hauteur mesurée, pas un nombre fixe)
+      (function() {
+        var nav = document.querySelector('.navbar');
+        var ticker = document.querySelector('.ticker-wrap');
+        function sync() {
+          if (!nav) return;
+          var navBottom = nav.getBoundingClientRect().bottom;
+          document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+          if (ticker) document.documentElement.style.setProperty('--ticker-h', ticker.offsetHeight + 'px');
+          // Colle les menus déroulants pile sous le bas de l'entête
+          var accBtn = document.getElementById('accountToggle');
+          var moreBtn = document.getElementById('menuToggle');
+          if (accBtn) document.documentElement.style.setProperty('--dd-acc', Math.max(0, navBottom - accBtn.getBoundingClientRect().bottom) + 'px');
+          if (moreBtn) document.documentElement.style.setProperty('--dd-more', Math.max(0, navBottom - moreBtn.getBoundingClientRect().bottom) + 'px');
+        }
+        sync();
+        window.addEventListener('load', sync);
+        window.addEventListener('resize', sync);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(sync);
+      })();
+    </script>
 </body>
 </html>

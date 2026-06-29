@@ -8,6 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const grid        = document.getElementById('catGrid');
+
+    // ── Tri : nouveaux produits SSC (Medicaments_) en premier, anciens MediAfrica (M1/M2/M3/M4) en dernier ──
+    (function sortGrid() {
+        const allCards = Array.from(grid.querySelectorAll('.cat-card'));
+        function order(card) {
+            const bg = card.querySelector('[style*="background-image"]')?.getAttribute('style') || '';
+            if (/Medicaments_\d+/.test(bg)) return 1;   // nouveaux produits SSC
+            if (/[uU]rl\(['"]?(?:assets\/)?M[1-4]/.test(bg)) return 3; // anciens MediAfrica
+            return 2; // autres (antidouleur, gummies, etc.)
+        }
+        allCards.sort((a, b) => order(a) - order(b)).forEach(c => grid.appendChild(c));
+    })();
+
     const cards       = Array.from(grid.querySelectorAll('.cat-card'));
     const searchInput = document.getElementById('searchInput');
     const filterBtns  = document.querySelectorAll('.filter-btn');
@@ -176,9 +189,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Reset étape 1
         qtyInput.value  = 1000;
-        const configPrice = (typeof CONFIG !== 'undefined' && CONFIG.prices?.[currentProduct] != null)
-            ? CONFIG.prices[currentProduct]
-            : '';
+        const grossiste = (typeof Auth !== 'undefined' && Auth.isGrossiste) ? Auth.isGrossiste() : false;
+        const configPrice = (typeof CONFIG !== 'undefined') ? (CONFIG.priceFor(currentProduct, grossiste) ?? '') : '';
         unitPrice.value = configPrice;
         updateTotal();
         modalForm.classList.add('modal-form--hidden');
@@ -279,12 +291,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!btn || typeof Cart === 'undefined') return;
         const card     = btn.closest('.cat-card');
         if (!card) return;
-        const name     = card.querySelector('h3')?.textContent.trim() || '';
+        const name     = (card.querySelector('h3')?.textContent || '').replace(/\s+/g, ' ').trim();
         const category = card.querySelector('.cat-tag')?.textContent.trim() || '';
         const id       = slugify(name);
-        const unitPrice = (typeof CONFIG !== 'undefined' && CONFIG.prices?.[name] != null)
-            ? CONFIG.prices[name]
-            : null;
+        const grossiste = (typeof Auth !== 'undefined' && Auth.isGrossiste) ? Auth.isGrossiste() : false;
+        const unitPrice = (typeof CONFIG !== 'undefined') ? CONFIG.priceFor(name, grossiste) : null;
         Cart.add({ id, name, category, unitPrice });
         const orig = btn.innerHTML;
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Ajouté !';

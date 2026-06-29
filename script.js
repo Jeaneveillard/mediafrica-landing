@@ -129,9 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof Cart === 'undefined') return;
             const name      = btn.dataset.name;
             const category  = btn.dataset.category || '';
-            const unitPrice = (typeof CONFIG !== 'undefined' && CONFIG.prices?.[name] != null)
-                ? CONFIG.prices[name]
-                : null;
+            const grossiste = (typeof Auth !== 'undefined' && Auth.isGrossiste) ? Auth.isGrossiste() : false;
+            const unitPrice = (typeof CONFIG !== 'undefined') ? CONFIG.priceFor(name, grossiste) : null;
             const id = name.toLowerCase()
                 .normalize('NFD').replace(/[̀-ͯ]/g, '')
                 .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -143,5 +142,41 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1500);
         });
     });
+
+    // ── Espace Grossistes (section index) ──
+    const espaceBtn = document.getElementById('btnEspaceGros');
+    if (espaceBtn) {
+        function updateEspaceGros() {
+            const note   = document.getElementById('espaceGrosNote');
+            const user   = (typeof Auth !== 'undefined') ? Auth.currentUser() : null;
+            const isGros = (typeof Auth !== 'undefined' && Auth.isGrossiste) ? Auth.isGrossiste() : false;
+            if (isGros) {
+                espaceBtn.innerHTML = '<i class="fa-solid fa-box-open"></i> Commander en gros';
+                if (note) note.textContent = '✓ Connecté en grossiste — les prix de gros sont affichés.';
+            } else if (user) {
+                espaceBtn.innerHTML = '<i class="fa-brands fa-whatsapp"></i> Demander un accès grossiste';
+                if (note) note.textContent = "Votre compte n'est pas encore grossiste.";
+            } else {
+                espaceBtn.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i> Accès grossiste';
+                if (note) note.textContent = "Connectez-vous, puis demandez l'activation grossiste.";
+            }
+        }
+        espaceBtn.addEventListener('click', () => {
+            const user   = (typeof Auth !== 'undefined') ? Auth.currentUser() : null;
+            const isGros = (typeof Auth !== 'undefined' && Auth.isGrossiste) ? Auth.isGrossiste() : false;
+            if (isGros) {
+                document.getElementById('produits')?.scrollIntoView({ behavior: 'smooth' });
+            } else if (user) {
+                const wa = (typeof CONFIG !== 'undefined' && CONFIG.whatsappNumber) ? CONFIG.whatsappNumber : '14384029247';
+                const region = (typeof Region !== 'undefined' && Region.get) ? (Region.get() || '') : '';
+                const msg = `Bonjour, je souhaite activer un compte GROSSISTE (portail ${region}). Mon compte : ${user.email || user.username || ''}`;
+                window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
+            } else if (typeof Auth !== 'undefined') {
+                Auth.openModal();
+            }
+        });
+        document.addEventListener('auth:changed', updateEspaceGros);
+        updateEspaceGros();
+    }
 
 });

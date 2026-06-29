@@ -162,7 +162,7 @@ const Cart = (() => {
                     return `• ${i.name} × ${i.quantity} — ${lineAmt}`;
                 }).join('\n');
                 const totalLine = total !== null ? `\n💰 *Total : ${total.toFixed(2)} CAD*` : '\n💰 *Total : Sur devis*';
-                const msg = `🛒 *Nouvelle commande MediAfrica*\n\n${lines}${totalLine}\n\n👤 *Client :* ${userName}`;
+                const msg = `🛒 *Nouvelle commande MediPharma / Solutions Santé Canada*\n\n${lines}${totalLine}\n\n👤 *Client :* ${userName}`;
                 window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
             }
         }
@@ -188,6 +188,19 @@ const Cart = (() => {
               .finally(() => { clear(); closePanel(); _redirect(); });
             return;
         }
+
+        // Sauvegarder commande en localStorage pour l'admin
+        const orders = JSON.parse(localStorage.getItem('ssc_orders') || '[]');
+        orders.unshift({
+            id: 'CMD-' + Date.now(),
+            date: new Date().toISOString(),
+            client: user ? (user.displayName || user.username || user.email) : 'Anonyme',
+            email: user ? user.email : '',
+            items: items.map(i => ({ name: i.name, qty: i.quantity, prix: i.unitPrice })),
+            total: total,
+            status: 'envoyée'
+        });
+        localStorage.setItem('ssc_orders', JSON.stringify(orders.slice(0, 200)));
 
         clear();
         closePanel();
@@ -268,12 +281,26 @@ const Cart = (() => {
             .catch(() => {}); // Silencieux si hors ligne
     }
 
+    /* ── Re-tarifer le panier selon le rôle (client / grossiste) ── */
+    function _reprice() {
+        if (typeof CONFIG === 'undefined' || !CONFIG.priceFor) return;
+        const grossiste = (typeof Auth !== 'undefined' && Auth.isGrossiste) ? Auth.isGrossiste() : false;
+        const items = getItems();
+        let changed = false;
+        items.forEach(item => {
+            const p = CONFIG.priceFor(item.name, grossiste);
+            if (p != null && p !== item.unitPrice) { item.unitPrice = p; changed = true; }
+        });
+        if (changed) { _save(items); _renderItems(); }
+    }
+
     /* ── Init ── */
     function init() {
         _injectHTML();
         _updateBadge();
         _renderItems();
         _loadPrices();
+        document.addEventListener('auth:changed', _reprice);
 
         document.getElementById('cartToggle')  ?.addEventListener('click', openPanel);
         document.getElementById('cartClose')   ?.addEventListener('click', closePanel);
@@ -281,9 +308,10 @@ const Cart = (() => {
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
 
         document.getElementById('btnCheckout')?.addEventListener('click', () => {
-            if (typeof Auth !== 'undefined' && !Auth.currentUser()) {
+            const user = typeof Auth !== 'undefined' ? Auth.currentUser() : null;
+            if (!user) {
                 closePanel();
-                Auth.openModal('checkout');
+                if (typeof Auth !== 'undefined') Auth.openModal('checkout');
             } else {
                 _processCheckout();
             }

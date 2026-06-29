@@ -1,525 +1,663 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration — MediAfrica</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Admin — Solutions Santé Canada</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
     <style>
-        body { background: var(--ivory); }
+        *{box-sizing:border-box;margin:0;padding:0}
+        :root{
+            --green:#0A2E18;--gold:#c9a84c;--red:#dc2626;
+            --bg:#f4f6f8;--white:#fff;--border:#e5e7eb;
+            --text:#111;--muted:#6b7280;--radius:12px;
+        }
+        body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-        .admin-nav {
-            background: var(--green);
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .admin-nav h1 { color: #fff; font-size: 1.4rem; margin: 0; }
-        .admin-nav-right { display: flex; align-items: center; gap: 1rem; }
-        .admin-email { color: rgba(255,255,255,.75); font-size: .9rem; }
-        .btn-logout-admin {
-            background: rgba(255,255,255,.15);
-            border: 1px solid rgba(255,255,255,.3);
-            color: #fff;
-            padding: .5rem 1rem;
-            border-radius: 999px;
-            cursor: pointer;
-            font-family: var(--font-body);
-            font-size: .85rem;
-            transition: background .2s;
-        }
-        .btn-logout-admin:hover { background: rgba(255,255,255,.25); }
+        /* ── LOGIN ── */
+        .login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--green)}
+        .login-box{background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+        .login-logo{display:flex;justify-content:center;margin-bottom:20px}
+        .login-logo img{height:80px;object-fit:contain}
+        .login-box h2{font-size:22px;font-weight:700;text-align:center;margin-bottom:4px;color:var(--green)}
+        .login-box .sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:24px}
+        .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+        .field label{font-size:13px;font-weight:600}
+        .field input{border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;outline:none;transition:border-color .2s}
+        .field input:focus{border-color:var(--green)}
+        .btn-login{width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px;transition:opacity .2s}
+        .btn-login:hover{opacity:.9}
+        .login-error{color:var(--red);font-size:13px;text-align:center;min-height:18px;margin-top:8px}
 
-        .admin-main {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
+        /* ── LAYOUT ── */
+        .admin-wrap{display:flex;min-height:100vh}
 
-        .admin-card {
-            background: #fff;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        .admin-card h2 {
-            font-size: 1.4rem;
-            margin-bottom: .5rem;
-            color: var(--green);
-        }
-        .admin-card p { color: var(--muted); font-size: .9rem; margin-bottom: 1.5rem; }
+        /* ── SIDEBAR ── */
+        .sidebar{width:240px;background:var(--green);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+        .sidebar-logo{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.1)}
+        .sidebar-logo img{height:60px;object-fit:contain;width:100%}
+        .sidebar-logo .brand{font-size:13px;color:rgba(255,255,255,.6);margin-top:6px;text-align:center}
+        .sidebar nav{flex:1;padding:12px 0}
+        .nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;font-size:14px;font-weight:500;color:rgba(255,255,255,.75);transition:background .15s,color .15s;border:none;background:none;width:100%;text-align:left}
+        .nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
+        .nav-item.active{background:rgba(255,255,255,.15);color:#fff;border-right:3px solid var(--gold)}
+        .nav-item i{width:18px;text-align:center;font-size:15px}
+        .sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.1)}
+        .admin-user{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:10px;display:flex;flex-direction:column;gap:3px}
+        .admin-role{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;background:#FBBF24;color:#0c2d1a;font-weight:800;font-size:10px;letter-spacing:.05em;border-radius:999px;padding:2px 8px}
+        .admin-name{color:#fff;font-size:14px;font-weight:700}
+        .admin-mail{color:rgba(255,255,255,.55);font-size:11px}
+        .btn-logout{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:8px;font-size:13px;cursor:pointer;transition:background .2s}
+        .btn-logout:hover{background:rgba(255,255,255,.2)}
 
-        .price-table { width: 100%; border-collapse: collapse; }
-        .price-table thead th {
-            text-align: left;
-            padding: .6rem 1rem;
-            font-size: .8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            color: var(--muted);
-            border-bottom: 2px solid var(--border);
-        }
-        .price-table tbody tr:hover { background: var(--ivory); }
-        .price-table td {
-            padding: .6rem 1rem;
-            font-size: .9rem;
-            border-bottom: 1px solid var(--border);
-            vertical-align: middle;
-        }
-        .price-table td:first-child { color: var(--text); font-weight: 500; }
-        .price-table td .cat-badge {
-            font-size: .7rem;
-            padding: 2px 8px;
-            border-radius: 999px;
-            background: var(--green-pale);
-            color: var(--green);
-            font-weight: 600;
-            margin-left: .5rem;
-        }
-        .price-input-wrap {
-            display: flex;
-            align-items: center;
-            gap: .4rem;
-        }
-        .price-input-wrap span { color: var(--muted); font-size: .9rem; }
-        .price-input {
-            width: 110px;
-            padding: .45rem .75rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-family: var(--font-body);
-            font-size: .9rem;
-            text-align: right;
-            transition: border-color .2s;
-        }
-        .price-input:focus { outline: none; border-color: var(--green); }
-        .price-input.changed { border-color: var(--gold); background: #fffbeb; }
+        /* ── MAIN ── */
+        .main{margin-left:240px;flex:1;padding:28px 32px}
+        .page{display:none}
+        .page.active{display:block}
+        .page-title{font-size:22px;font-weight:700;margin-bottom:4px;color:var(--green)}
+        .page-sub{color:var(--muted);font-size:14px;margin-bottom:24px}
 
-        .status-badge {
-            font-size: .75rem;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-weight: 600;
-        }
-        .status-set   { background: #dcfce7; color: #166534; }
-        .status-unset { background: #f3f4f6; color: #6b7280; }
+        /* ── STATS ── */
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+        .stat-card{background:#fff;border-radius:var(--radius);padding:20px;border:1px solid var(--border)}
+        .stat-card .s-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+        .stat-card .s-val{font-size:28px;font-weight:700;color:var(--green)}
+        .stat-card .s-icon{float:right;font-size:24px;color:var(--gold);opacity:.6}
 
-        .admin-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-        .btn-save {
-            background: var(--green);
-            color: #fff;
-            border: none;
-            padding: .85rem 2rem;
-            border-radius: 999px;
-            font-family: var(--font-body);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: .5rem;
-            transition: opacity .2s;
-        }
-        .btn-save:hover { opacity: .9; }
-        .btn-save:disabled { opacity: .5; cursor: default; }
-        .save-feedback { font-size: .9rem; color: var(--muted); }
-        .save-feedback.success { color: #16a34a; font-weight: 600; }
-        .save-feedback.error   { color: #ef4444; font-weight: 600; }
+        /* ── TABLE ── */
+        .card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;margin-bottom:24px}
+        .card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+        .card-header h3{font-size:15px;font-weight:700;color:var(--green)}
+        .data-table{width:100%;border-collapse:collapse;font-size:13px}
+        .data-table th{text-align:left;padding:10px 16px;background:#f9fafb;color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;border-bottom:1px solid var(--border)}
+        .data-table td{padding:12px 16px;border-bottom:1px solid #f3f4f6;vertical-align:top}
+        .data-table tr:last-child td{border-bottom:none}
+        .data-table tr:hover td{background:#fafafa}
+        .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600}
+        .badge-green{background:#dcfce7;color:#15803d}
+        .badge-gold{background:#fef9c3;color:#854d0e}
+        .badge-red{background:#fee2e2;color:var(--red)}
+        .badge-blue{background:#dbeafe;color:#1d4ed8}
+        .empty-state{text-align:center;padding:48px 20px;color:var(--muted)}
+        .empty-state i{font-size:36px;opacity:.3;display:block;margin-bottom:12px}
 
-        /* Login overlay */
-        .login-overlay {
-            position: fixed; inset: 0;
-            background: var(--ivory);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 999;
-        }
-        .login-box {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2.5rem;
-            width: min(420px, 95vw);
-            box-shadow: var(--shadow-lg);
-        }
-        .login-box h2 { font-size: 2rem; margin-bottom: .25rem; }
-        .login-box p { color: var(--muted); font-size: .9rem; margin-bottom: 1.5rem; }
-        .login-group { display: flex; flex-direction: column; gap: .35rem; margin-bottom: 1rem; }
-        .login-group label { font-size: .85rem; font-weight: 600; }
-        .login-group input {
-            padding: .75rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-family: var(--font-body);
-            font-size: .95rem;
-        }
-        .login-group input:focus { outline: none; border-color: var(--green); }
-        .login-error { color: #ef4444; font-size: .85rem; min-height: 1.2em; margin-bottom: .5rem; }
-        .btn-login {
-            width: 100%;
-            padding: .85rem;
-            background: var(--green);
-            color: #fff;
-            border: none;
-            border-radius: 999px;
-            font-family: var(--font-body);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
+        /* ── PRIX ── */
+        .search-input{border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;width:100%;max-width:320px;outline:none;margin-bottom:16px}
+        .search-input:focus{border-color:var(--green)}
+        .price-input{border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;width:90px;outline:none}
+        .price-input:focus{border-color:var(--green)}
+        .price-input.changed{border-color:var(--gold);background:#fffbeb}
+        .cat-pill{display:inline-block;background:#f0fdf4;color:#16a34a;border-radius:999px;padding:2px 8px;font-size:11px;margin-left:6px}
+        .btn-gros-toggle{display:inline-flex;align-items:center;gap:6px;background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+        .btn-gros-toggle:hover{border-color:#FBBF24}
+        .btn-gros-toggle.on{background:#FEF3C7;color:#92400E;border-color:#FBBF24}
+        .btn-save{background:var(--green);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .2s}
+        .btn-save:hover{opacity:.88}
+        .save-msg{font-size:13px;margin-left:12px}
+        .save-msg.ok{color:#16a34a}
+        .save-msg.err{color:var(--red)}
 
-        /* Loading */
-        #loadingOverlay {
-            position: fixed; inset: 0;
-            background: rgba(255,255,255,.8);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 9999; font-size: 1.1rem; color: var(--muted);
-            gap: .75rem;
+        /* ── SETTINGS ── */
+        .settings-form{display:flex;flex-direction:column;gap:18px;max-width:500px}
+        .settings-form .field label{font-weight:600;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+        .settings-form .field input{font-size:14px;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;outline:none}
+        .settings-form .field input:focus{border-color:var(--green)}
+        .btn-settings-save{background:var(--green);color:#fff;border:none;border-radius:8px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer}
+
+        /* ── COMMANDES détail ── */
+        .order-items{font-size:12px;color:var(--muted)}
+        .order-items span{display:block}
+
+        @media(max-width:900px){
+            .sidebar{width:200px}
+            .main{margin-left:200px;padding:20px}
+            .stats-grid{grid-template-columns:repeat(2,1fr)}
         }
-        .search-bar {
-            padding: .6rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 999px;
-            font-family: var(--font-body);
-            font-size: .9rem;
-            width: 260px;
-            margin-bottom: 1.5rem;
-        }
-        .search-bar:focus { outline: none; border-color: var(--green); }
     </style>
 </head>
 <body>
 
-<!-- Loading -->
-<div id="loadingOverlay">
-    <i class="fa-solid fa-spinner fa-spin"></i> Chargement…
-</div>
-
-<!-- Login overlay (shown if not admin) -->
-<div class="login-overlay" id="loginOverlay" style="display:none">
+<!-- ═══ LOGIN ═══ -->
+<div class="login-screen" id="loginScreen">
     <div class="login-box">
-        <h2>Administration</h2>
-        <p>Connectez-vous avec votre compte administrateur MediAfrica.</p>
-        <div class="login-group">
-            <label for="adminLoginEmail">Email</label>
-            <input type="email" id="adminLoginEmail" placeholder="admin@mediafrica.com" autocomplete="email">
+        <div class="login-logo">
+            <img src="assets/logo-ssc.png" alt="Solutions Santé Canada">
         </div>
-        <div class="login-group">
-            <label for="adminLoginPassword">Mot de passe</label>
-            <input type="password" id="adminLoginPassword" placeholder="••••••••" autocomplete="current-password">
+        <h2>Espace Administration</h2>
+        <p class="sub">Connectez-vous avec votre compte admin</p>
+        <div class="field">
+            <label>Email ou nom d'utilisateur</label>
+            <input type="text" id="adminEmail" placeholder="eltajoseph29 ou admin@medipharma.ca" autocomplete="username">
         </div>
-        <p class="login-error" id="loginError"></p>
-        <button type="button" class="btn-login" id="btnAdminLogin">
-            <i class="fa-solid fa-lock"></i> Se connecter
-        </button>
+        <div class="field">
+            <label>Mot de passe</label>
+            <input type="password" id="adminPass" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn-login" id="btnLogin"><i class="fa-solid fa-lock"></i> Accéder au panneau</button>
+        <p class="login-error" id="loginErr"></p>
     </div>
 </div>
 
-<!-- Admin interface (shown if admin) -->
-<div id="adminInterface" style="display:none">
+<!-- ═══ ADMIN ═══ -->
+<div class="admin-wrap" id="adminWrap" style="display:none">
 
-    <nav class="admin-nav">
-        <h1><i class="fa-solid fa-shield-check"></i> MediAfrica Admin</h1>
-        <div class="admin-nav-right">
-            <span class="admin-email" id="adminEmailDisplay"></span>
-            <button type="button" class="btn-logout-admin" id="btnAdminLogout">
-                <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
-            </button>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="assets/logo-ssc.png" alt="SSC">
+            <div class="brand">Solutions Santé Canada</div>
         </div>
-    </nav>
+        <nav>
+            <button class="nav-item active" data-page="dashboard"><i class="fa-solid fa-gauge"></i> Tableau de bord</button>
+            <button class="nav-item" data-page="orders"><i class="fa-solid fa-bag-shopping"></i> Commandes</button>
+            <button class="nav-item" data-page="clients"><i class="fa-solid fa-users"></i> Clients</button>
+            <button class="nav-item" data-page="prices"><i class="fa-solid fa-tag"></i> Prix</button>
+            <button class="nav-item" data-page="settings"><i class="fa-solid fa-gear"></i> Paramètres</button>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="admin-user" id="adminUserDisplay"></div>
+            <button class="btn-logout" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+        </div>
+    </aside>
 
-    <main class="admin-main">
+    <!-- MAIN -->
+    <main class="main">
 
-        <div class="admin-card">
-            <h2><i class="fa-solid fa-tag"></i> Prix des produits</h2>
-            <p>Entrez le prix unitaire en CAD pour chaque produit. Laissez vide = "Sur devis" (commande via WhatsApp). Cliquez <strong>Sauvegarder</strong> pour appliquer.</p>
+        <!-- ── DASHBOARD ── -->
+        <div class="page active" id="page-dashboard">
+            <div class="page-title">Tableau de bord</div>
+            <div class="page-sub">Vue d'ensemble en temps réel</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fa-solid fa-bag-shopping s-icon"></i>
+                    <div class="s-label">Commandes</div>
+                    <div class="s-val" id="stat-orders">0</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-users s-icon"></i>
+                    <div class="s-label">Clients inscrits</div>
+                    <div class="s-val" id="stat-clients">0</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-dollar-sign s-icon"></i>
+                    <div class="s-label">Revenus (CAD)</div>
+                    <div class="s-val" id="stat-revenue">0 $</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-box s-icon"></i>
+                    <div class="s-label">Produits au prix</div>
+                    <div class="s-val" id="stat-priced">0</div>
+                </div>
+            </div>
 
-            <input type="text" class="search-bar" id="priceSearch" placeholder="🔍 Rechercher un produit…">
+            <div class="card">
+                <div class="card-header"><h3>Dernières commandes</h3></div>
+                <table class="data-table" id="dash-orders-table">
+                    <thead><tr><th>ID</th><th>Client</th><th>Date</th><th>Total</th><th>Statut</th></tr></thead>
+                    <tbody id="dash-orders-body"></tbody>
+                </table>
+            </div>
+        </div>
 
-            <table class="price-table" id="priceTable">
-                <thead>
-                    <tr>
-                        <th>Produit</th>
-                        <th>Prix unitaire (CAD)</th>
-                        <th>Statut</th>
-                    </tr>
-                </thead>
-                <tbody id="priceTableBody">
-                    <!-- Rempli par JS -->
-                </tbody>
-            </table>
+        <!-- ── COMMANDES ── -->
+        <div class="page" id="page-orders">
+            <div class="page-title">Commandes</div>
+            <div class="page-sub">Toutes les commandes reçues</div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Liste des commandes</h3>
+                    <button class="btn-save" style="font-size:12px;padding:7px 14px" id="btnClearOrders"><i class="fa-solid fa-trash"></i> Vider</button>
+                </div>
+                <table class="data-table">
+                    <thead><tr><th>ID</th><th>Client</th><th>Produits</th><th>Date</th><th>Total</th><th>Statut</th></tr></thead>
+                    <tbody id="orders-body"></tbody>
+                </table>
+            </div>
+        </div>
 
-            <div class="admin-actions">
-                <button type="button" class="btn-save" id="btnSavePrices">
-                    <i class="fa-solid fa-floppy-disk"></i> Sauvegarder tous les prix
-                </button>
-                <span class="save-feedback" id="saveFeedback"></span>
+        <!-- ── CLIENTS ── -->
+        <div class="page" id="page-clients">
+            <div class="page-title">Clients</div>
+            <div class="page-sub">Comptes clients inscrits sur le site</div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Liste des clients</h3>
+                    <span id="clients-count" style="font-size:13px;color:var(--muted)"></span>
+                </div>
+                <table class="data-table">
+                    <thead><tr><th>Nom</th><th>Username</th><th>Email</th><th>Inscrit le</th><th>Méthode</th><th>Grossiste</th></tr></thead>
+                    <tbody id="clients-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── PRIX ── -->
+        <div class="page" id="page-prices">
+            <div class="page-title">Gestion des prix</div>
+            <div class="page-sub">Deux prix par produit : <strong>unité</strong> (client au détail) et <strong>gros</strong> (réservé aux grossistes). Vide = « Sur devis ».</div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Tous les produits</h3>
+                    <div>
+                        <input type="text" class="search-input" id="priceSearch" placeholder="Rechercher un produit…" style="margin-bottom:0">
+                    </div>
+                </div>
+                <div style="padding:16px 20px">
+                    <table class="data-table" id="priceTable">
+                        <thead><tr><th>Produit</th><th>Prix unité (client)</th><th>Prix gros (grossiste)</th><th>Statut</th></tr></thead>
+                        <tbody id="priceTableBody"></tbody>
+                    </table>
+                    <div style="margin-top:16px;display:flex;align-items:center;gap:12px">
+                        <button class="btn-save" id="btnSavePrices"><i class="fa-solid fa-floppy-disk"></i> Sauvegarder</button>
+                        <span class="save-msg" id="saveFeedback"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── PARAMÈTRES ── -->
+        <div class="page" id="page-settings">
+            <div class="page-title">Paramètres</div>
+            <div class="page-sub">Configuration du site et des paiements</div>
+
+            <div class="card">
+                <div class="card-header"><h3>Contact & Paiement</h3></div>
+                <div style="padding:24px">
+                    <div class="settings-form">
+                        <div class="field">
+                            <label>Numéro WhatsApp</label>
+                            <input type="text" id="set-whatsapp" placeholder="14384029247">
+                        </div>
+                        <div class="field">
+                            <label>Handle PayPal</label>
+                            <input type="text" id="set-paypal" placeholder="solutionssantecanada">
+                        </div>
+                        <div class="field">
+                            <label>Email administrateur</label>
+                            <input type="text" id="set-email" placeholder="admin@solutionssantecanada.com">
+                        </div>
+                        <div class="field">
+                            <label>Nom du domaine (GoDaddy)</label>
+                            <input type="text" id="set-domain" placeholder="www.solutionssantecanada.com">
+                        </div>
+                        <button class="btn-settings-save" id="btnSaveSettings"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
+                        <p id="settings-msg" style="font-size:13px;color:#16a34a;min-height:18px"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h3>Déploiement sur GoDaddy</h3></div>
+                <div style="padding:24px;font-size:14px;line-height:1.8;color:var(--muted)">
+                    <p style="margin-bottom:12px"><strong style="color:var(--text)">Option 1 — GoDaddy Hosting (cPanel)</strong></p>
+                    <ol style="padding-left:20px;margin-bottom:20px">
+                        <li>Connectez-vous à votre compte GoDaddy → <strong>Mes produits</strong></li>
+                        <li>Cliquez sur <strong>Hébergement Web</strong> → <strong>Gérer</strong></li>
+                        <li>Ouvrez le <strong>Gestionnaire de fichiers</strong> dans cPanel</li>
+                        <li>Allez dans le dossier <code>public_html</code></li>
+                        <li>Uploadez TOUS les fichiers du dossier <code>medipharma.ca/</code></li>
+                        <li>Votre site est en ligne sur votre domaine !</li>
+                    </ol>
+                    <p style="margin-bottom:12px"><strong style="color:var(--text)">Option 2 — Netlify (plus rapide, gratuit)</strong></p>
+                    <ol style="padding-left:20px">
+                        <li>Créez un compte gratuit sur <strong>netlify.com</strong></li>
+                        <li>Glissez-déposez le dossier <code>medipharma.ca/</code> sur Netlify</li>
+                        <li>Le site est en ligne en 30 secondes</li>
+                        <li>Dans GoDaddy : allez dans <strong>DNS</strong> → pointez vers Netlify</li>
+                        <li>Dans Netlify : ajoutez votre domaine GoDaddy dans <strong>Domain settings</strong></li>
+                    </ol>
+                </div>
             </div>
         </div>
 
     </main>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="config.js"></script>
 <script>
+// ═══════════════════════════════════════════════════════
+//  ADMIN — Solutions Santé Canada
+// ═══════════════════════════════════════════════════════
 
-// ── Liste complète des produits du catalogue ──────────────────────────────────
-const PRODUCTS = [
-    // Cheveux
-    { name: 'Hair Growth Formula',                              cat: 'Cheveux' },
-    // Collagène
-    { name: 'Collagène en Poudre',                             cat: 'Peau / Articulations' },
-    { name: 'Collagène Caplets',                               cat: 'Peau / Articulations' },
-    { name: 'Collagène Gummies',                               cat: 'Peau / Articulations' },
-    { name: 'Collagène Liquide',                               cat: 'Peau / Articulations' },
-    // Vitamines M3
-    { name: 'Vitamine C',                                      cat: 'Vitamines' },
-    { name: 'Vitamine D3',                                     cat: 'Vitamines' },
-    { name: 'Multivitamines (Comprimés)',                      cat: 'Vitamines' },
-    { name: 'Mélatonine',                                      cat: 'Vitamines' },
-    // Vitamines M4
-    { name: 'Multivitamines Gummies',                          cat: 'Vitamines' },
-    { name: 'Magnésium',                                       cat: 'Minéraux' },
-    { name: 'Fer',                                             cat: 'Minéraux' },
-    { name: 'Omega-3',                                         cat: 'Oméga' },
-    // Liquides
-    { name: 'Vitamine B12 Liquide (5000 mcg)',                 cat: 'Vitamine Liquide' },
-    { name: 'Complexe Vitamine B Liquide',                     cat: 'Vitamine Liquide' },
-    { name: 'Formule Immunité Liquide',                        cat: 'Vitamine Liquide' },
-    { name: 'Mélatonine Liquide',                              cat: 'Vitamine Liquide' },
-    // Gummies
-    { name: 'Multivitamines Adultes',                          cat: 'Gummies' },
-    { name: 'Multivitamines Enfants',                          cat: 'Gummies' },
-    { name: 'Multivitamines Femmes',                           cat: 'Gummies' },
-    { name: 'Vitamine C Gummies',                              cat: 'Gummies' },
-    { name: 'Vitamine D3 Gummies',                             cat: 'Gummies' },
-    { name: 'Vitamine B12 Gummies',                            cat: 'Gummies' },
-    { name: 'B-Complex Gummies',                               cat: 'Gummies' },
-    { name: 'Magnésium Gummies',                               cat: 'Gummies' },
-    // Antidouleurs
-    { name: 'Paracétamol 500mg',                               cat: 'Antidouleur' },
-    { name: 'Paracétamol 1000mg',                              cat: 'Antidouleur' },
-    { name: 'Ibuprofène 400mg',                                cat: 'Antidouleur' },
-    // Antipaludéens
-    { name: 'Chloroquine 250mg',                               cat: 'Antipaludéen' },
-    { name: 'Quinine 500mg',                                   cat: 'Antipaludéen' },
-    // Digestif
-    { name: 'Sels de Réhydratation Orale (SRO)',               cat: 'Digestif' },
-    { name: 'Lopéramide 2mg',                                  cat: 'Digestif' },
-    // Antiseptiques
-    { name: 'Bétadine Solution 10%',                           cat: 'Antiseptique' },
-    { name: 'Alcool Isopropylique 70%',                        cat: 'Antiseptique' },
-    // Vitamines catalogue
-    { name: 'Vitamine C 1000mg',                               cat: 'Vitamines' },
-    { name: 'Zinc 20mg',                                       cat: 'Vitamines' },
-    { name: 'Fer + Acide Folique',                             cat: 'Vitamines' },
-    // Allergie
-    { name: 'Cétirizine 10mg',                                 cat: 'Allergie' },
-    { name: 'Loratadine 10mg',                                 cat: 'Allergie' },
-    // Fournitures
-    { name: 'Pansements adhésifs',                             cat: 'Fourniture' },
-    { name: 'Thermomètre digital',                             cat: 'Fourniture' },
-    { name: 'Gants latex — Boîte 100',                         cat: 'Fourniture' },
-    // Seringues
-    { name: 'Sol-M® Seringue Luer Lock 1ml',                   cat: 'Seringue' },
-    { name: 'Sol-M® Seringue Luer Lock 3ml',                   cat: 'Seringue' },
-    { name: 'Sol-Care® Aiguille de Sécurité — Adulte 1"',      cat: 'Aiguille' },
-    { name: 'Sol-Care® Aiguille de Sécurité 1½" — Population à risque', cat: 'Aiguille' },
-    { name: 'Sol-Care® Aiguille de Sécurité 5/8" — Adolescent / Nourrisson', cat: 'Aiguille' },
-    { name: 'Étiquette Confidentialité Patient — Réf. 7039',   cat: 'Étiquette' },
-    // Cartes index
-    { name: 'Paracétamol & Ibuprofène',                        cat: 'Antidouleur' },
-    { name: 'Antipaludéens',                                   cat: 'Antipaludéen' },
-    { name: 'Antidiarrhéiques & Réhydratation',                cat: 'Digestif' },
-    { name: 'Antiseptiques & Pansements',                      cat: 'Antiseptique' },
-    { name: 'Vitamines & Suppléments',                         cat: 'Nutrition' },
-    { name: 'Antiallergiques',                                 cat: 'Allergie' },
-];
+const ADMIN_SESSION  = 'ssc_admin_session';
+const ADMIN_USERNAME = 'eltajoseph29';        // ← Nom d'utilisateur admin
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-const loading   = document.getElementById('loadingOverlay');
-const loginEl   = document.getElementById('loginOverlay');
-const adminEl   = document.getElementById('adminInterface');
-const tbody     = document.getElementById('priceTableBody');
-const saveFb    = document.getElementById('saveFeedback');
-const searchEl  = document.getElementById('priceSearch');
-let currentPrices = {};
+// Empreinte (hash) du mot de passe admin. Le mot de passe en clair n'est JAMAIS stocké ici.
+// Pour définir le tien : ouvre l'admin → F12 (console) → tape  adminHash('TonMotDePasse')
+// puis colle le résultat ci-dessous entre les guillemets.
+const ADMIN_PASSWORD_HASH = 'ff237aa5';       // ← empreinte du mot de passe admin (le clair n'est jamais stocké)
+const ADMIN_PASSWORD      = '';                // repli vide : seule l'empreinte est utilisée
 
-function hide(el) { el.style.display = 'none'; }
-function show(el, display = 'block') { el.style.display = display; }
-
-// ── Construire le tableau ─────────────────────────────────────────────────────
-function buildTable(prices) {
-    currentPrices = { ...prices };
-    renderRows(PRODUCTS);
+// Empreinte djb2 (suffisant pour ne pas exposer le mot de passe en clair ; la vraie sécurité = backend Firebase)
+function adminHash(s){
+    let h = 5381;
+    for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
+    return h.toString(16);
 }
 
-function renderRows(list) {
-    tbody.innerHTML = list.map(p => {
-        const val = currentPrices[p.name] != null ? currentPrices[p.name].toFixed(2) : '';
-        const status = val
-            ? `<span class="status-badge status-set">✓ Défini</span>`
-            : `<span class="status-badge status-unset">Sur devis</span>`;
+// ── Helpers ──
+function fmt(date){ return new Date(date).toLocaleDateString('fr-CA',{day:'2-digit',month:'short',year:'numeric'}); }
+function fmtTotal(t){ return t !== null && t !== undefined ? t.toFixed(2)+' $' : 'Sur devis'; }
+function getOrders(){ try{ return JSON.parse(localStorage.getItem('ssc_orders')||'[]'); }catch{ return []; } }
+function getUsers(){
+    try{
+        const raw = JSON.parse(localStorage.getItem('ssc_users')||'{}');
+        return Object.values(raw).filter((v,i,a)=>a.findIndex(x=>x.email===v.email)===i);
+    }catch{ return []; }
+}
+function getPrices(){ try{ return JSON.parse(localStorage.getItem('ssc_prices')||'{}'); }catch{ return CONFIG?.prices||{}; } }
+function savePrices(p){ localStorage.setItem('ssc_prices',JSON.stringify(p)); }
+
+// ── Login ──
+document.getElementById('btnLogin').addEventListener('click', () => {
+    const id    = document.getElementById('adminEmail').value.trim();
+    const pass  = document.getElementById('adminPass').value;
+    const err   = document.getElementById('loginErr');
+    const adminEmail = typeof CONFIG !== 'undefined' ? CONFIG.adminEmail : 'admin@medipharma.ca';
+
+    if (!id || !pass) { err.textContent = 'Remplissez tous les champs.'; return; }
+    const okId = (id.toLowerCase() === adminEmail.toLowerCase()) || (id.toLowerCase() === ADMIN_USERNAME.toLowerCase());
+    if (!okId) { err.textContent = 'Identifiant non autorisé.'; return; }
+    const passOk = ADMIN_PASSWORD_HASH
+        ? (adminHash(pass) === ADMIN_PASSWORD_HASH)
+        : (pass === ADMIN_PASSWORD);
+    if (!passOk) { err.textContent = 'Mot de passe incorrect.'; return; }
+
+    localStorage.setItem(ADMIN_SESSION, JSON.stringify({ email: adminEmail, username: ADMIN_USERNAME, loginAt: Date.now() }));
+    showAdmin();
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none')
+        document.getElementById('btnLogin').click();
+});
+
+// ── Logout ──
+document.getElementById('btnLogout').addEventListener('click', () => {
+    localStorage.removeItem(ADMIN_SESSION);
+    location.reload();
+});
+
+// ── Init ── (appelé en fin de script, après toutes les définitions)
+function _adminInit(){
+    const session = JSON.parse(localStorage.getItem(ADMIN_SESSION)||'null');
+    if (session && session.email) {
+        showAdmin();
+    }
+}
+
+function showAdmin(){
+    const adminEmail = (typeof CONFIG !== 'undefined' ? CONFIG.adminEmail : 'admin@medipharma.ca');
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminWrap').style.display   = 'flex';
+    document.getElementById('adminUserDisplay').innerHTML =
+        `<span class="admin-role"><i class="fa-solid fa-shield-halved"></i> ADMIN</span>`
+        + `<strong class="admin-name">${ADMIN_USERNAME}</strong>`
+        + `<span class="admin-mail">${adminEmail}</span>`;
+    loadDashboard();
+    loadOrders();
+    loadClients();
+    loadPrices();
+    loadSettings();
+}
+
+// ── Navigation ──
+document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('page-' + btn.dataset.page).classList.add('active');
+    });
+});
+
+// ══════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════
+function loadDashboard(){
+    const orders  = getOrders();
+    const users   = getUsers();
+    const prices  = getPrices();
+    const revenue = orders.reduce((s,o)=> s + (o.total||0), 0);
+    const priced  = Object.keys(prices).length;
+
+    document.getElementById('stat-orders').textContent  = orders.length;
+    document.getElementById('stat-clients').textContent = users.length;
+    document.getElementById('stat-revenue').textContent = revenue.toFixed(2) + ' $';
+    document.getElementById('stat-priced').textContent  = priced;
+
+    // Dernières 5 commandes
+    const tbody = document.getElementById('dash-orders-body');
+    if (orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-inbox"></i>Aucune commande pour l\'instant</div></td></tr>';
+        return;
+    }
+    tbody.innerHTML = orders.slice(0,5).map(o => `
+        <tr>
+            <td style="font-size:11px;color:var(--muted)">${o.id}</td>
+            <td><strong>${o.client}</strong><br><span style="font-size:11px;color:var(--muted)">${o.email}</span></td>
+            <td style="font-size:12px">${fmt(o.date)}</td>
+            <td><strong>${fmtTotal(o.total)}</strong></td>
+            <td><span class="badge badge-green">${o.status}</span></td>
+        </tr>`).join('');
+}
+
+// ══════════════════════════════
+//  COMMANDES
+// ══════════════════════════════
+function loadOrders(){
+    const orders = getOrders();
+    const tbody  = document.getElementById('orders-body');
+    if (orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-inbox"></i>Aucune commande</div></td></tr>';
+        return;
+    }
+    tbody.innerHTML = orders.map(o => `
+        <tr>
+            <td style="font-size:11px;color:var(--muted)">${o.id}</td>
+            <td><strong>${o.client}</strong><br><span style="font-size:11px;color:var(--muted)">${o.email}</span></td>
+            <td class="order-items">${(o.items||[]).map(i=>`<span>• ${i.name} × ${i.qty}</span>`).join('')}</td>
+            <td style="font-size:12px">${fmt(o.date)}</td>
+            <td><strong>${fmtTotal(o.total)}</strong></td>
+            <td><span class="badge badge-green">${o.status}</span></td>
+        </tr>`).join('');
+}
+
+document.getElementById('btnClearOrders').addEventListener('click', () => {
+    if (!confirm('Vider toutes les commandes ?')) return;
+    localStorage.removeItem('ssc_orders');
+    loadOrders();
+    loadDashboard();
+});
+
+// ══════════════════════════════
+//  CLIENTS
+// ══════════════════════════════
+function loadClients(){
+    const users = getUsers();
+    const tbody = document.getElementById('clients-body');
+    document.getElementById('clients-count').textContent = users.length + ' client(s)';
+    if (users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-users"></i>Aucun client inscrit</div></td></tr>';
+        return;
+    }
+    tbody.innerHTML = users.map(u => {
+        const gros = !!u.isGrossiste;
+        const btn = `<button class="btn-gros-toggle ${gros?'on':''}" data-email="${(u.email||'').replace(/"/g,'&quot;')}">`
+            + (gros ? '<i class="fa-solid fa-circle-check"></i> Grossiste' : '<i class="fa-regular fa-circle"></i> Client')
+            + `</button>`;
         return `
-        <tr data-name="${p.name.replace(/"/g, '&quot;')}">
-            <td>${p.name}<span class="cat-badge">${p.cat}</span></td>
-            <td>
-                <div class="price-input-wrap">
-                    <input type="number" class="price-input" min="0" step="0.01"
-                           placeholder="0.00" value="${val}"
-                           data-name="${p.name.replace(/"/g, '&quot;')}">
-                    <span>CAD</span>
-                </div>
-            </td>
+        <tr>
+            <td><strong>${u.displayName||'—'}</strong></td>
+            <td>${u.username ? '<span class="badge badge-blue">@'+u.username+'</span>' : '—'}</td>
+            <td>${u.email}</td>
+            <td style="font-size:12px">${u.createdAt ? fmt(u.createdAt) : '—'}</td>
+            <td><span class="badge ${u.provider==='google'?'badge-red':'badge-gold'}">${u.provider==='google'?'Google':'Email'}</span></td>
+            <td>${btn}</td>
+        </tr>`;
+    }).join('');
+    tbody.querySelectorAll('.btn-gros-toggle').forEach(b => {
+        b.addEventListener('click', () => setGrossiste(b.dataset.email));
+    });
+}
+
+// Bascule le statut grossiste d'un client (met à jour tous les index de ssc_users)
+function setGrossiste(email){
+    if (!email) return;
+    let raw;
+    try { raw = JSON.parse(localStorage.getItem('ssc_users')||'{}'); } catch { return; }
+    const lc = email.toLowerCase();
+    // état actuel
+    let current = false;
+    for (const k in raw) if ((raw[k].email||'').toLowerCase() === lc) { current = !!raw[k].isGrossiste; break; }
+    const next = !current;
+    for (const k in raw) if ((raw[k].email||'').toLowerCase() === lc) raw[k].isGrossiste = next;
+    localStorage.setItem('ssc_users', JSON.stringify(raw));
+    loadClients();
+}
+
+// ══════════════════════════════
+//  PRIX
+// ══════════════════════════════
+const PRODUCTS = [
+    { name: 'Vitamine C Liquide',              cat: 'Liquide' },
+    { name: 'Vitamine D3 Liquide',             cat: 'Liquide' },
+    { name: 'Zinc Liquide',                    cat: 'Liquide' },
+    { name: 'Multivitamines Liquide',          cat: 'Liquide' },
+    { name: 'Mélatonine Liquide',              cat: 'Liquide' },
+    { name: 'Vitamine B12 Liquide',            cat: 'Liquide' },
+    { name: 'B-Complexe Liquide',              cat: 'Liquide' },
+    { name: 'Hair, Skin & Nails Liquide',      cat: 'Liquide' },
+    { name: 'Elderberry (Sureau) Liquide',     cat: 'Liquide' },
+    { name: 'Collagène Liquide',               cat: 'Liquide' },
+    { name: 'Hair Growth Formula',             cat: 'Cheveux' },
+    { name: 'Collagène en Poudre',             cat: 'Peau' },
+    { name: 'Collagène Caplets',               cat: 'Peau' },
+    { name: 'Collagène Gummies',               cat: 'Peau' },
+    { name: 'Vitamine C',                      cat: 'Vitamines' },
+    { name: 'Vitamine D3',                     cat: 'Vitamines' },
+    { name: 'Multivitamines (Comprimés)',      cat: 'Vitamines' },
+    { name: 'Mélatonine',                      cat: 'Vitamines' },
+    { name: 'Multivitamines Gummies',          cat: 'Gummies' },
+    { name: 'Magnésium',                       cat: 'Minéraux' },
+    { name: 'Fer',                             cat: 'Minéraux' },
+    { name: 'Omega-3',                         cat: 'Oméga' },
+    { name: 'Multivitamines Adultes',          cat: 'Gummies' },
+    { name: 'Multivitamines Enfants',          cat: 'Gummies' },
+    { name: 'Multivitamines Femmes',           cat: 'Gummies' },
+    { name: 'Vitamine C Gummies',              cat: 'Gummies' },
+    { name: 'Vitamine D3 Gummies',             cat: 'Gummies' },
+    { name: 'Vitamine B12 Gummies',            cat: 'Gummies' },
+    { name: 'B-Complex Gummies',               cat: 'Gummies' },
+    { name: 'Magnésium Gummies',               cat: 'Gummies' },
+    { name: 'Paracétamol 500mg',               cat: 'Antidouleur' },
+    { name: 'Paracétamol 1000mg',              cat: 'Antidouleur' },
+    { name: 'Ibuprofène 400mg',                cat: 'Antidouleur' },
+    { name: 'Chloroquine 250mg',               cat: 'Antipaludéen' },
+    { name: 'Quinine 500mg',                   cat: 'Antipaludéen' },
+    { name: 'Sels de Réhydratation Orale (SRO)', cat: 'Digestif' },
+    { name: 'Lopéramide 2mg',                  cat: 'Digestif' },
+    { name: 'Bétadine Solution 10%',           cat: 'Antiseptique' },
+    { name: 'Alcool Isopropylique 70%',        cat: 'Antiseptique' },
+    { name: 'Cétirizine 10mg',                 cat: 'Allergie' },
+    { name: 'Loratadine 10mg',                 cat: 'Allergie' },
+];
+
+let currentPrices = {};
+
+function loadPrices(){
+    currentPrices = { ...(CONFIG?.prices||{}), ...getPrices() };
+    renderPriceRows(PRODUCTS);
+}
+
+// Normalise une entrée de prix en { unite, gros } (gère l'ancien format nombre)
+function _normPrice(v){
+    if (v == null) return { unite: null, gros: null };
+    if (typeof v === 'number') return { unite: v, gros: v };
+    return { unite: v.unite ?? null, gros: v.gros ?? null };
+}
+
+function renderPriceRows(list){
+    const tbody = document.getElementById('priceTableBody');
+    tbody.innerHTML = list.map(p => {
+        const { unite, gros } = _normPrice(currentPrices[p.name]);
+        const uVal = unite != null ? unite.toFixed(2) : '';
+        const gVal = gros  != null ? gros.toFixed(2)  : '';
+        const status = (unite != null || gros != null)
+            ? `<span class="badge badge-green">✓ Défini</span>`
+            : `<span class="badge badge-gold">Sur devis</span>`;
+        const nm = p.name.replace(/"/g,'&quot;');
+        return `<tr>
+            <td>${p.name} <span class="cat-pill">${p.cat}</span></td>
+            <td><input type="number" class="price-input" min="0" step="0.01" placeholder="0.00" value="${uVal}" data-name="${nm}" data-field="unite"> $</td>
+            <td><input type="number" class="price-input" min="0" step="0.01" placeholder="0.00" value="${gVal}" data-name="${nm}" data-field="gros"> $</td>
             <td class="status-cell">${status}</td>
         </tr>`;
     }).join('');
-
-    // Marquer les champs modifiés
     tbody.querySelectorAll('.price-input').forEach(inp => {
         inp.addEventListener('input', () => {
             inp.classList.add('changed');
             const row = inp.closest('tr');
-            const val = parseFloat(inp.value);
-            row.querySelector('.status-cell').innerHTML = inp.value.trim()
-                ? `<span class="status-badge status-set">✎ Modifié</span>`
-                : `<span class="status-badge status-unset">Sur devis</span>`;
+            const anyVal = [...row.querySelectorAll('.price-input')].some(i => i.value);
+            row.querySelector('.status-cell').innerHTML = anyVal
+                ? '<span class="badge badge-blue">✎ Modifié</span>'
+                : '<span class="badge badge-gold">Sur devis</span>';
         });
     });
 }
 
-// ── Recherche ─────────────────────────────────────────────────────────────────
-searchEl.addEventListener('input', () => {
-    const q = searchEl.value.toLowerCase().trim();
-    const filtered = q ? PRODUCTS.filter(p =>
-        p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q)
-    ) : PRODUCTS;
-    renderRows(filtered);
+document.getElementById('priceSearch').addEventListener('input', e => {
+    const q = e.target.value.toLowerCase();
+    renderPriceRows(q ? PRODUCTS.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q)) : PRODUCTS);
 });
 
-// ── Sauvegarder ───────────────────────────────────────────────────────────────
 document.getElementById('btnSavePrices').addEventListener('click', () => {
-    const btn = document.getElementById('btnSavePrices');
-    btn.disabled = true;
-    saveFb.className = 'save-feedback';
-    saveFb.textContent = 'Sauvegarde en cours…';
-
-    // Partir des prix existants, puis appliquer les valeurs du DOM
-    // → les produits absents de la vue filtrée gardent leur prix actuel
     const prices = { ...currentPrices };
+    // Regroupe les deux champs (unité + gros) par produit
+    const map = {};
     document.querySelectorAll('.price-input').forEach(inp => {
+        const name = inp.dataset.name, field = inp.dataset.field;
+        if (!map[name]) map[name] = {};
         const val = parseFloat(inp.value);
-        if (!isNaN(val) && val >= 0) {
-            prices[inp.dataset.name] = val;      // Ajouter / mettre à jour
-        } else if (inp.value.trim() === '') {
-            delete prices[inp.dataset.name];     // Vider = Sur devis
-        }
+        if (!isNaN(val) && val > 0) map[name][field] = val;
     });
-
-    firebase.firestore().collection('config').doc('prices').set(prices)
-        .then(() => {
-            currentPrices = prices;
-            saveFb.className = 'save-feedback success';
-            saveFb.textContent = '✓ Prix sauvegardés avec succès !';
-            // Enlever la marque "modifié"
-            document.querySelectorAll('.price-input').forEach(i => i.classList.remove('changed'));
-            // Rebâtir le statut
-            document.querySelectorAll('tr[data-name]').forEach(row => {
-                const name = row.dataset.name;
-                const hasPrice = prices[name] != null;
-                row.querySelector('.status-cell').innerHTML = hasPrice
-                    ? `<span class="status-badge status-set">✓ Défini</span>`
-                    : `<span class="status-badge status-unset">Sur devis</span>`;
-            });
-            setTimeout(() => { saveFb.textContent = ''; }, 4000);
-        })
-        .catch(err => {
-            saveFb.className = 'save-feedback error';
-            saveFb.textContent = '✗ Erreur : ' + err.message;
-        })
-        .finally(() => { btn.disabled = false; });
+    for (const name in map) {
+        const u = map[name].unite, g = map[name].gros;
+        if (u == null && g == null) delete prices[name];
+        else prices[name] = { unite: u ?? null, gros: g ?? null };
+    }
+    savePrices(prices);
+    currentPrices = prices;
+    const fb = document.getElementById('saveFeedback');
+    fb.className = 'save-msg ok';
+    fb.textContent = '✓ Prix sauvegardés !';
+    setTimeout(()=>fb.textContent='', 3000);
 });
 
-// ── Auth ──────────────────────────────────────────────────────────────────────
-if (typeof firebase === 'undefined' || !firebase.apps.length) {
-    hide(loading);
-    show(loginEl);
-    document.getElementById('loginError').textContent =
-        'Firebase non configuré. Remplissez config.js d\'abord.';
-} else {
-
-    firebase.auth().onAuthStateChanged(user => {
-        hide(loading);
-
-        if (!user) {
-            show(loginEl);
-            return;
-        }
-
-        const adminEmail = (typeof CONFIG !== 'undefined') ? CONFIG.adminEmail : '';
-        if (user.email !== adminEmail) {
-            firebase.auth().signOut();
-            show(loginEl);
-            document.getElementById('loginError').textContent =
-                'Accès refusé. Connectez-vous avec le compte administrateur.';
-            return;
-        }
-
-        hide(loginEl);
-        show(adminEl);
-        document.getElementById('adminEmailDisplay').textContent = user.email;
-
-        // Charger les prix existants
-        firebase.firestore().collection('config').doc('prices').get()
-            .then(doc => buildTable(doc.exists ? doc.data() : {}))
-            .catch(() => buildTable({}));
-    });
-
-    // Login
-    document.getElementById('btnAdminLogin').addEventListener('click', () => {
-        const email    = document.getElementById('adminLoginEmail').value.trim();
-        const password = document.getElementById('adminLoginPassword').value;
-        const errEl    = document.getElementById('loginError');
-        errEl.textContent = '';
-        firebase.auth().signInWithEmailAndPassword(email, password)
-            .catch(err => {
-                const msgs = {
-                    'auth/user-not-found':     'Aucun compte avec cet email.',
-                    'auth/wrong-password':     'Mot de passe incorrect.',
-                    'auth/invalid-credential': 'Email ou mot de passe incorrect.',
-                    'auth/invalid-email':      'Adresse email invalide.',
-                };
-                errEl.textContent = msgs[err.code] || err.message;
-            });
-    });
-
-    // Appuyer Entrée dans les champs de login
-    ['adminLoginEmail', 'adminLoginPassword'].forEach(id => {
-        document.getElementById(id).addEventListener('keydown', e => {
-            if (e.key === 'Enter') document.getElementById('btnAdminLogin').click();
-        });
-    });
-
-    // Logout
-    document.getElementById('btnAdminLogout').addEventListener('click', () => {
-        firebase.auth().signOut();
-    });
+// ══════════════════════════════
+//  PARAMÈTRES
+// ══════════════════════════════
+function loadSettings(){
+    if (typeof CONFIG === 'undefined') return;
+    document.getElementById('set-whatsapp').value = CONFIG.whatsappNumber || '';
+    document.getElementById('set-paypal').value   = CONFIG.paypal?.handle || '';
+    document.getElementById('set-email').value    = CONFIG.adminEmail || '';
+    const saved = JSON.parse(localStorage.getItem('ssc_settings')||'{}');
+    if (saved.domain) document.getElementById('set-domain').value = saved.domain;
 }
+
+document.getElementById('btnSaveSettings').addEventListener('click', () => {
+    const settings = {
+        domain: document.getElementById('set-domain').value.trim(),
+        updatedAt: Date.now()
+    };
+    localStorage.setItem('ssc_settings', JSON.stringify(settings));
+    document.getElementById('settings-msg').textContent = '✓ Paramètres enregistrés. Pour appliquer WhatsApp/PayPal, modifiez config.js directement.';
+    setTimeout(()=>document.getElementById('settings-msg').textContent='', 4000);
+});
+
+// Démarrage (après que toutes les fonctions et constantes sont définies)
+_adminInit();
 </script>
 </body>
 </html>

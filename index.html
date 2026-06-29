@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediAfrica | Solution Santé — Canada & Afrique</title>
-    <meta name="description" content="MediAfrica — Médicaments sans ordonnance livrés au Canada, en Guinée Conakry, au Burkina Faso et en Côte d'Ivoire. Santé accessible, partout.">
+    <title>MediPharma | Solution Santé — Canada & International</title>
+    <meta name="description" content="MediPharma — Médicaments sans ordonnance livrés au Canada & à l'International (Guinée Conakry, Burkina Faso, Côte d'Ivoire). Santé accessible, partout.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -17,8 +17,14 @@
     <!-- NAVBAR -->
     <nav class="navbar" id="navbar">
         <div class="nav-inner">
-            <a href="#home" class="logo">
-                <img src="assets/logo-clean.png" alt="MediAfrica Solutions Santé" class="logo-img">
+            <a href="#home" class="logo logo-ssc-block">
+                <div class="ssc-logo-inner">
+                    <img src="assets/logo-ssc.png" alt="Solutions Santé Canada" class="ssc-globe">
+                    <div class="ssc-text-wrap">
+                        <div class="ssc-name">Solutions<br>Santé Canada <span class="ssc-leaf">🍁</span></div>
+                        <div class="ssc-tagline">Votre santé, notre priorité.</div>
+                    </div>
+                </div>
             </a>
             <div class="nav-links" id="navLinks">
                 <a href="#produits">Produits</a>
@@ -38,6 +44,15 @@
                     </div>
                 </div>
             </div>
+            <div class="nav-actions">
+                <div class="nav-account" id="navAccountWrap">
+                    <button type="button" class="nav-account-btn" id="accountToggle" aria-label="Mon compte">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span class="nav-account-label">Se connecter</span>
+                    </button>
+                    <div class="account-dropdown" id="accountDropdown"></div>
+                </div>
+            </div>
             <button class="hamburger" id="hamburger" aria-label="Menu Mobile">
                 <span></span><span></span><span></span>
             </button>
@@ -49,11 +64,11 @@
         <div class="ticker-track">
             <span>🛡️ Licencié & Certifié Santé Canada</span>
             <span class="ticker-dot">✦</span>
-            <span>🌍 Livraison au Canada · Guinée Conakry · Burkina Faso · Côte d'Ivoire</span>
+            <span>🌍 Livraison au Canada &amp; à l'International · Guinée Conakry · Burkina Faso · Côte d'Ivoire</span>
             <span class="ticker-dot">✦</span>
             <span>💊 Médicaments sans ordonnance — Qualité pharmaceutique certifiée</span>
             <span class="ticker-dot">✦</span>
-            <span>📦 Emballage sécurisé · Livraison rapide partout en Afrique</span>
+            <span>📦 Emballage sécurisé · Livraison rapide partout au Canada &amp; à l'International</span>
             <span class="ticker-dot">✦</span>
             <span>💬 Support bilingue FR · EN — 7 jours sur 7</span>
             <span class="ticker-dot">✦</span>
@@ -61,16 +76,25 @@
             <span class="ticker-dot">✦</span>
             <span>🛡️ Licencié & Certifié Santé Canada</span>
             <span class="ticker-dot">✦</span>
-            <span>🌍 Livraison au Canada · Guinée Conakry · Burkina Faso · Côte d'Ivoire</span>
+            <span>🌍 Livraison au Canada &amp; à l'International · Guinée Conakry · Burkina Faso · Côte d'Ivoire</span>
             <span class="ticker-dot">✦</span>
             <span>💊 Médicaments sans ordonnance — Qualité pharmaceutique certifiée</span>
             <span class="ticker-dot">✦</span>
-            <span>📦 Emballage sécurisé · Livraison rapide partout en Afrique</span>
+            <span>📦 Emballage sécurisé · Livraison rapide partout au Canada &amp; à l'International</span>
             <span class="ticker-dot">✦</span>
             <span>💬 Support bilingue FR · EN — 7 jours sur 7</span>
             <span class="ticker-dot">✦</span>
             <span>📞 Commandez maintenant : 438-402-9247</span>
             <span class="ticker-dot">✦</span>
+        </div>
+    </div>
+
+    <!-- INTRO SPLASH -->
+    <div class="intro-splash" id="introSplash">
+        <div class="intro-splash-inner">
+            <img src="assets/logo-ssc.png" alt="Solutions Santé Canada" class="intro-globe">
+            <div class="intro-name">Solutions<br>Santé Canada <span style="color:#e63030">🍁</span></div>
+            <div class="intro-tagline">Votre santé, notre priorité.</div>
         </div>
     </div>
 
@@ -85,7 +109,7 @@
             <div class="hero-text reveal">
                 <div class="hero-badge">
                     <i class="fa-solid fa-earth-africa"></i>
-                    Canada · Guinée · Burkina Faso · Côte d'Ivoire
+                    Canada &amp; International · Guinée Conakry · Burkina Faso · Côte d'Ivoire
                 </div>
                 <div class="sante-canada-badge">
                     <i class="fa-solid fa-shield-check"></i>
@@ -95,7 +119,7 @@
                     </div>
                 </div>
                 <h1>Votre santé,<br><em>livrée partout</em></h1>
-                <p class="hero-sub">Des médicaments de qualité, sans ordonnance, disponibles au Canada et en Afrique de l'Ouest. Commandez depuis chez vous, recevez à domicile.</p>
+                <p class="hero-sub">Des médicaments de qualité, sans ordonnance, disponibles au Canada &amp; à l'International. Commandez depuis chez vous, recevez à domicile.</p>
                 <div class="hero-ctas">
                     <a href="catalogue.html" class="btn-primary">
                         <i class="fa-solid fa-pills"></i> Voir les produits
@@ -128,118 +152,173 @@
         </div>
     </section>
 
+    <!-- ESPACES : Clients / Grossistes -->
+    <section class="section espaces" id="espaces">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Portail <span class="region-name">Canada</span></span>
+                <h2>Choisissez votre <em>espace</em></h2>
+                <p>Que vous achetiez pour vous-même ou pour votre pharmacie, MediPharma s'adapte à vos besoins.</p>
+            </div>
+            <div class="espaces-grid">
+
+                <!-- Clients simples -->
+                <div class="espace-card reveal-up">
+                    <div class="espace-icon"><i class="fa-solid fa-user"></i></div>
+                    <h3>Clients — Achat à l'unité</h3>
+                    <p class="espace-sub">Pour les particuliers.</p>
+                    <ul class="espace-list">
+                        <li><i class="fa-solid fa-check"></i> Prix au détail, à la pièce</li>
+                        <li><i class="fa-solid fa-check"></i> Livraison à domicile</li>
+                        <li><i class="fa-solid fa-check"></i> Paiement sécurisé</li>
+                    </ul>
+                    <a href="catalogue.html" class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i> Voir les produits</a>
+                </div>
+
+                <!-- Grossistes -->
+                <div class="espace-card espace-gros reveal-up" style="--d:.1s">
+                    <span class="espace-badge-gros">Pro</span>
+                    <div class="espace-icon"><i class="fa-solid fa-store"></i></div>
+                    <h3>Grossistes — Prix de gros</h3>
+                    <p class="espace-sub">Pour les pharmacies & revendeurs.</p>
+                    <ul class="espace-list">
+                        <li><i class="fa-solid fa-check"></i> Tarifs grossistes réservés</li>
+                        <li><i class="fa-solid fa-check"></i> Commandes en volume</li>
+                        <li><i class="fa-solid fa-check"></i> Devis B2B personnalisé</li>
+                    </ul>
+                    <button type="button" class="btn btn-gros" id="btnEspaceGros"><i class="fa-solid fa-unlock-keyhole"></i> Accès grossiste</button>
+                    <p class="espace-note" id="espaceGrosNote"></p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
     <!-- PRODUITS -->
     <section class="section produits" id="produits">
         <div class="container">
             <div class="section-header reveal">
-                <span class="section-tag">Catalogue</span>
-                <h2>Nos <em>Médicaments</em></h2>
-                <p>Tous nos produits sont sans ordonnance, d'origine pharmaceutique certifiée.</p>
+                <span class="section-tag">Vitamines Liquides</span>
+                <h2>Nos <em>Produits Vedettes</em></h2>
+                <p>Formules premium à absorption rapide — sans OGM, sans gluten, sans colorant ajouté. Certifiées Santé Canada.</p>
             </div>
-            <div class="produits-grid">
+            <div class="produits-grid produits-grid--photos">
 
-                <div class="produit-card reveal-up" style="--d:.1s">
-                    <div class="produit-icon" style="--c:#14532D">
-                        <i class="fa-solid fa-temperature-arrow-down"></i>
-                    </div>
-                    <div class="produit-badge">Antidouleur</div>
-                    <h3>Paracétamol & Ibuprofène</h3>
-                    <p>Soulagement de la fièvre, douleurs musculaires et maux de tête. Dosages adultes et pédiatriques disponibles.</p>
-                    <div class="produit-tags">
-                        <span>500mg</span><span>1000mg</span><span>Sirop</span>
-                    </div>
-                    <button type="button" class="add-to-cart-btn"
-                            data-name="Paracétamol & Ibuprofène"
-                            data-category="Antidouleur">
+                <div class="produit-card produit-card--photo reveal-up" style="--d:.1s">
+                    <div class="produit-photo" style="background-image:url('ssc_vitC.jpeg')"></div>
+                    <div class="produit-badge">Liquide</div>
+                    <h3>Vitamine C Liquide</h3>
+                    <p>Soutient le système immunitaire, aide à réduire la fatigue. 1500 ml.</p>
+                    <div class="produit-prix">12,99 $ <span>/ 24,99 $</span></div>
+                    <button type="button" class="add-to-cart-btn" data-name="Vitamine C Liquide" data-category="Vitamine Liquide">
                         <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
                     </button>
                 </div>
 
-                <div class="produit-card reveal-up" style="--d:.2s">
-                    <div class="produit-icon" style="--c:#B45309">
-                        <i class="fa-solid fa-mosquito-net"></i>
-                    </div>
+                <div class="produit-card produit-card--photo reveal-up" style="--d:.15s">
+                    <div class="produit-photo" style="background-image:url('ssc_vitD3.jpeg')"></div>
+                    <div class="produit-badge">Liquide</div>
+                    <h3>Vitamine D3 Liquide</h3>
+                    <p>Favorise la santé osseuse et soutient l'immunité. 1500 ml.</p>
+                    <div class="produit-prix">12,99 $ <span>/ 24,99 $</span></div>
+                    <button type="button" class="add-to-cart-btn" data-name="Vitamine D3 Liquide" data-category="Vitamine Liquide">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
+                </div>
+
+                <div class="produit-card produit-card--photo reveal-up" style="--d:.2s">
+                    <div class="produit-photo" style="background-image:url('ssc_zinc.jpeg')"></div>
+                    <div class="produit-badge">Liquide</div>
+                    <h3>Zinc Liquide</h3>
+                    <p>Soutient le système immunitaire, aide la cicatrisation et la santé de la peau. 1500 ml.</p>
+                    <div class="produit-prix">12,99 $ <span>/ 24,99 $</span></div>
+                    <button type="button" class="add-to-cart-btn" data-name="Zinc Liquide" data-category="Vitamine Liquide">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
+                </div>
+
+                <div class="produit-card produit-card--photo reveal-up" style="--d:.25s">
+                    <div class="produit-photo" style="background-image:url('ssc_multi.jpeg')"></div>
+                    <div class="produit-badge">Liquide</div>
+                    <h3>Multivitamines Liquide</h3>
+                    <p>Formule complète, énergie et vitalité au quotidien. 1500 ml.</p>
+                    <div class="produit-prix">12,99 $ <span>/ 24,99 $</span></div>
+                    <button type="button" class="add-to-cart-btn" data-name="Multivitamines Liquide" data-category="Vitamine Liquide">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
+                </div>
+
+                <div class="produit-card produit-card--photo reveal-up" style="--d:.3s">
+                    <div class="produit-photo" style="background-image:url('ssc_melato.jpeg')"></div>
+                    <div class="produit-badge">Liquide</div>
+                    <h3>Mélatonine Liquide</h3>
+                    <p>Aide à s'endormir plus rapidement, améliore la qualité du sommeil. 1500 ml.</p>
+                    <div class="produit-prix">10,99 $ <span>/ 19,99 $</span></div>
+                    <button type="button" class="add-to-cart-btn" data-name="Mélatonine Liquide" data-category="Vitamine Liquide">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
+                </div>
+
+                <div class="produit-card produit-card--photo reveal-up" style="--d:.35s">
+                    <div class="produit-photo" style="background-image:url('ssc_b12.jpeg')"></div>
+                    <div class="produit-badge">Liquide</div>
+                    <h3>Vitamine B12 Liquide</h3>
+                    <p>Booster naturel contre la fatigue, améliore la concentration. 1500 ml.</p>
+                    <div class="produit-prix">14,99 $ <span>/ 29,99 $</span></div>
+                    <button type="button" class="add-to-cart-btn" data-name="Vitamine B12 Liquide" data-category="Vitamine Liquide">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
+                </div>
+
+                <div class="produit-card produit-card--photo reveal-up" style="--d:.4s">
+                    <div class="produit-photo" style="background-image:url('ssc_bcomplex.jpeg')"></div>
+                    <div class="produit-badge">Liquide</div>
+                    <h3>B-Complexe Liquide</h3>
+                    <p>Idéal pour le stress et la fatigue chronique, soutient le système nerveux. 1500 ml.</p>
+                    <div class="produit-prix">13,99 $ <span>/ 24,99 $</span></div>
+                    <button type="button" class="add-to-cart-btn" data-name="B-Complexe Liquide" data-category="Vitamine Liquide">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
+                </div>
+
+                <div class="produit-card produit-card--photo reveal-up" style="--d:.45s">
+                    <div class="produit-photo" style="background-image:url('ssc_hsn.jpeg')"></div>
+                    <div class="produit-badge">Liquide</div>
+                    <h3>Hair, Skin &amp; Nails Liquide</h3>
+                    <p>Renforce les cheveux, la peau et les ongles. Formule naturelle complète. 1500 ml.</p>
+                    <div class="produit-prix">12,99 $ <span>/ 24,99 $</span></div>
+                    <button type="button" class="add-to-cart-btn" data-name="Hair, Skin & Nails Liquide" data-category="Vitamine Liquide">
+                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
+                    </button>
+                </div>
+
+                <div class="produit-card produit-card--photo reveal-up" style="--d:.5s">
+                    <div class="produit-photo" style="background-image:url('ssc_elder.jpeg')"></div>
                     <div class="produit-badge best">Populaire</div>
-                    <h3>Antipaludéens</h3>
-                    <p>Protection et traitement du paludisme, particulièrement adapté pour l'Afrique de l'Ouest. Efficaces et reconnus.</p>
-                    <div class="produit-tags">
-                        <span>Chloroquine</span><span>Quinine</span>
-                    </div>
-                    <button type="button" class="add-to-cart-btn"
-                            data-name="Antipaludéens"
-                            data-category="Antipaludéen">
+                    <h3>Elderberry (Sureau) Liquide</h3>
+                    <p>Anti-viral naturel, renforce l'immunité contre rhumes et grippes. 1500 ml.</p>
+                    <div class="produit-prix">15,99 $ <span>/ 34,99 $</span></div>
+                    <button type="button" class="add-to-cart-btn" data-name="Elderberry (Sureau) Liquide" data-category="Vitamine Liquide">
                         <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
                     </button>
                 </div>
 
-                <div class="produit-card reveal-up" style="--d:.3s">
-                    <div class="produit-icon" style="--c:#1D4ED8">
-                        <i class="fa-solid fa-droplet"></i>
-                    </div>
-                    <div class="produit-badge">Digestif</div>
-                    <h3>Antidiarrhéiques & Réhydratation</h3>
-                    <p>Sels de réhydratation orale, lopéramide et probiotiques pour rétablir rapidement le confort digestif.</p>
-                    <div class="produit-tags">
-                        <span>SRO</span><span>Lopéramide</span>
-                    </div>
-                    <button type="button" class="add-to-cart-btn"
-                            data-name="Antidiarrhéiques & Réhydratation"
-                            data-category="Digestif">
+                <div class="produit-card produit-card--photo reveal-up" style="--d:.55s">
+                    <div class="produit-photo" style="background-image:url('ssc_collagene.jpeg')"></div>
+                    <div class="produit-badge">Liquide</div>
+                    <h3>Collagène Liquide</h3>
+                    <p>Santé de la peau et des articulations, formule à absorption rapide. 1500 ml.</p>
+                    <div class="produit-prix">15,99 $ <span>/ 34,99 $</span></div>
+                    <button type="button" class="add-to-cart-btn" data-name="Collagène Liquide" data-category="Vitamine Liquide">
                         <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
                     </button>
                 </div>
 
-                <div class="produit-card reveal-up" style="--d:.4s">
-                    <div class="produit-icon" style="--c:#7C3AED">
-                        <i class="fa-solid fa-syringe"></i>
-                    </div>
-                    <div class="produit-badge">Soin</div>
-                    <h3>Antiseptiques & Pansements</h3>
-                    <p>Désinfectants cutanés, pansements adhésifs et crèmes cicatrisantes pour soins de plaies courantes.</p>
-                    <div class="produit-tags">
-                        <span>Bétadine</span><span>Mercurochrome</span>
-                    </div>
-                    <button type="button" class="add-to-cart-btn"
-                            data-name="Antiseptiques & Pansements"
-                            data-category="Antiseptique">
-                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
-                    </button>
-                </div>
-
-                <div class="produit-card reveal-up" style="--d:.5s">
-                    <div class="produit-icon" style="--c:#0E7490">
-                        <i class="fa-solid fa-apple-whole"></i>
-                    </div>
-                    <div class="produit-badge">Nutrition</div>
-                    <h3>Vitamines & Suppléments</h3>
-                    <p>Vitamine C, D, B12, zinc, fer et compléments multivitaminés pour renforcer l'immunité au quotidien.</p>
-                    <div class="produit-tags">
-                        <span>Vit. C</span><span>Zinc</span><span>Fer</span>
-                    </div>
-                    <button type="button" class="add-to-cart-btn"
-                            data-name="Vitamines & Suppléments"
-                            data-category="Nutrition">
-                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
-                    </button>
-                </div>
-
-                <div class="produit-card reveal-up" style="--d:.6s">
-                    <div class="produit-icon" style="--c:#BE185D">
-                        <i class="fa-solid fa-wind"></i>
-                    </div>
-                    <div class="produit-badge">Allergie</div>
-                    <h3>Antiallergiques</h3>
-                    <p>Antihistaminiques de 1ère et 2ème génération pour rhinite, urticaire et réactions allergiques saisonnières.</p>
-                    <div class="produit-tags">
-                        <span>Cétirizine</span><span>Loratadine</span>
-                    </div>
-                    <button type="button" class="add-to-cart-btn"
-                            data-name="Antiallergiques"
-                            data-category="Allergie">
-                        <i class="fa-solid fa-cart-plus"></i> Ajouter au panier
-                    </button>
-                </div>
-
+            </div>
+            <div style="text-align:center; margin-top:2rem">
+                <a href="catalogue.html" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;padding:.85rem 2rem;border-radius:999px;font-weight:700;text-decoration:none;font-size:1rem;">
+                    <i class="fa-solid fa-grid-2"></i> Voir tous les produits
+                </a>
             </div>
         </div>
     </section>
@@ -253,7 +332,7 @@
             <div class="section-header reveal">
                 <span class="section-tag">Livraison</span>
                 <h2>Où nous <em>livrons</em></h2>
-                <p>MediAfrica livre partout au Canada et dans trois pays d'Afrique de l'Ouest.</p>
+                <p>MediPharma livre partout au Canada &amp; à l'International (Guinée Conakry · Burkina Faso · Côte d'Ivoire).</p>
             </div>
             <div class="zones-grid">
 
@@ -315,7 +394,7 @@
             <div class="pourquoi-inner">
                 <div class="pourquoi-text reveal">
                     <span class="section-tag">Notre mission</span>
-                    <h2>Pourquoi choisir<br><em>MediAfrica ?</em></h2>
+                    <h2>Pourquoi choisir<br><em>MediPharma ?</em></h2>
                     <p class="pourquoi-lead">Nous croyons que l'accès à des médicaments de qualité est un droit fondamental, peu importe où vous vivez.</p>
                     <div class="avantages">
                         <div class="avantage">
@@ -371,13 +450,13 @@
                         <div class="testi-avatar">AB</div>
                         <div class="testi-info">
                             <strong>Aminata B.</strong>
-                            <span>Montréal → Guinée Conakry</span>
+                            <span>Montréal → Guinée Conakry Conakry</span>
                         </div>
                     </div>
                 </div>
                 <div class="testi-card reveal" style="transition-delay: 0.1s;">
                     <i class="fa-solid fa-quote-left quote-icon"></i>
-                    <p>"Service rapide, prix raisonnables et produits authentiques. Je recommande MediAfrica à toute la diaspora."</p>
+                    <p>"Service rapide, prix raisonnables et produits authentiques. Je recommande MediPharma à toute la diaspora."</p>
                     <div class="testi-user">
                         <div class="testi-avatar" style="background:#B45309; color:#fff;">KO</div>
                         <div class="testi-info">
@@ -388,12 +467,12 @@
                 </div>
                 <div class="testi-card reveal" style="transition-delay: 0.2s;">
                     <i class="fa-solid fa-quote-left quote-icon"></i>
-                    <p>"Grâce à MediAfrica, je peux envoyer les traitements de ma mère à Conakry en toute sécurité. Le service est impeccable."</p>
+                    <p>"Grâce à MediPharma, je peux envoyer les traitements de ma mère à Conakry en toute sécurité. Le service est impeccable."</p>
                     <div class="testi-user">
                         <div class="testi-avatar">AB</div>
                         <div class="testi-info">
                             <strong>Amadou B.</strong>
-                            <span>Montréal → Guinée</span>
+                            <span>Montréal → Guinée Conakry</span>
                         </div>
                     </div>
                 </div>
@@ -440,9 +519,9 @@
                             <i class="fa-solid fa-phone"></i>
                             <span>438-402-9247</span>
                         </a>
-                        <a href="mailto:contact@mediafrica.com" class="channel">
+                        <a href="mailto:contact@MediPharma.com" class="channel">
                             <i class="fa-solid fa-envelope"></i>
-                            <span>contact@mediafrica.com</span>
+                            <span>contact@MediPharma.com</span>
                         </a>
                         <a href="#" id="waContactLink" class="channel channel--whatsapp">
                             <i class="fa-brands fa-whatsapp"></i>
@@ -451,7 +530,7 @@
                     </div>
                 </div>
                 <div class="commander-form reveal-right">
-                    <form class="order-form" id="orderForm" name="commande-mediafrica" method="POST" data-netlify="true">
+                    <form class="order-form" id="orderForm" name="commande-MediPharma" method="POST" data-netlify="true">
                         <h3>Formulaire de commande</h3>
                         <div class="form-row">
                             <div class="fgroup">
@@ -500,9 +579,9 @@
         <div class="container footer-inner">
             <div class="footer-brand">
                 <a href="index.html" class="logo">
-                    <div class="logo-img footer-logo-div" role="img" aria-label="MediAfrica Solutions Santé"></div>
+                    <div class="logo-img footer-logo-div" role="img" aria-label="MediPharma Solutions Santé"></div>
                 </a>
-                <p>Médicaments de qualité, livrés au Canada et en Afrique de l'Ouest.</p>
+                <p>Médicaments de qualité, livrés au Canada &amp; à l'International.</p>
             </div>
             <div class="footer-links">
                 <a href="catalogue.html">Catalogue</a>
@@ -519,7 +598,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 MediAfrica — Solution Santé. Tous droits réservés.</p>
+            <p>&copy; 2026 MediPharma — Solution Santé. Tous droits réservés.</p>
             <p class="disclaimer">Les médicaments proposés sont en vente libre (sans ordonnance). Consultez un professionnel de santé si nécessaire.</p>
         </div>
     </footer>
@@ -530,6 +609,41 @@
     <script src="config.js"></script>
     <script src="cart.js"></script>
     <script src="auth.js"></script>
+    <script src="pricing.js"></script>
+    <script src="region.js"></script>
     <script src="script.js"></script>
+    <script>
+      (function() {
+        var splash = document.getElementById('introSplash');
+        // Après 2 secondes : fade out sur 1 seconde (= 3s total)
+        setTimeout(function() {
+          splash.classList.add('fade-out');
+          setTimeout(function() {
+            splash.classList.add('hidden');
+          }, 1000);
+        }, 1000);
+      })();
+
+      // Aligne le ticker pile sous la navbar (hauteur mesurée, pas un nombre fixe)
+      (function() {
+        var nav = document.querySelector('.navbar');
+        var ticker = document.querySelector('.ticker-wrap');
+        function sync() {
+          if (!nav) return;
+          var navBottom = nav.getBoundingClientRect().bottom;
+          document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+          if (ticker) document.documentElement.style.setProperty('--ticker-h', ticker.offsetHeight + 'px');
+          // Colle les menus déroulants pile sous le bas de l'entête
+          var accBtn = document.getElementById('accountToggle');
+          var moreBtn = document.getElementById('menuToggle');
+          if (accBtn) document.documentElement.style.setProperty('--dd-acc', Math.max(0, navBottom - accBtn.getBoundingClientRect().bottom) + 'px');
+          if (moreBtn) document.documentElement.style.setProperty('--dd-more', Math.max(0, navBottom - moreBtn.getBoundingClientRect().bottom) + 'px');
+        }
+        sync();
+        window.addEventListener('load', sync);
+        window.addEventListener('resize', sync);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(sync);
+      })();
+    </script>
 </body>
 </html>

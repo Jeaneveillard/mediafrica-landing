@@ -8,19 +8,31 @@
 }
 .nav-cart-btn,
 .nav-account-btn {
-    background: none;
-    border: none;
+    background: #0c2d1a;
+    border: 1.5px solid #e8c96a;
     cursor: pointer;
     position: relative;
-    font-size: 1.25rem;
-    color: var(--text);
-    padding: .4rem;
-    border-radius: 50%;
-    transition: background .2s;
+    font-size: .85rem;
+    font-weight: 600;
+    color: #e8c96a;
+    padding: .45rem 1rem;
+    border-radius: 999px;
+    transition: background .2s, color .2s;
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
 }
+.nav-account-btn:hover {
+    background: #e8c96a;
+    color: #0c2d1a;
+}
+.nav-account-btn.logged-in {
+    background: #f0fdf4;
+    border-color: #16a34a;
+    color: #15803d;
+}
+.nav-account-label { font-size: .82rem; }
 .nav-cart-btn:hover,
 .nav-account-btn:hover { background: var(--ivory); }
 
@@ -43,7 +55,8 @@
 .nav-account { position: relative; }
 .account-dropdown {
     position: absolute;
-    right: 0; top: calc(100% + .5rem);
+    right: 0; top: 100%;
+    margin-top: var(--dd-acc, .5rem);
     background: #fff;
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -86,7 +99,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,.45);
-    z-index: 1100;
+    z-index: 10000;
     opacity: 0;
     pointer-events: none;
     transition: opacity .3s;
@@ -104,7 +117,7 @@
     width: min(420px, 100vw);
     height: 100vh;
     background: #fff;
-    z-index: 1200;
+    z-index: 10001;
     display: flex;
     flex-direction: column;
     box-shadow: -4px 0 30px rgba(0,0,0,.12);
@@ -261,7 +274,7 @@
     background: #fff;
     border-radius: 20px;
     box-shadow: var(--shadow-lg);
-    z-index: 1300;
+    z-index: 10002;
     width: min(440px, 95vw);
     padding: 2rem;
     opacity: 0;
@@ -345,6 +358,139 @@
     transition: opacity .2s;
 }
 .btn-auth:hover { opacity: .9; }
+
+/* ── Auth : logo dans modal ── */
+.auth-brand {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+.auth-logo {
+    height: 56px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* ── Bouton Google ── */
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: .7rem 1rem;
+    border: 1.5px solid #dadce0;
+    border-radius: 8px;
+    background: #fff;
+    color: #3c4043;
+    font-size: .9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s, box-shadow .2s;
+    margin-bottom: .5rem;
+}
+.btn-google:hover {
+    background: #f8f9fa;
+    box-shadow: 0 1px 6px rgba(0,0,0,.12);
+}
+
+/* ── Séparateur ou ── */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #aaa;
+    font-size: .8rem;
+    margin: .5rem 0;
+}
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+/* ── Champ mot de passe avec œil ── */
+.pwd-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.pwd-wrap input {
+    width: 100%;
+    padding-right: 2.5rem;
+}
+.pwd-toggle {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    font-size: .95rem;
+    padding: 4px;
+    transition: color .2s;
+    display: flex;
+    align-items: center;
+}
+.pwd-toggle:hover { color: #333; }
+
+/* ── Mot de passe oublié ── */
+.auth-forgot {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #0369a1;
+    font-size: .82rem;
+    text-align: right;
+    padding: 0;
+    align-self: flex-end;
+    text-decoration: underline;
+    margin-top: -.4rem;
+}
+.auth-forgot:hover { color: #075985; }
+
+/* ── Section reset MDP ── */
+.auth-back {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    font-size: .82rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    margin-bottom: .5rem;
+}
+.auth-back:hover { color: #111; }
+.reset-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: .25rem;
+}
+.reset-desc {
+    font-size: .83rem;
+    color: #666;
+    margin-bottom: .75rem;
+    line-height: 1.4;
+}
+.auth-success {
+    color: #16a34a;
+    font-size: .83rem;
+    min-height: 1.2em;
+}
+.auth-hint {
+    color: #888;
+    font-weight: 400;
+    font-size: .8rem;
+}
+.auth-field-hint {
+    font-size: .75rem;
+    color: #999;
+    margin-top: -4px;
+}
 
 /* ── Page Mon Compte ── */
 .account-page {
