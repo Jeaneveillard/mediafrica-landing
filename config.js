@@ -99,5 +99,5 @@ try {
 if (typeof firebase !== 'undefined' && CONFIG.firebase.apiKey) {
     firebase.initializeApp(CONFIG.firebase);
 } else if (typeof firebase !== 'undefined' && !CONFIG.firebase.apiKey) {
-    console.warn('⚠️ MediPharma: Clés Firebase manquantes dans config.js — comptes et commandes désactivés.');
+    console.info('ℹ️ Solutions Santé Canada : Firebase non configuré — mode local (comptes et commandes stockés dans ce navigateur uniquement).');
 }

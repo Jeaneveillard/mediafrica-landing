@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const notes    = document.getElementById('mf-notes').value;
 
         const msg = [
-            '🛒 *Nouvelle commande MediAfrica*',
+            '🛒 *Nouvelle commande Solutions Santé Canada*',
             '',
             `📦 *Produit :* ${currentProduct}`,
             `📊 *Quantité :* ${qty} unités`,

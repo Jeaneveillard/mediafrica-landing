@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Ouverture de WhatsApp
         const waNum = (typeof CONFIG !== 'undefined' && CONFIG.whatsappNumber) ? CONFIG.whatsappNumber : '14384029247';
         const msg = [
-            '🛒 *Nouvelle commande MediAfrica (Formulaire)*',
+            '🛒 *Nouvelle commande Solutions Santé Canada (Formulaire)*',
             '',
             `👤 *Nom :* ${nom}`,
             `📞 *Tél :* ${tel}`,

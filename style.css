@@ -1583,8 +1583,13 @@ img { max-width: 100%; display: block; }
 @media (max-width: 768px) {
     /* ── Navbar + Ticker : logo réduit → header plus compact ── */
     .logo-img   { height: 56px; }
+    /* Logo SSC (globe + nom) : réduit pour libérer la place du bouton + hamburger */
+    .ssc-globe       { height: 46px; }
+    .ssc-name        { font-size: 14px; letter-spacing: .5px; }
+    .ssc-tagline     { display: none; }
+    .ssc-logo-inner  { gap: 7px; padding: 5px 9px 5px 6px; }
     .navbar     { padding: .55rem 0; }
-    .ticker-wrap{ top: 74px; }   /* 56px logo + 2×0.55rem ≈ 74px */
+    .ticker-wrap{ top: 74px; }   /* logo SSC ~56px + 2×0.55rem ≈ 74px */
     .hero       { padding-top: 116px; } /* 74px + ~42px ticker */
 
     /* ── Sections ── */
@@ -1649,9 +1654,14 @@ img { max-width: 100%; display: block; }
 @media (max-width: 480px) {
     /* ── Navbar encore plus compact ── */
     .logo-img    { height: 46px; }
+    .ssc-globe       { height: 40px; }
+    .ssc-name        { font-size: 12px; line-height: 1.15; }
+    .ssc-logo-inner  { gap: 6px; padding: 4px 7px 4px 5px; }
+    /* Bouton compte : icône seule pour libérer l'espace du hamburger */
+    .nav-account-label { display: none; }
     .navbar      { padding: .45rem 0; }
-    .ticker-wrap { top: 62px; }
-    .hero        { padding-top: 104px; }
+    .ticker-wrap { top: 64px; }
+    .hero        { padding-top: 106px; }
 
     /* ── Hero ── */
     .hero-text h1 { font-size: clamp(1.8rem, 10vw, 2.6rem); }
