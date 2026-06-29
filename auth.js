@@ -150,6 +150,31 @@ const Auth = (() => {
         btn.innerHTML = show ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
     }
 
+    /* ── Injecte le bouton compte dans l'entête s'il n'existe pas (pages secondaires) ── */
+    function _ensureNavAccount() {
+        if (document.getElementById('navAccountWrap')) return;
+        const navInner = document.querySelector('.nav-inner');
+        if (!navInner) return;
+        let actions = navInner.querySelector('.nav-actions');
+        if (!actions) {
+            actions = document.createElement('div');
+            actions.className = 'nav-actions';
+            const hamburger = navInner.querySelector('.hamburger');
+            if (hamburger) navInner.insertBefore(actions, hamburger);
+            else navInner.appendChild(actions);
+        }
+        const wrap = document.createElement('div');
+        wrap.className = 'nav-account';
+        wrap.id = 'navAccountWrap';
+        wrap.innerHTML = `
+            <button type="button" class="nav-account-btn" id="accountToggle" aria-label="Mon compte">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                <span class="nav-account-label">Se connecter</span>
+            </button>
+            <div class="account-dropdown" id="accountDropdown"></div>`;
+        actions.appendChild(wrap);
+    }
+
     /* ── Injection HTML ── */
     function _injectHTML() {
         if (document.getElementById('authModal')) return;
@@ -404,6 +429,7 @@ const Auth = (() => {
     function init() {
         if (_initialized) return;
         _initialized = true;
+        _ensureNavAccount();
         _injectHTML();
         _wireEvents();
 
