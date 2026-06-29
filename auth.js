@@ -456,10 +456,35 @@ const Auth = (() => {
         });
     }
 
+    /* ── Pré-crée les comptes essentiels si absents (incognito / nouveau navigateur) ── */
+    function _seedAccounts() {
+        const users = _getUsers();
+        const ae = (typeof CONFIG !== 'undefined' && CONFIG.adminEmail) ? CONFIG.adminEmail.toLowerCase() : 'admin@medipharma.ca';
+        const au = (typeof CONFIG !== 'undefined' && CONFIG.adminUsername) ? CONFIG.adminUsername.toLowerCase() : 'eltajoseph29';
+
+        // Compte admin du site (même username/email que l'admin panel)
+        if (!users['email:' + ae]) {
+            const adminRec = {
+                displayName: 'Admin MediPharma',
+                username: au,
+                email: ae,
+                pwd: '-26f4um',        // hash de Ronyta2010 via _hash()
+                isGrossiste: false,
+                grossisteValidated: false,
+                isAdminAccount: true,
+                createdAt: 0
+            };
+            users['email:' + ae] = adminRec;
+            users['user:' + au]  = adminRec;
+            _saveUsers(users);
+        }
+    }
+
     /* ── Init ── */
     function init() {
         if (_initialized) return;
         _initialized = true;
+        _seedAccounts();
         _ensureNavAccount();
         _injectHTML();
         _wireEvents();
