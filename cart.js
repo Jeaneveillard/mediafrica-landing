@@ -191,7 +191,7 @@ const Cart = (() => {
 
         // Sauvegarder commande en localStorage pour l'admin
         const orders = JSON.parse(localStorage.getItem('ssc_orders') || '[]');
-        orders.unshift({
+        const newOrder = {
             id: 'CMD-' + Date.now(),
             date: new Date().toISOString(),
             client: user ? (user.displayName || user.username || user.email) : 'Anonyme',
@@ -199,8 +199,10 @@ const Cart = (() => {
             items: items.map(i => ({ name: i.name, qty: i.quantity, prix: i.unitPrice })),
             total: total,
             status: 'envoyée'
-        });
+        };
+        orders.unshift(newOrder);
         localStorage.setItem('ssc_orders', JSON.stringify(orders.slice(0, 200)));
+        if (typeof Notify !== 'undefined') Notify.commande(newOrder);
 
         clear();
         closePanel();

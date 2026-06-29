@@ -446,6 +446,7 @@ const Auth = (() => {
             if (result.error) { _setError('registerError', result.error); return; }
             _user = result.user;
             _updateNavbar(_user);
+            if (typeof Notify !== 'undefined') Notify.inscription(_user);
             _afterAuthSuccess();
         });
     }
