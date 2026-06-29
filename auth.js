@@ -257,14 +257,53 @@ const Auth = (() => {
                 </div>
                 <!-- Champs supplémentaires pour les grossistes -->
                 <div id="regGrossistFields" style="display:none">
+                    <div class="gros-section-title">Informations de l'entreprise</div>
                     <div class="auth-group">
                         <label for="regEtablissement">Nom de l'établissement / entreprise <span style="color:#dc2626">*</span></label>
                         <input type="text" id="regEtablissement" placeholder="Pharmacie Centrale, Mag Santé…">
                     </div>
                     <div class="auth-group">
-                        <label for="regNumEntreprise">Numéro de l'entreprise <span style="color:#dc2626">*</span></label>
-                        <input type="text" id="regNumEntreprise" placeholder="NEQ / Matricule — ex : 1234567890">
+                        <label for="regNumEntreprise">Numéro de l'entreprise (NEQ / Matricule) <span style="color:#dc2626">*</span></label>
+                        <input type="text" id="regNumEntreprise" placeholder="ex : 1234567890">
                     </div>
+                    <div class="auth-group">
+                        <label for="regTelPro">Téléphone professionnel <span style="color:#dc2626">*</span></label>
+                        <input type="tel" id="regTelPro" placeholder="+1 438 000 0000">
+                    </div>
+                    <div class="auth-group">
+                        <label for="regAdresse">Adresse de l'entreprise <span style="color:#dc2626">*</span></label>
+                        <input type="text" id="regAdresse" placeholder="123 rue Principale">
+                    </div>
+                    <div class="auth-group">
+                        <label for="regVille">Ville <span style="color:#dc2626">*</span></label>
+                        <input type="text" id="regVille" placeholder="Montréal, Conakry…">
+                    </div>
+                    <div class="auth-group">
+                        <label for="regProvince">Province / État <span style="color:#dc2626">*</span></label>
+                        <input type="text" id="regProvince" placeholder="Québec, Ontario, Conakry…">
+                    </div>
+                    <div class="auth-group">
+                        <label for="regPays">Pays <span style="color:#dc2626">*</span></label>
+                        <select id="regPays">
+                            <option value="" disabled selected>Choisir un pays</option>
+                            <option>Canada</option>
+                            <option>Guinée Conakry</option>
+                            <option>Burkina Faso</option>
+                            <option>Côte d'Ivoire</option>
+                            <option>Autre</option>
+                        </select>
+                    </div>
+                    <div class="auth-group">
+                        <label for="regLicence">Numéro de licence pharmaceutique / agrément</label>
+                        <input type="text" id="regLicence" placeholder="Optionnel — ex : QC-PHR-12345">
+                    </div>
+                    <div class="auth-group">
+                        <label for="regSiteWeb">Site web</label>
+                        <input type="url" id="regSiteWeb" placeholder="Optionnel — https://votresite.com">
+                    </div>
+                    <p class="auth-field-hint" style="color:#B45309;background:#FEF3C7;padding:.6rem .85rem;border-radius:8px;margin-top:.5rem">
+                        <i class="fa-solid fa-clock"></i> Votre compte sera activé sous 24h après vérification par notre équipe.
+                    </p>
                 </div>
                 <p class="auth-error" id="registerError"></p>
                 <button type="submit" class="btn-auth">Créer mon compte</button>
@@ -289,7 +328,8 @@ const Auth = (() => {
     }
 
     /* ── Logique auth locale ── */
-    function _register(name, username, email, password, isGrossiste, etablissement, numEntreprise) {
+    function _register(name, username, email, password, isGrossiste, grosInfo) {
+        grosInfo = grosInfo || {};
         const users = _getUsers();
         const emailKey    = 'email:' + email.toLowerCase();
         const usernameKey = 'user:'  + username.toLowerCase();
@@ -306,11 +346,28 @@ const Auth = (() => {
             return { error: 'Cet identifiant est réservé.' };
 
         // grossisteValidated = false : l'admin doit valider avant que les prix gros s'affichent
-        const record = { displayName: name, username, email, pwd: _hash(password), isGrossiste: !!isGrossiste, grossisteValidated: false, etablissement: etablissement||'', numeroEntreprise: numEntreprise||'', createdAt: Date.now() };
+        const record = {
+            displayName: name, username, email, pwd: _hash(password),
+            isGrossiste: !!isGrossiste, grossisteValidated: false,
+            etablissement:    grosInfo.etablissement    || '',
+            numeroEntreprise: grosInfo.numeroEntreprise || '',
+            telephonePro:     grosInfo.telephonePro     || '',
+            adresse:          grosInfo.adresse          || '',
+            ville:            grosInfo.ville            || '',
+            province:         grosInfo.province         || '',
+            pays:             grosInfo.pays             || '',
+            licence:          grosInfo.licence           || '',
+            siteWeb:          grosInfo.siteWeb           || '',
+            createdAt: Date.now()
+        };
         users[emailKey]    = record;
         users[usernameKey] = record;
         _saveUsers(users);
-        const user = { displayName: name, username, email, isGrossiste: !!isGrossiste, grossisteValidated: false, etablissement: etablissement||'', numeroEntreprise: numEntreprise||'' };
+        const user = {
+            displayName: name, username, email,
+            isGrossiste: !!isGrossiste, grossisteValidated: false,
+            etablissement: record.etablissement, numeroEntreprise: record.numeroEntreprise
+        };
         _saveSession(user);
         return { user };
     }
@@ -323,7 +380,11 @@ const Auth = (() => {
         const found   = users[key];
         if (!found) return { error: isEmail ? 'Aucun compte avec cet email.' : 'Nom d\'utilisateur introuvable.' };
         if (found.pwd !== _hash(password)) return { error: 'Mot de passe incorrect.' };
-        const user = { displayName: found.displayName, username: found.username, email: found.email, isGrossiste: !!found.isGrossiste, grossisteValidated: !!found.grossisteValidated };
+        const user = {
+            displayName: found.displayName, username: found.username, email: found.email,
+            isGrossiste: !!found.isGrossiste, grossisteValidated: !!found.grossisteValidated,
+            etablissement: found.etablissement||'', numeroEntreprise: found.numeroEntreprise||''
+        };
         _saveSession(user);
         return { user };
     }
@@ -466,11 +527,27 @@ const Auth = (() => {
             if (!username) { _setError('registerError', 'Choisissez un nom d\'utilisateur.'); return; }
             if (!email)    { _setError('registerError', 'Entrez votre email.'); return; }
             const isGrossiste   = document.querySelector('input[name="regStatus"]:checked')?.value === 'grossiste';
-            const etablissement = (document.getElementById('regEtablissement')?.value||'').trim();
-            const numEntreprise = (document.getElementById('regNumEntreprise')?.value||'').trim();
-            if (isGrossiste && !etablissement) { _setError('registerError', 'Entrez le nom de votre établissement.'); return; }
-            if (isGrossiste && !numEntreprise)  { _setError('registerError', 'Entrez le numéro de votre entreprise.'); return; }
-            const result = _register(name, username, email, password, isGrossiste, etablissement, numEntreprise);
+            const val = id => (document.getElementById(id)?.value || '').trim();
+            const grosInfo = {
+                etablissement:    val('regEtablissement'),
+                numeroEntreprise: val('regNumEntreprise'),
+                telephonePro:     val('regTelPro'),
+                adresse:          val('regAdresse'),
+                ville:            val('regVille'),
+                province:         val('regProvince'),
+                pays:             val('regPays'),
+                licence:          val('regLicence'),
+                siteWeb:          val('regSiteWeb')
+            };
+            if (isGrossiste) {
+                const required = { etablissement:'le nom de votre établissement', numeroEntreprise:'le numéro de votre entreprise',
+                    telephonePro:'votre téléphone professionnel', adresse:'l\'adresse de votre entreprise',
+                    ville:'votre ville', province:'votre province/état', pays:'votre pays' };
+                for (const k in required) {
+                    if (!grosInfo[k]) { _setError('registerError', 'Entrez ' + required[k] + '.'); return; }
+                }
+            }
+            const result = _register(name, username, email, password, isGrossiste, grosInfo);
             if (result.error) { _setError('registerError', result.error); return; }
             _user = result.user;
             _updateNavbar(_user);

@@ -247,7 +247,7 @@
                     <span id="clients-count" style="font-size:13px;color:var(--muted)"></span>
                 </div>
                 <table class="data-table">
-                    <thead><tr><th>Nom</th><th>Username</th><th>Établissement</th><th>N° Entreprise</th><th>Email</th><th>Inscrit le</th><th>Méthode</th><th>Grossiste</th></tr></thead>
+                    <thead><tr><th>Nom</th><th>Username</th><th>Établissement</th><th>N° Entreprise</th><th>Email</th><th>Inscrit le</th><th>Méthode</th><th>Type</th></tr></thead>
                     <tbody id="clients-body"></tbody>
                 </table>
             </div>
@@ -533,7 +533,7 @@ function loadClients(){
     const tbody = document.getElementById('clients-body');
     document.getElementById('clients-count').textContent = users.length + ' client(s)';
     if (users.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-users"></i>Aucun client inscrit</div></td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-users"></i>Aucun client inscrit</div></td></tr>';
         return;
     }
     tbody.innerHTML = users.map(u => {
@@ -566,15 +566,24 @@ function setGrossiste(email){
     let raw;
     try { raw = JSON.parse(localStorage.getItem('ssc_users')||'{}'); } catch { return; }
     const lc = email.toLowerCase();
-    // état actuel (validé = les deux flags true)
-    let currentValidated = false;
-    for (const k in raw) if ((raw[k].email||'').toLowerCase() === lc) { currentValidated = !!(raw[k].isGrossiste && raw[k].grossisteValidated); break; }
-    const nextValidated = !currentValidated;
-    // Bascule : valider (isGrossiste=true, grossisteValidated=true) ou révoquer (les deux à false)
+    // Cycle 3 états : Client (00) → En attente (10) → Grossiste validé (11) → Client (00)
+    let cur = { isGrossiste: false, grossisteValidated: false };
+    for (const k in raw) if ((raw[k].email||'').toLowerCase() === lc) { cur = raw[k]; break; }
+    let nextG, nextV;
+    if (!cur.isGrossiste && !cur.grossisteValidated) {
+        // Client → En attente
+        nextG = true; nextV = false;
+    } else if (cur.isGrossiste && !cur.grossisteValidated) {
+        // En attente → Grossiste validé
+        nextG = true; nextV = true;
+    } else {
+        // Grossiste validé → Client
+        nextG = false; nextV = false;
+    }
     for (const k in raw) {
         if ((raw[k].email||'').toLowerCase() === lc) {
-            raw[k].isGrossiste        = nextValidated;
-            raw[k].grossisteValidated = nextValidated;
+            raw[k].isGrossiste        = nextG;
+            raw[k].grossisteValidated = nextV;
         }
     }
     localStorage.setItem('ssc_users', JSON.stringify(raw));
