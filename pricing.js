@@ -51,7 +51,21 @@ const Pricing = (() => {
         const unite = CONFIG.priceFor(name, false);
         if (unite == null) return; // produit sans prix → rien
 
-        if (_isGrossisteValide()) {
+        const isAdmin = typeof Auth !== 'undefined' && Auth.isAdmin && Auth.isAdmin();
+
+        if (isAdmin) {
+            // Admin : voit les deux prix clairement, sans barré
+            const gros = CONFIG.priceFor(name, true);
+            el.innerHTML =
+                `<span class="pp-amount">${CONFIG.formatPrice(unite)}</span>` +
+                `<span class="pp-tag">à l'unité</span>` +
+                (gros != null && gros !== unite
+                    ? `<span class="pp-sep">·</span>` +
+                      `<span class="pp-amount pp-gros">${CONFIG.formatPrice(gros)}</span>` +
+                      `<span class="pp-tag pp-tag-gros"><i class="fa-solid fa-tags"></i> gros</span>`
+                    : ``);
+            el.classList.remove('is-gros');
+        } else if (_isGrossisteValide()) {
             const gros = CONFIG.priceFor(name, true);
             el.innerHTML =
                 `<span class="pp-amount pp-gros">${CONFIG.formatPrice(gros ?? unite)}</span>` +
