@@ -450,7 +450,7 @@ img { max-width: 100%; display: block; }
     to   { transform: rotate(360deg); }
 }
 
-/* Logo centré dans le cercle */
+/* Logo centré dans le cercle — fond carré supprimé par clip circulaire */
 .intro-globe {
     position: absolute;
     top: 50%;
@@ -458,7 +458,8 @@ img { max-width: 100%; display: block; }
     transform: translate(-50%, -50%);
     height: 360px;
     width: 360px;
-    object-fit: contain;
+    object-fit: cover;
+    clip-path: circle(50%);
     filter: drop-shadow(0 8px 40px rgba(228,201,106,.45));
 }
 
