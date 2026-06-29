@@ -34,9 +34,11 @@
 
         /* ── SIDEBAR ── */
         .sidebar{width:240px;background:var(--green);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
-        .sidebar-logo{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.1)}
+        .sidebar-logo{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.1);text-decoration:none;display:block}
         .sidebar-logo img{height:60px;object-fit:contain;width:100%}
         .sidebar-logo .brand{font-size:13px;color:rgba(255,255,255,.6);margin-top:6px;text-align:center}
+        .sidebar-logo:hover img{opacity:.85}
+        .sidebar-logo:hover .brand{color:rgba(255,255,255,.85)}
         .sidebar nav{flex:1;padding:12px 0}
         .nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;font-size:14px;font-weight:500;color:rgba(255,255,255,.75);transition:background .15s,color .15s;border:none;background:none;width:100%;text-align:left}
         .nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
@@ -146,10 +148,10 @@
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
-        <div class="sidebar-logo">
+        <a href="index.html" class="sidebar-logo">
             <img src="assets/logo-ssc.png" alt="SSC">
             <div class="brand">Solutions Santé Canada</div>
-        </div>
+        </a>
         <nav>
             <button class="nav-item active" data-page="dashboard"><i class="fa-solid fa-gauge"></i> Tableau de bord</button>
             <button class="nav-item" data-page="orders"><i class="fa-solid fa-bag-shopping"></i> Commandes</button>
