@@ -463,13 +463,11 @@ const Auth = (() => {
             };
             await db.collection('users').doc(uid).set(profile);
 
-            const user = {
-                uid, displayName: name, username, email,
-                isGrossiste: !!isGrossiste, grossisteValidated: false,
-                etablissement: profile.etablissement, numeroEntreprise: profile.numeroEntreprise
-            };
-            _user = user; _saveSession(user);
-            return { user };
+            // Confirmation d'email : on envoie le lien et on NE connecte PAS le client.
+            // Il devra cliquer le lien reçu par email avant de pouvoir se connecter.
+            try { await cred.user.sendEmailVerification(); } catch (_) {}
+            try { await firebase.auth().signOut(); } catch (_) {}
+            return { pendingVerification: true, email };
         } catch (e) {
             return { error: _fbError(e) };
         }
@@ -721,6 +719,12 @@ const Auth = (() => {
                 : _register(name, username, email, password, isGrossiste, grosInfo);
             if (btn) { btn.disabled = false; btn.innerHTML = orig; }
             if (result.error) { _setError('registerError', result.error); return; }
+            // Mode Firebase : compte créé mais email à confirmer → pas de connexion automatique.
+            if (result.pendingVerification) {
+                e.target.reset();
+                _setSuccess('registerError', '✅ Compte créé ! Un email de confirmation a été envoyé à ' + result.email + '. Cliquez le lien pour activer votre compte, puis connectez-vous.');
+                return;
+            }
             _user = result.user;
             _updateNavbar(_user);
             if (typeof Notify !== 'undefined') Notify.inscription(_user);
