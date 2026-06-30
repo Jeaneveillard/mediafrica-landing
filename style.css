@@ -305,6 +305,7 @@ img { max-width: 100%; display: block; }
     font-weight: 500;
     color: var(--muted);
     transition: color .2s;
+    white-space: nowrap;
 }
 .nav-links a:not(.btn-nav):hover { color: var(--green); }
 
@@ -1576,6 +1577,14 @@ img { max-width: 100%; display: block; }
 
 /* ===== RESPONSIVE ===== */
 .mobile-only { display: none; }
+
+/* Navbar : bascule vers le menu hamburger avant que les liens ne chevauchent le
+   logo. Le menu horizontal complet (logo SSC large + liens + actions) ne tient
+   qu'au-delà de ~1250px ; en dessous, on passe au menu mobile (overlay) complet. */
+@media (max-width: 1250px) {
+    .nav-links { display: none; flex: none; padding-left: 0; }
+    .hamburger { display: flex; }
+}
 
 @media (max-width: 1024px) {
     .produits-grid   { grid-template-columns: repeat(2, 1fr); }
