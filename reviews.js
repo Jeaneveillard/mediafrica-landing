@@ -85,5 +85,60 @@ const Reviews = (() => {
         return _cache.find(r => r.id === id) || null;
     }
 
-    return { submit, getAll, getMine };
+    function _esc(str) {
+        return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function _initials(name) {
+        return String(name || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase() || '').join('') || '?';
+    }
+
+    function _starsHTML(rating) {
+        let html = '';
+        for (let i = 1; i <= 5; i++) {
+            html += `<i class="fa-solid fa-star" style="color:${i <= rating ? 'var(--gold)' : 'var(--border)'}"></i>`;
+        }
+        return html;
+    }
+
+    /* ── Injecte les avis dynamiques après les témoignages statiques ── */
+    function _renderGrid(reviews) {
+        const grid = document.getElementById('testimonialsGrid');
+        if (!grid) return;
+        grid.querySelectorAll('.testi-card--dynamic').forEach(el => el.remove());
+        reviews.forEach(r => {
+            const card = document.createElement('div');
+            card.className = 'testi-card testi-card--dynamic reveal';
+            card.innerHTML = `
+                <div class="testi-stars">${_starsHTML(r.rating)}</div>
+                <p>"${_esc(r.comment)}"</p>
+                <div class="testi-user">
+                    <div class="testi-avatar">${_esc(_initials(r.userName))}</div>
+                    <div class="testi-info">
+                        <strong>${_esc(r.userName)}</strong>
+                        ${r.route ? `<span>${_esc(r.route)}</span>` : ''}
+                    </div>
+                </div>`;
+            grid.appendChild(card);
+        });
+    }
+
+    /* ── Note moyenne affichée dans l'en-tête de section ── */
+    function _renderSummary(reviews) {
+        const el = document.getElementById('reviewsSummary');
+        if (!el) return;
+        if (!reviews.length) { el.style.display = 'none'; return; }
+        const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+        el.innerHTML = `${avg.toFixed(1)} <i class="fa-solid fa-star" style="color:var(--gold)"></i> · ${reviews.length} avis`;
+        el.style.display = 'inline-flex';
+    }
+
+    async function _refresh() {
+        const reviews = await getAll();
+        _renderGrid(reviews);
+        _renderSummary(reviews);
+        return reviews;
+    }
+
+    return { submit, getAll, getMine, _refresh };
 })();
