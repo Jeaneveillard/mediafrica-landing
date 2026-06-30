@@ -484,6 +484,12 @@ const Auth = (() => {
                 email = snap.docs[0].data().email;
             }
             const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
+            // Bloquer tant que l'email n'est pas confirmé (connexion Google exemptée : emailVerified=true)
+            if (!cred.user.emailVerified) {
+                const unverifiedEmail = cred.user.email;
+                try { await firebase.auth().signOut(); } catch (_) {}
+                return { unverified: true, email: unverifiedEmail };
+            }
             const uid  = cred.user.uid;
             let d = {};
             try { const doc = await db.collection('users').doc(uid).get(); if (doc.exists) d = doc.data(); } catch (_) {}
@@ -502,6 +508,9 @@ const Auth = (() => {
             return { error: _fbError(e) };
         }
     }
+
+    // Remplacé par l'implémentation complète en Task 3
+    function _showResendVerification(email) { /* stub : voir Task 3 */ }
 
     function _logout() {
         if (_fbReady()) { try { firebase.auth().signOut(); } catch (_) {} }
@@ -672,6 +681,11 @@ const Auth = (() => {
                 ? await _fbLogin(email, password)
                 : _login(email, password);
             if (btn) { btn.disabled = false; btn.innerHTML = orig; }
+            if (result.unverified) {
+                _setError('loginError', '⚠️ Votre email n\'est pas encore confirmé. Vérifiez votre boîte mail (et vos spams).');
+                _showResendVerification(result.email);
+                return;
+            }
             if (result.error) { _setError('loginError', result.error); return; }
             _user = result.user;
             _updateNavbar(_user);
