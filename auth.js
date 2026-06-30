@@ -519,6 +519,10 @@ const Auth = (() => {
             Cart.openPanel();
             return;
         }
+        if (_pendingAction === 'review' && typeof Reviews !== 'undefined') {
+            Reviews.openModal();
+            return;
+        }
         // Admin → tableau de bord
         if (_isAdmin(_user)) {
             location.href = 'admin.html';
