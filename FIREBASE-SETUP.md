@@ -52,7 +52,7 @@ firebase: {
 
 ## Étape 6 — Déployer et tester
 1. `git add config.js && git commit -m "feat: clés Firebase" && git push`
-   *(ou, si Netlify n'est pas encore relié à GitHub, glisser le nouveau ZIP sur Netlify Drop)*
+   *(le site est sur GitHub Pages : le `push` met le site à jour automatiquement en ~1 min)*
 2. Sur `medipharma.ca` : **créer un compte** sur l'ordinateur.
 3. Sur le **téléphone** : se connecter avec ce compte → ✅ ça doit marcher.
 4. Dans l'**admin** → onglet **Clients** : le nouveau compte apparaît, et le bouton **Type** le fait passer Client → En attente → Grossiste ✓.
@@ -71,6 +71,12 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow create: if request.auth != null && request.auth.uid == uid;
       allow update, delete: if request.auth != null && request.auth.uid == uid;
+    }
+    // Avis clients : lecture publique (affichés sur la page d'accueil),
+    // chaque utilisateur connecté ne peut écrire que son propre avis (doc id = son uid)
+    match /reviews/{uid} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null && request.auth.uid == uid;
     }
   }
 }
