@@ -59,6 +59,20 @@ firebase: {
 
 ---
 
+## 📧 Vérification d'email (automatique)
+
+Dès que les clés Firebase sont en place, l'inscription d'un client déclenche
+**automatiquement** un email de confirmation. Le client doit cliquer le lien
+avant de pouvoir se connecter. **Rien à activer** : le template d'email de
+vérification est natif et activé par défaut dans Firebase Auth.
+
+**Optionnel — personnaliser l'email :** Console Firebase → **Authentication →
+Templates** → « Adresse email de validation ». On peut y changer le nom de
+l'expéditeur et le texte. (Le domaine d'envoi par défaut `@firebaseapp.com`
+fonctionne sans configuration.)
+
+---
+
 ## 🔒 Étape 7 — Règles de sécurité Firestore (avant la fin des 30 jours)
 Console → **Firestore → Règles** → coller puis **Publier** :
 
