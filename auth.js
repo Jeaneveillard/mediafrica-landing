@@ -132,6 +132,7 @@ const Auth = (() => {
         document.querySelectorAll('.auth-tab').forEach(t =>
             t.classList.toggle('active', t.dataset.tab === tab)
         );
+        document.getElementById('resendVerifyWrap')?.classList.add('auth-form--hidden');
         const lf = document.getElementById('loginForm');
         const rf = document.getElementById('registerForm');
         if (lf) lf.classList.toggle('auth-form--hidden', tab !== 'login');
@@ -215,6 +216,9 @@ const Auth = (() => {
                 </div>
                 <button type="button" class="auth-forgot" id="btnForgot">Mot de passe oublié ?</button>
                 <p class="auth-error" id="loginError"></p>
+                <div id="resendVerifyWrap" class="auth-form--hidden">
+                    <button type="button" class="auth-forgot" id="btnResendVerify">Renvoyer l'email de confirmation</button>
+                </div>
                 <button type="submit" class="btn-auth">Se connecter</button>
             </form>
 
@@ -509,8 +513,34 @@ const Auth = (() => {
         }
     }
 
-    // Remplacé par l'implémentation complète en Task 3
-    function _showResendVerification(email) { /* stub : voir Task 3 */ }
+    // Affiche le bouton « Renvoyer l'email » et mémorise l'email concerné
+    let _pendingVerifyEmail = null;
+    function _showResendVerification(email) {
+        _pendingVerifyEmail = email || null;
+        document.getElementById('resendVerifyWrap')?.classList.remove('auth-form--hidden');
+    }
+    function _hideResendVerification() {
+        _pendingVerifyEmail = null;
+        document.getElementById('resendVerifyWrap')?.classList.add('auth-form--hidden');
+    }
+
+    // Renvoie l'email de vérification : reconnecte silencieusement, renvoie le lien, déconnecte
+    async function _resendVerification(identifier, password) {
+        if (!_fbReady()) return { error: 'Indisponible en mode local.' };
+        try {
+            const db = firebase.firestore();
+            let email = identifier;
+            if (!identifier.includes('@')) {
+                const snap = await db.collection('users').where('username', '==', identifier.toLowerCase()).limit(1).get();
+                if (snap.empty) return { error: 'Compte introuvable.' };
+                email = snap.docs[0].data().email;
+            }
+            const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
+            await cred.user.sendEmailVerification();
+            try { await firebase.auth().signOut(); } catch (_) {}
+            return { ok: true, email };
+        } catch (e) { return { error: _fbError(e) }; }
+    }
 
     function _logout() {
         if (_fbReady()) { try { firebase.auth().signOut(); } catch (_) {} }
@@ -598,6 +628,24 @@ const Auth = (() => {
             document.getElementById('authTabsWrap').style.display = '';
             document.getElementById('loginForm').classList.remove('auth-form--hidden');
             _setError('resetError', ''); _setSuccess('resetSuccess', '');
+        });
+
+        // Renvoyer l'email de confirmation
+        document.getElementById('btnResendVerify')?.addEventListener('click', async () => {
+            const identifier = document.getElementById('loginEmail').value.trim();
+            const password   = document.getElementById('loginPassword').value;
+            if (!identifier || !password) {
+                _setError('loginError', 'Entrez votre email et votre mot de passe, puis cliquez à nouveau.');
+                return;
+            }
+            const btn = document.getElementById('btnResendVerify');
+            const orig = btn.innerHTML;
+            btn.disabled = true; btn.innerHTML = 'Envoi…';
+            const res = await _resendVerification(identifier, password);
+            btn.disabled = false; btn.innerHTML = orig;
+            if (res.error) { _setError('loginError', res.error); return; }
+            _setSuccess('loginError', '✅ Email renvoyé à ' + res.email + '. Vérifiez votre boîte mail.');
+            _hideResendVerification();
         });
 
         // Google (vraie connexion via Firebase si configuré, sinon simulation locale)
