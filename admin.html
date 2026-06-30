@@ -366,11 +366,17 @@
     </main>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="config.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════
 //  ADMIN — Solutions Santé Canada
 // ═══════════════════════════════════════════════════════
+
+// Firebase actif dès que les clés sont dans config.js (sinon repli localStorage)
+function fbReady(){ return typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0; }
 
 const ADMIN_SESSION  = 'ssc_admin_session';
 const ADMIN_USERNAME = 'eltajoseph29';        // ← Nom d'utilisateur admin
@@ -528,8 +534,39 @@ document.getElementById('btnClearOrders').addEventListener('click', () => {
 // ══════════════════════════════
 //  CLIENTS
 // ══════════════════════════════
-function loadClients(){
-    const users = getUsers();
+// État suivant dans le cycle Client → En attente → Grossiste validé → Client
+function nextGrosState(cur){
+    if (!cur.isGrossiste && !cur.grossisteValidated) return { isGrossiste:true,  grossisteValidated:false };
+    if (cur.isGrossiste && !cur.grossisteValidated)  return { isGrossiste:true,  grossisteValidated:true  };
+    return { isGrossiste:false, grossisteValidated:false };
+}
+
+// Charge les clients depuis Firestore (multi-appareils) ou localStorage (repli)
+async function loadClients(){
+    let users = [];
+    if (fbReady()) {
+        try {
+            const snap = await firebase.firestore().collection('users').get();
+            users = snap.docs.map(doc => {
+                const d = doc.data() || {};
+                let created = d.createdAt;
+                if (created && typeof created.toMillis === 'function') created = created.toMillis();
+                return {
+                    _uid: doc.id,
+                    displayName: d.displayName || '', username: d.usernameDisplay || d.username || '',
+                    etablissement: d.etablissement || '', numeroEntreprise: d.numeroEntreprise || '',
+                    email: d.email || '', createdAt: created || 0, provider: d.provider || 'email',
+                    isGrossiste: !!d.isGrossiste, grossisteValidated: !!d.grossisteValidated
+                };
+            });
+        } catch (e) { console.warn('Firestore clients indisponible, repli localStorage :', e); users = getUsers(); }
+    } else {
+        users = getUsers();
+    }
+    _renderClients(users);
+}
+
+function _renderClients(users){
     const tbody = document.getElementById('clients-body');
     document.getElementById('clients-count').textContent = users.length + ' client(s)';
     if (users.length === 0) {
@@ -542,7 +579,7 @@ function loadClients(){
         const label = gros ? '<i class="fa-solid fa-circle-check"></i> Grossiste ✓'
                     : pending ? '<i class="fa-solid fa-clock"></i> En attente'
                     : '<i class="fa-regular fa-circle"></i> Client';
-        const btn = `<button class="btn-gros-toggle ${gros?'on':''} ${pending?'pending':''}" data-email="${(u.email||'').replace(/"/g,'&quot;')}">${label}</button>`;
+        const btn = `<button class="btn-gros-toggle ${gros?'on':''} ${pending?'pending':''}" data-email="${(u.email||'').replace(/"/g,'&quot;')}" data-uid="${u._uid||''}">${label}</button>`;
         return `
         <tr>
             <td><strong>${u.displayName||'—'}</strong></td>
@@ -556,34 +593,36 @@ function loadClients(){
         </tr>`;
     }).join('');
     tbody.querySelectorAll('.btn-gros-toggle').forEach(b => {
-        b.addEventListener('click', () => setGrossiste(b.dataset.email));
+        b.addEventListener('click', () => setGrossiste({ uid: b.dataset.uid, email: b.dataset.email }));
     });
 }
 
-// Bascule le statut grossiste d'un client (met à jour tous les index de ssc_users)
-function setGrossiste(email){
+// Bascule le statut grossiste d'un client (Firestore si configuré, sinon localStorage)
+async function setGrossiste(ref){
+    // Firestore : mise à jour du document par son uid (visible sur tous les appareils)
+    if (fbReady() && ref && ref.uid) {
+        try {
+            const docRef = firebase.firestore().collection('users').doc(ref.uid);
+            const doc = await docRef.get();
+            const cur = doc.exists ? doc.data() : { isGrossiste:false, grossisteValidated:false };
+            await docRef.update(nextGrosState({ isGrossiste:!!cur.isGrossiste, grossisteValidated:!!cur.grossisteValidated }));
+            loadClients();
+        } catch (e) { alert('Erreur Firestore : ' + (e.message || e)); }
+        return;
+    }
+    // Repli localStorage : recherche par email dans tous les index de ssc_users
+    const email = (ref && ref.email) ? ref.email : ref;
     if (!email) return;
     let raw;
     try { raw = JSON.parse(localStorage.getItem('ssc_users')||'{}'); } catch { return; }
     const lc = email.toLowerCase();
-    // Cycle 3 états : Client (00) → En attente (10) → Grossiste validé (11) → Client (00)
     let cur = { isGrossiste: false, grossisteValidated: false };
     for (const k in raw) if ((raw[k].email||'').toLowerCase() === lc) { cur = raw[k]; break; }
-    let nextG, nextV;
-    if (!cur.isGrossiste && !cur.grossisteValidated) {
-        // Client → En attente
-        nextG = true; nextV = false;
-    } else if (cur.isGrossiste && !cur.grossisteValidated) {
-        // En attente → Grossiste validé
-        nextG = true; nextV = true;
-    } else {
-        // Grossiste validé → Client
-        nextG = false; nextV = false;
-    }
+    const next = nextGrosState({ isGrossiste:!!cur.isGrossiste, grossisteValidated:!!cur.grossisteValidated });
     for (const k in raw) {
         if ((raw[k].email||'').toLowerCase() === lc) {
-            raw[k].isGrossiste        = nextG;
-            raw[k].grossisteValidated = nextV;
+            raw[k].isGrossiste        = next.isGrossiste;
+            raw[k].grossisteValidated = next.grossisteValidated;
         }
     }
     localStorage.setItem('ssc_users', JSON.stringify(raw));

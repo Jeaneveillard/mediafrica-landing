@@ -389,7 +389,124 @@ const Auth = (() => {
         return { user };
     }
 
+    /* ──────────────────────────────────────────────
+       FIREBASE — actif dès que les clés sont dans config.js.
+       Permet la connexion sur TOUS les appareils (comptes
+       partagés via Firebase Auth + profils dans Firestore).
+       Tant que les clés sont absentes, on garde localStorage.
+       ────────────────────────────────────────────── */
+    function _fbReady() {
+        return typeof firebase !== 'undefined'
+            && firebase.apps && firebase.apps.length > 0;
+    }
+
+    // L'identifiant correspond-il au compte admin réservé ? (toujours via localStorage)
+    function _looksLikeAdmin(identifier) {
+        const id = (identifier || '').toLowerCase();
+        const ae = (typeof CONFIG !== 'undefined' && CONFIG.adminEmail)    ? CONFIG.adminEmail.toLowerCase()    : '';
+        const au = (typeof CONFIG !== 'undefined' && CONFIG.adminUsername) ? CONFIG.adminUsername.toLowerCase() : '';
+        return (!!ae && id === ae) || (!!au && id === au);
+    }
+
+    // Traduit les codes d'erreur Firebase en messages français
+    function _fbError(e) {
+        const c = (e && e.code) || '';
+        switch (c) {
+            case 'auth/email-already-in-use': return 'Un compte existe déjà avec cet email.';
+            case 'auth/invalid-email':        return 'Adresse email invalide.';
+            case 'auth/weak-password':        return 'Mot de passe trop court (minimum 6 caractères).';
+            case 'auth/user-not-found':       return 'Aucun compte avec cet email.';
+            case 'auth/wrong-password':
+            case 'auth/invalid-credential':   return 'Mot de passe incorrect.';
+            case 'auth/too-many-requests':    return 'Trop de tentatives. Réessayez plus tard.';
+            case 'auth/network-request-failed': return 'Problème de connexion réseau.';
+            default: return (e && e.message) ? e.message : 'Une erreur est survenue.';
+        }
+    }
+
+    // Inscription Firebase : crée le compte Auth + le profil Firestore (collection "users")
+    async function _fbRegister(name, username, email, password, isGrossiste, grosInfo) {
+        grosInfo = grosInfo || {};
+        if (!/^[a-zA-Z0-9._-]{3,20}$/.test(username))
+            return { error: 'Username : 3-20 caractères, lettres, chiffres, . _ - uniquement.' };
+        if (_looksLikeAdmin(email) || _looksLikeAdmin(username))
+            return { error: 'Cet identifiant est réservé.' };
+        try {
+            const db = firebase.firestore();
+            // Unicité du username (l'email est déjà unique côté Firebase Auth)
+            const dup = await db.collection('users').where('username', '==', username.toLowerCase()).limit(1).get();
+            if (!dup.empty) return { error: 'Ce nom d\'utilisateur est déjà pris.' };
+
+            const cred = await firebase.auth().createUserWithEmailAndPassword(email, password);
+            const uid  = cred.user.uid;
+            try { await cred.user.updateProfile({ displayName: name }); } catch (_) {}
+
+            const profile = {
+                uid,
+                displayName:      name,
+                username:         username.toLowerCase(),  // pour la recherche
+                usernameDisplay:  username,                // tel que saisi
+                email:            email.toLowerCase(),
+                isGrossiste:      !!isGrossiste,
+                grossisteValidated: false,                 // l'admin doit valider
+                etablissement:    grosInfo.etablissement    || '',
+                numeroEntreprise: grosInfo.numeroEntreprise || '',
+                telephonePro:     grosInfo.telephonePro     || '',
+                adresse:          grosInfo.adresse          || '',
+                ville:            grosInfo.ville            || '',
+                province:         grosInfo.province         || '',
+                pays:             grosInfo.pays             || '',
+                licence:          grosInfo.licence          || '',
+                siteWeb:          grosInfo.siteWeb          || '',
+                provider:         'email',
+                createdAt:        firebase.firestore.FieldValue.serverTimestamp()
+            };
+            await db.collection('users').doc(uid).set(profile);
+
+            const user = {
+                uid, displayName: name, username, email,
+                isGrossiste: !!isGrossiste, grossisteValidated: false,
+                etablissement: profile.etablissement, numeroEntreprise: profile.numeroEntreprise
+            };
+            _user = user; _saveSession(user);
+            return { user };
+        } catch (e) {
+            return { error: _fbError(e) };
+        }
+    }
+
+    // Connexion Firebase : accepte email OU username (résolu via Firestore)
+    async function _fbLogin(identifier, password) {
+        try {
+            const db = firebase.firestore();
+            let email = identifier;
+            if (!identifier.includes('@')) {
+                const snap = await db.collection('users').where('username', '==', identifier.toLowerCase()).limit(1).get();
+                if (snap.empty) return { error: 'Nom d\'utilisateur introuvable.' };
+                email = snap.docs[0].data().email;
+            }
+            const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const uid  = cred.user.uid;
+            let d = {};
+            try { const doc = await db.collection('users').doc(uid).get(); if (doc.exists) d = doc.data(); } catch (_) {}
+            const user = {
+                uid,
+                displayName: d.displayName || cred.user.displayName || '',
+                username:    d.usernameDisplay || d.username || '',
+                email:       cred.user.email,
+                isGrossiste: !!d.isGrossiste,
+                grossisteValidated: !!d.grossisteValidated,
+                etablissement: d.etablissement || '', numeroEntreprise: d.numeroEntreprise || ''
+            };
+            _user = user; _saveSession(user);
+            return { user };
+        } catch (e) {
+            return { error: _fbError(e) };
+        }
+    }
+
     function _logout() {
+        if (_fbReady()) { try { firebase.auth().signOut(); } catch (_) {} }
         _saveSession(null);
         _user = null;
         _updateNavbar(null);
@@ -470,8 +587,36 @@ const Auth = (() => {
             _setError('resetError', ''); _setSuccess('resetSuccess', '');
         });
 
-        // Google (simulation locale)
-        document.getElementById('btnGoogle')?.addEventListener('click', () => {
+        // Google (vraie connexion via Firebase si configuré, sinon simulation locale)
+        document.getElementById('btnGoogle')?.addEventListener('click', async () => {
+            if (_fbReady()) {
+                _setError('loginError', '');
+                try {
+                    const provider = new firebase.auth.GoogleAuthProvider();
+                    const cred = await firebase.auth().signInWithPopup(provider);
+                    const fbUser = cred.user;
+                    const db = firebase.firestore();
+                    const ref = db.collection('users').doc(fbUser.uid);
+                    const doc = await ref.get();
+                    if (!doc.exists) {
+                        await ref.set({
+                            uid: fbUser.uid, displayName: fbUser.displayName || '', email: (fbUser.email || '').toLowerCase(),
+                            provider: 'google', isGrossiste: false, grossisteValidated: false,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                    const d = (doc.exists ? doc.data() : {}) || {};
+                    _user = {
+                        uid: fbUser.uid, displayName: fbUser.displayName || d.displayName || '',
+                        username: d.usernameDisplay || d.username || '', email: fbUser.email,
+                        isGrossiste: !!d.isGrossiste, grossisteValidated: !!d.grossisteValidated
+                    };
+                    _saveSession(_user); _updateNavbar(_user); _afterAuthSuccess();
+                } catch (err) {
+                    _setError('loginError', _fbError(err));
+                }
+                return;
+            }
             const name  = prompt('Connexion Google simulée\nEntrez votre nom :');
             const email = prompt('Entrez votre email Google :');
             if (!name || !email) return;
@@ -493,22 +638,36 @@ const Auth = (() => {
             _setError('resetError', ''); _setSuccess('resetSuccess', '');
             const email = document.getElementById('resetEmail').value.trim();
             if (!email) { _setError('resetError', 'Entrez votre adresse email.'); return; }
+            // Firebase : envoie un vrai email de réinitialisation
+            if (_fbReady()) {
+                firebase.auth().sendPasswordResetEmail(email)
+                    .then(() => _setSuccess('resetSuccess', '✅ Un email de réinitialisation a été envoyé à ' + email + '. Vérifiez votre boîte de réception.'))
+                    .catch(err => _setError('resetError', _fbError(err)));
+                return;
+            }
+            // Repli localStorage (pas d'email réel)
             const users = _getUsers();
-            if (!users[email.toLowerCase()]) {
+            if (!users['email:' + email.toLowerCase()] && !users[email.toLowerCase()]) {
                 _setError('resetError', 'Aucun compte trouvé avec cet email.');
                 return;
             }
-            // En mode local : on affiche le MDP directement (pas d'email réel)
-            _setSuccess('resetSuccess', '✅ Votre mot de passe a été réinitialisé. Veuillez contacter le support via WhatsApp pour le récupérer.');
+            _setSuccess('resetSuccess', '✅ Pour réinitialiser votre mot de passe, contactez le support via WhatsApp.');
         });
 
         // CONNEXION
-        document.getElementById('loginForm')?.addEventListener('submit', e => {
+        document.getElementById('loginForm')?.addEventListener('submit', async e => {
             e.preventDefault();
             _setError('loginError', '');
             const email    = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            const result   = _login(email, password);
+            const btn      = e.target.querySelector('button[type="submit"]');
+            const orig     = btn ? btn.innerHTML : '';
+            if (btn) { btn.disabled = true; btn.innerHTML = 'Connexion…'; }
+            // Firebase si configuré (multi-appareils), sauf le compte admin réservé
+            const result = (_fbReady() && !_looksLikeAdmin(email))
+                ? await _fbLogin(email, password)
+                : _login(email, password);
+            if (btn) { btn.disabled = false; btn.innerHTML = orig; }
             if (result.error) { _setError('loginError', result.error); return; }
             _user = result.user;
             _updateNavbar(_user);
@@ -516,7 +675,7 @@ const Auth = (() => {
         });
 
         // INSCRIPTION
-        document.getElementById('registerForm')?.addEventListener('submit', e => {
+        document.getElementById('registerForm')?.addEventListener('submit', async e => {
             e.preventDefault();
             _setError('registerError', '');
             const name     = document.getElementById('regName').value.trim();
@@ -547,7 +706,14 @@ const Auth = (() => {
                     if (!grosInfo[k]) { _setError('registerError', 'Entrez ' + required[k] + '.'); return; }
                 }
             }
-            const result = _register(name, username, email, password, isGrossiste, grosInfo);
+            const btn  = e.target.querySelector('button[type="submit"]');
+            const orig = btn ? btn.innerHTML : '';
+            if (btn) { btn.disabled = true; btn.innerHTML = 'Création…'; }
+            // Firebase si configuré (compte partagé multi-appareils), sinon localStorage
+            const result = _fbReady()
+                ? await _fbRegister(name, username, email, password, isGrossiste, grosInfo)
+                : _register(name, username, email, password, isGrossiste, grosInfo);
+            if (btn) { btn.disabled = false; btn.innerHTML = orig; }
             if (result.error) { _setError('registerError', result.error); return; }
             _user = result.user;
             _updateNavbar(_user);
@@ -606,11 +772,24 @@ const Auth = (() => {
         // Toujours rafraîchir l'entête (reflète aussi une session admin active)
         _updateNavbar(_user);
 
-        // Firebase (si configuré, il prend le relais)
-        if (typeof firebase !== 'undefined' && firebase.apps.length) {
-            firebase.auth().onAuthStateChanged(fbUser => {
+        // Firebase (si configuré, il prend le relais : session valable sur tous les appareils)
+        if (_fbReady()) {
+            firebase.auth().onAuthStateChanged(async fbUser => {
                 if (fbUser) {
-                    _user = { displayName: fbUser.displayName, email: fbUser.email };
+                    let d = {};
+                    try {
+                        const doc = await firebase.firestore().collection('users').doc(fbUser.uid).get();
+                        if (doc.exists) d = doc.data();
+                    } catch (_) {}
+                    _user = {
+                        uid: fbUser.uid,
+                        displayName: d.displayName || fbUser.displayName || '',
+                        username:    d.usernameDisplay || d.username || '',
+                        email:       fbUser.email,
+                        isGrossiste: !!d.isGrossiste,
+                        grossisteValidated: !!d.grossisteValidated,
+                        etablissement: d.etablissement || '', numeroEntreprise: d.numeroEntreprise || ''
+                    };
                     _saveSession(_user);
                     _updateNavbar(_user);
                 }
