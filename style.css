@@ -178,6 +178,7 @@ img { max-width: 100%; display: block; }
     text-transform: uppercase;
     letter-spacing: 1px;
     line-height: 1.2;
+    white-space: nowrap;
 }
 
 .ssc-leaf { color: #e63030; font-style: normal; }
