@@ -140,5 +140,127 @@ const Reviews = (() => {
         return reviews;
     }
 
-    return { submit, getAll, getMine, _refresh };
+    /* ── Injection du modal de soumission (une seule fois) ── */
+    function _injectModal() {
+        if (document.getElementById('reviewModal')) return;
+        document.body.insertAdjacentHTML('beforeend', `
+        <div class="auth-backdrop" id="reviewBackdrop"></div>
+        <div class="auth-modal" id="reviewModal" role="dialog" aria-modal="true">
+            <button type="button" class="auth-close" id="reviewClose" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="review-modal-title">Laisser un avis</h3>
+            <div class="review-stars" id="reviewStars">
+                ${[1,2,3,4,5].map(v => `<button type="button" class="review-star" data-value="${v}" aria-label="${v} étoile${v>1?'s':''}"><i class="fa-solid fa-star"></i></button>`).join('')}
+            </div>
+            <p class="review-rating-label" id="reviewRatingLabel">Choisissez une note</p>
+            <textarea class="review-textarea" id="reviewComment" maxlength="300" placeholder="Partagez votre expérience..."></textarea>
+            <div class="review-char-count" id="reviewCharCount">0 / 300</div>
+            <p class="auth-error" id="reviewError"></p>
+            <button type="button" class="btn-auth" id="reviewSubmitBtn" disabled>Envoyer</button>
+        </div>`);
+    }
+
+    let _selectedRating = 0;
+
+    function _setRating(value) {
+        _selectedRating = value;
+        document.querySelectorAll('#reviewStars .review-star').forEach(btn => {
+            btn.classList.toggle('active', Number(btn.dataset.value) <= value);
+        });
+        const label = document.getElementById('reviewRatingLabel');
+        if (label) label.textContent = value ? `Note : ${value} / 5` : 'Choisissez une note';
+        _updateSubmitState();
+    }
+
+    function _updateSubmitState() {
+        const btn = document.getElementById('reviewSubmitBtn');
+        const comment = document.getElementById('reviewComment');
+        if (!btn || !comment) return;
+        btn.disabled = !(_selectedRating > 0 && comment.value.trim().length > 0);
+    }
+
+    function openModal() {
+        _injectModal();
+        const mine = getMine();
+        _setRating(mine ? mine.rating : 0);
+        const comment = document.getElementById('reviewComment');
+        if (comment) {
+            comment.value = mine ? mine.comment : '';
+            document.getElementById('reviewCharCount').textContent = `${comment.value.length} / 300`;
+        }
+        const error = document.getElementById('reviewError');
+        if (error) error.textContent = '';
+        document.getElementById('reviewModal')?.classList.add('open');
+        document.getElementById('reviewBackdrop')?.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('reviewModal')?.classList.remove('open');
+        document.getElementById('reviewBackdrop')?.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function _updateButtonLabel() {
+        const btn = document.getElementById('leaveReviewBtn');
+        if (!btn) return;
+        const user = typeof Auth !== 'undefined' ? Auth.currentUser() : null;
+        if (!user) { btn.innerHTML = '<i class="fa-solid fa-star"></i> Laisser un avis'; return; }
+        const mine = getMine();
+        btn.innerHTML = mine
+            ? '<i class="fa-solid fa-star"></i> Modifier mon avis'
+            : '<i class="fa-solid fa-star"></i> Laisser un avis';
+    }
+
+    function _wireEvents() {
+        document.getElementById('leaveReviewBtn')?.addEventListener('click', () => {
+            const user = typeof Auth !== 'undefined' ? Auth.currentUser() : null;
+            if (!user) { Auth.openModal('review'); return; }
+            openModal();
+        });
+
+        document.addEventListener('click', e => {
+            if (e.target.closest('#reviewClose') || e.target.id === 'reviewBackdrop') closeModal();
+            const starBtn = e.target.closest('.review-star');
+            if (starBtn) _setRating(Number(starBtn.dataset.value));
+            if (e.target.id === 'reviewSubmitBtn' && !e.target.disabled) _handleSubmit();
+        });
+
+        document.addEventListener('input', e => {
+            if (e.target.id === 'reviewComment') {
+                document.getElementById('reviewCharCount').textContent = `${e.target.value.length} / 300`;
+                _updateSubmitState();
+            }
+        });
+
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        document.addEventListener('auth:changed', () => { _updateButtonLabel(); });
+    }
+
+    async function _handleSubmit() {
+        const comment = document.getElementById('reviewComment')?.value || '';
+        const error = document.getElementById('reviewError');
+        try {
+            await submit(_selectedRating, comment);
+            closeModal();
+            await _refresh();
+            _updateButtonLabel();
+        } catch (e) {
+            if (error) error.textContent = e.message;
+        }
+    }
+
+    async function init() {
+        _wireEvents();
+        await _refresh();
+        _updateButtonLabel();
+    }
+
+    return { init, submit, getAll, getMine, openModal };
 })();
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => { if (document.getElementById('testimonialsGrid')) Reviews.init(); });
+} else {
+    if (document.getElementById('testimonialsGrid')) Reviews.init();
+}
