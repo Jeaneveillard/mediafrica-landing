@@ -43,7 +43,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: url('assets/logo.jpeg') center/contain no-repeat;
+    background: url('assets/logo-ssc.png') center/contain no-repeat;
     opacity: .08;
     mix-blend-mode: multiply;
 }
