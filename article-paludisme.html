@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cart.css">
     <style>
         .article-container { max-width: 800px; margin: 160px auto 80px; padding: 0 2rem; }
         .article-hero { text-align: center; margin-bottom: 4rem; }
@@ -35,16 +36,21 @@
 </head>
 <body>
 
-    <nav class="navbar">
+    <nav class="navbar" id="navbar">
         <div class="nav-inner">
             <a href="index.html" class="logo">
                 <img src="assets/logo-ssc.png" alt="MediPharma" class="logo-img">
             </a>
-            <div class="nav-links">
+            <div class="nav-links" id="navLinks">
                 <a href="index.html">Accueil</a>
                 <a href="catalogue.html">Catalogue</a>
+                <a href="livraison.html">Livraison</a>
                 <a href="communaute.html">Communauté</a>
+                <a href="index.html#commander" class="btn-nav">Commander</a>
             </div>
+            <button type="button" class="hamburger" id="hamburger" aria-label="Menu Mobile">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
 
@@ -87,6 +93,15 @@
             <p>&copy; 2026 MediPharma — Solution Santé. Tous droits réservés.</p>
         </div>
     </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="config.js"></script>
+    <script src="cart.js"></script>
+    <script src="auth.js"></script>
+    <script src="region.js"></script>
+    <script src="script.js"></script>
 
 </body>
 </html>
