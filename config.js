@@ -7,6 +7,10 @@ const CONFIG = {
         handle: 'TON_COMPTE_PAYPAL', // ex: 'mediafrica' → paypal.me/mediafrica
         currency: 'CAD'
     },
+    stripe: {
+        publishableKey:     '', // ← Clé publique Stripe (pk_live_... ou pk_test_...)
+        checkoutFunctionUrl: ''  // ← URL de la Cloud Function "createCheckoutSession" (voir STRIPE-SETUP.md)
+    },
     firebase: {
         apiKey: '',
         authDomain: '',

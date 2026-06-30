@@ -141,6 +141,63 @@ const Cart = (() => {
         document.body.style.overflow = '';
     }
 
+    /* ── Checkout : paiement Stripe (si configuré) avec repli PayPal/WhatsApp ── */
+    function _stripeReady() {
+        return typeof CONFIG !== 'undefined' && CONFIG.stripe
+            && CONFIG.stripe.publishableKey && CONFIG.stripe.checkoutFunctionUrl;
+    }
+
+    // Crée une session Stripe Checkout via la Cloud Function et redirige vers la page de paiement.
+    // Retourne true si la redirection a eu lieu, false si Stripe est indisponible (→ repli PayPal/WhatsApp).
+    async function _stripeCheckout(items, total, user, factureNum) {
+        try {
+            const res = await fetch(CONFIG.stripe.checkoutFunctionUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    items: items.map(i => ({ name: i.name, qty: i.quantity, unitPrice: i.unitPrice })),
+                    total, currency: 'CAD', factureNum,
+                    customerEmail: user ? user.email : null,
+                    successUrl: window.location.origin + '/facture.html?paye=1&facture=' + encodeURIComponent(factureNum),
+                    cancelUrl: window.location.href
+                })
+            });
+            const data = await res.json();
+            if (data && data.url) { window.location.href = data.url; return true; }
+            throw new Error((data && data.error) || 'Réponse Stripe invalide');
+        } catch (e) {
+            console.warn('⚠️ Stripe Checkout indisponible, repli PayPal/WhatsApp :', e.message);
+            return false;
+        }
+    }
+
+    function _legacyRedirect(items, total, user) {
+        const handle = typeof CONFIG !== 'undefined' ? CONFIG.paypal.handle : '';
+        const waNumber = (typeof CONFIG !== 'undefined' && CONFIG.whatsappNumber)
+            ? CONFIG.whatsappNumber : '14384029247';
+        if (total !== null && handle && handle !== 'TON_COMPTE_PAYPAL') {
+            window.open(`https://paypal.me/${handle}/${total.toFixed(2)}`, '_blank');
+        } else {
+            const userName = user ? (user.displayName || user.email) : 'Client';
+            const lines = items.map(i => {
+                const lineAmt = i.unitPrice != null ? (i.unitPrice * i.quantity).toFixed(2) + ' CAD' : 'Sur devis';
+                return `• ${i.name} × ${i.quantity} — ${lineAmt}`;
+            }).join('\n');
+            const totalLine = total !== null ? `\n💰 *Total : ${total.toFixed(2)} CAD*` : '\n💰 *Total : Sur devis*';
+            const msg = `🛒 *Nouvelle commande MediPharma / Solutions Santé Canada*\n\n${lines}${totalLine}\n\n👤 *Client :* ${userName}`;
+            window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+    }
+
+    // Stripe en priorité si configuré (paiement carte sécurisé), sinon PayPal/WhatsApp comme avant.
+    async function _redirect(items, total, user, factureNum) {
+        if (_stripeReady() && total !== null) {
+            const ok = await _stripeCheckout(items, total, user, factureNum);
+            if (ok) return;
+        }
+        _legacyRedirect(items, total, user);
+    }
+
     /* ── Checkout ── */
     function _processCheckout() {
         const items = getItems();
@@ -149,23 +206,6 @@ const Cart = (() => {
         const user   = typeof Auth !== 'undefined' ? Auth.currentUser() : null;
         const total  = getTotal();
         const handle = typeof CONFIG !== 'undefined' ? CONFIG.paypal.handle : '';
-
-        function _redirect() {
-            const waNumber = (typeof CONFIG !== 'undefined' && CONFIG.whatsappNumber)
-                ? CONFIG.whatsappNumber : '14384029247';
-            if (total !== null && handle && handle !== 'TON_COMPTE_PAYPAL') {
-                window.open(`https://paypal.me/${handle}/${total.toFixed(2)}`, '_blank');
-            } else {
-                const userName = user ? (user.displayName || user.email) : 'Client';
-                const lines = items.map(i => {
-                    const lineAmt = i.unitPrice != null ? (i.unitPrice * i.quantity).toFixed(2) + ' CAD' : 'Sur devis';
-                    return `• ${i.name} × ${i.quantity} — ${lineAmt}`;
-                }).join('\n');
-                const totalLine = total !== null ? `\n💰 *Total : ${total.toFixed(2)} CAD*` : '\n💰 *Total : Sur devis*';
-                const msg = `🛒 *Nouvelle commande MediPharma / Solutions Santé Canada*\n\n${lines}${totalLine}\n\n👤 *Client :* ${userName}`;
-                window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, '_blank');
-            }
-        }
 
         // Firestore : enregistre la commande (visible sur tous les appareils de l'utilisateur)
         if (user && typeof firebase !== 'undefined' && firebase.apps.length) {
@@ -183,13 +223,13 @@ const Cart = (() => {
                 })),
                 total:         total,
                 currency:      'CAD',
-                paymentMethod: (total !== null && handle && handle !== 'TON_COMPTE_PAYPAL') ? 'paypal' : 'whatsapp',
+                paymentMethod: _stripeReady() ? 'stripe' : ((total !== null && handle && handle !== 'TON_COMPTE_PAYPAL') ? 'paypal' : 'whatsapp'),
                 status:        'sent',
                 createdAt:     firebase.firestore.FieldValue.serverTimestamp()
             }).then(docRef => {
                 clear(); closePanel();
                 _showOrderConfirmation('CMD-' + docRef.id);
-                _redirect();
+                _redirect(items, total, user, factureNum);
             }).catch(err => {
                 console.warn('⚠️ Sauvegarde commande Firestore échouée:', err.message);
                 // Repli localStorage sur erreur
@@ -218,7 +258,7 @@ const Cart = (() => {
         closePanel();
         // Affiche une notification avec lien vers la facture
         _showOrderConfirmation(newOrder.id);
-        _redirect();
+        _redirect(items, total, user, newOrder.factureNum);
     }
 
     function _fallbackOrder(items, user, factureNum) {
@@ -238,7 +278,7 @@ const Cart = (() => {
         if (typeof Notify !== 'undefined') Notify.commande(orders[0]);
         clear(); closePanel();
         _showOrderConfirmation(orders[0].id);
-        _redirect();
+        _redirect(items, total, user, factureNum);
     }
 
     /* ── Notification post-commande avec lien facture ── */
