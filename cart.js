@@ -167,11 +167,13 @@ const Cart = (() => {
             }
         }
 
-        // Save to Firestore, puis vider le panier seulement après confirmation
+        // Firestore : enregistre la commande (visible sur tous les appareils de l'utilisateur)
         if (user && typeof firebase !== 'undefined' && firebase.apps.length) {
+            const factureNum = typeof InvoiceNum !== 'undefined' ? InvoiceNum.next() : 'FACT-'+Date.now();
             firebase.firestore().collection('orders').add({
                 userId:        user.uid,
                 userEmail:     user.email,
+                factureNum:    factureNum,
                 items: items.map(i => ({
                     name:      i.name,
                     category:  i.category,
@@ -184,8 +186,15 @@ const Cart = (() => {
                 paymentMethod: (total !== null && handle && handle !== 'TON_COMPTE_PAYPAL') ? 'paypal' : 'whatsapp',
                 status:        'sent',
                 createdAt:     firebase.firestore.FieldValue.serverTimestamp()
-            }).catch(err => console.warn('⚠️ Sauvegarde commande Firestore échouée:', err.message))
-              .finally(() => { clear(); closePanel(); _redirect(); });
+            }).then(docRef => {
+                clear(); closePanel();
+                _showOrderConfirmation('CMD-' + docRef.id);
+                _redirect();
+            }).catch(err => {
+                console.warn('⚠️ Sauvegarde commande Firestore échouée:', err.message);
+                // Repli localStorage sur erreur
+                _fallbackOrder(items, user, factureNum);
+            });
             return;
         }
 
@@ -209,6 +218,26 @@ const Cart = (() => {
         closePanel();
         // Affiche une notification avec lien vers la facture
         _showOrderConfirmation(newOrder.id);
+        _redirect();
+    }
+
+    function _fallbackOrder(items, user, factureNum) {
+        const orders = JSON.parse(localStorage.getItem('ssc_orders') || '[]');
+        const total = items.reduce((s, i) => s + (i.unitPrice != null ? i.unitPrice * i.quantity : 0), 0);
+        orders.unshift({
+            id: 'CMD-' + Date.now(),
+            factureNum: factureNum,
+            date: new Date().toISOString(),
+            client: user ? (user.displayName || user.username || user.email) : 'Anonyme',
+            email: user ? user.email : '',
+            items: items.map(i => ({ name: i.name, qty: i.quantity, prix: i.unitPrice })),
+            total: total,
+            status: 'envoyée'
+        });
+        localStorage.setItem('ssc_orders', JSON.stringify(orders.slice(0, 200)));
+        if (typeof Notify !== 'undefined') Notify.commande(orders[0]);
+        clear(); closePanel();
+        _showOrderConfirmation(orders[0].id);
         _redirect();
     }
 

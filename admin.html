@@ -453,10 +453,10 @@ function showAdmin(){
         `<span class="admin-role"><i class="fa-solid fa-shield-halved"></i> ADMIN</span>`
         + `<strong class="admin-name">${ADMIN_USERNAME}</strong>`
         + `<span class="admin-mail">${adminEmail}</span>`;
-    loadDashboard();
-    loadOrders();
-    loadClients();
-    loadB2B();
+    (async () => {
+        loadDashboard();
+        await Promise.all([loadOrders(), loadClients(), loadB2B()]);
+    })();
     loadPrices();
     loadSettings();
 }
@@ -505,8 +505,30 @@ function loadDashboard(){
 // ══════════════════════════════
 //  COMMANDES
 // ══════════════════════════════
-function loadOrders(){
-    const orders = getOrders();
+async function loadOrders(){
+    let orders = [];
+    if (fbReady()) {
+        try {
+            const snap = await firebase.firestore().collection('orders').orderBy('createdAt','desc').get();
+            orders = snap.docs.map(doc => {
+                const d = doc.data() || {};
+                let created = d.createdAt;
+                if (created && typeof created.toMillis === 'function') created = created.toMillis();
+                return {
+                    id: 'CMD-' + doc.id,
+                    client: d.userEmail || '',
+                    email: d.userEmail || '',
+                    items: (d.items || []).map(i => ({ name:i.name, qty:i.qty })),
+                    date: new Date(created || d.createdAt || 0).toISOString(),
+                    total: d.total || null,
+                    status: d.status || 'envoyée',
+                    factureNum: d.factureNum || ''
+                };
+            });
+        } catch (e) { console.warn('Firestore orders indisponible, repli localStorage :', e); orders = getOrders(); }
+    } else {
+        orders = getOrders();
+    }
     const tbody  = document.getElementById('orders-body');
     if (orders.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-inbox"></i>Aucune commande</div></td></tr>';
@@ -524,10 +546,10 @@ function loadOrders(){
         </tr>`).join('');
 }
 
-document.getElementById('btnClearOrders').addEventListener('click', () => {
+document.getElementById('btnClearOrders').addEventListener('click', async () => {
     if (!confirm('Vider toutes les commandes ?')) return;
     localStorage.removeItem('ssc_orders');
-    loadOrders();
+    await loadOrders();
     loadDashboard();
 });
 
@@ -606,7 +628,7 @@ async function setGrossiste(ref){
             const doc = await docRef.get();
             const cur = doc.exists ? doc.data() : { isGrossiste:false, grossisteValidated:false };
             await docRef.update(nextGrosState({ isGrossiste:!!cur.isGrossiste, grossisteValidated:!!cur.grossisteValidated }));
-            loadClients();
+            await loadClients();
         } catch (e) { alert('Erreur Firestore : ' + (e.message || e)); }
         return;
     }
@@ -626,7 +648,7 @@ async function setGrossiste(ref){
         }
     }
     localStorage.setItem('ssc_users', JSON.stringify(raw));
-    loadClients();
+    await loadClients();
 }
 
 // ══════════════════════════════
@@ -756,8 +778,21 @@ function getB2BOrders(){ try{ return JSON.parse(localStorage.getItem(B2B_KEY)||'
 const B2B_STATUTS = ['Nouveau','En traitement','Devis envoyé','Confirmée','Expédiée','Livrée','Annulée'];
 const B2B_COLORS  = {'Nouveau':'badge-blue','En traitement':'badge-gold','Devis envoyé':'badge-gold','Confirmée':'badge-green','Expédiée':'badge-green','Livrée':'badge-green','Annulée':'badge-red'};
 
-function loadB2B(){
-    const orders = getB2BOrders();
+async function loadB2B(){
+    let orders = [];
+    if (fbReady()) {
+        try {
+            const snap = await firebase.firestore().collection('b2b_orders').orderBy('createdAt','desc').get();
+            orders = snap.docs.map(doc => {
+                const d = doc.data() || {};
+                let created = d.createdAt;
+                if (created && typeof created.toMillis === 'function') created = created.toMillis();
+                return { ...d, _fbId: doc.id, createdAt: created || d.date || 0 };
+            });
+        } catch (e) { console.warn('Firestore B2B indisponible, repli localStorage :', e); orders = getB2BOrders(); }
+    } else {
+        orders = getB2BOrders();
+    }
     const list   = document.getElementById('b2b-orders-list');
     document.getElementById('b2b-count').textContent = orders.length + ' commande(s)';
     if (!list) return;
@@ -816,14 +851,14 @@ function loadB2B(){
     }).join('');
 
     list.querySelectorAll('.b2b-statut-sel').forEach(sel => {
-        sel.addEventListener('change', () => {
+        sel.addEventListener('change', async () => {
             const orders = getB2BOrders();
             const o = orders.find(x => x.id === sel.dataset.id);
             if (o) { o.statut = sel.value; o.updatedAt = new Date().toISOString(); }
             localStorage.setItem(B2B_KEY, JSON.stringify(orders));
             const saved = document.getElementById('b2b-saved-'+sel.dataset.id);
             if (saved){ saved.style.display='inline'; setTimeout(()=>saved.style.display='none',2000); }
-            loadB2B();
+            await loadB2B();
         });
     });
 }

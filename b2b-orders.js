@@ -78,6 +78,17 @@ const B2BOrders = (() => {
         localStorage.setItem(KEY, JSON.stringify(orders));
     }
     function add(order) {
+        // Firestore : enregistre la commande B2B (visible à l'admin + au grossiste)
+        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+            const user = (typeof Auth !== 'undefined' && Auth.currentUser) ? Auth.currentUser() : null;
+            firebase.firestore().collection('b2b_orders').add({
+                ...order,
+                userId:        user ? user.uid : '',
+                grossisteEmail: user ? user.email : order.contact.email,
+                createdAt:     firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(err => console.warn('⚠️ Sauvegarde B2B Firestore échouée, repli localStorage :', err.message));
+        }
+        // Toujours en localStorage pour que l'admin le voie immédiatement
         const orders = getAll();
         orders.unshift(order);
         _save(orders);
