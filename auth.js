@@ -574,7 +574,9 @@ const Auth = (() => {
             if (e.target.closest('[data-action="logout-admin"]')) {
                 localStorage.removeItem('ssc_admin_session');
                 document.getElementById('accountDropdown')?.classList.remove('open');
-                _updateNavbar(_user);
+                // Déconnexion complète : on vide aussi la session régulière, sinon
+                // l'ancien username (admin ou utilisateur précédent) refait surface.
+                _logout();
             }
         });
 

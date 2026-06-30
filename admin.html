@@ -435,6 +435,9 @@ document.addEventListener('keydown', e => {
 // ── Logout ──
 document.getElementById('btnLogout').addEventListener('click', () => {
     localStorage.removeItem(ADMIN_SESSION);
+    // Déconnexion complète : on vide aussi la session régulière, sinon l'ancien
+    // username refait surface dans le navbar en revenant sur le site principal.
+    localStorage.removeItem('ssc_session');
     location.reload();
 });
 
