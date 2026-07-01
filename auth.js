@@ -562,6 +562,10 @@ const Auth = (() => {
         }
         // Admin → tableau de bord
         if (_isAdmin(_user)) {
+            // Ouvre aussi la session du panneau admin → évite un 2e login sur admin.html
+            const ae = (typeof CONFIG !== 'undefined' && CONFIG.adminEmail)    ? CONFIG.adminEmail    : (_user.email || '');
+            const au = (typeof CONFIG !== 'undefined' && CONFIG.adminUsername) ? CONFIG.adminUsername : (_user.username || '');
+            try { localStorage.setItem('ssc_admin_session', JSON.stringify({ email: ae, username: au, loginAt: Date.now() })); } catch (_) {}
             location.href = 'admin.html';
             return;
         }
