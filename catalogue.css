@@ -256,6 +256,31 @@
     flex: 1;
 }
 
+/* Liste des caractéristiques produit (seringues, étiquettes…) */
+.cat-features {
+    list-style: none;
+    margin: .25rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .45rem;
+}
+.cat-features li {
+    position: relative;
+    padding-left: 1.25rem;
+    font-size: .82rem;
+    color: #4B5563;
+    line-height: 1.45;
+}
+.cat-features li::before {
+    content: '\2713';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--green);
+    font-weight: 700;
+}
+
 .cat-dosage {
     display: flex;
     gap: .5rem;
