@@ -32,7 +32,13 @@
     border-color: #16a34a;
     color: #15803d;
 }
-.nav-account-label { font-size: .82rem; }
+.nav-account-label {
+    font-size: .82rem;
+    max-width: 96px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 .nav-cart-btn:hover,
 .nav-account-btn:hover { background: var(--ivory); }
 

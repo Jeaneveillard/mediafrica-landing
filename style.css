@@ -135,7 +135,7 @@ img { max-width: 100%; display: block; }
 }
 
 .nav-inner {
-    max-width: 1200px;
+    max-width: 1320px;
     margin: 0 auto;
     padding: 0 2rem;
     display: flex;
@@ -1579,9 +1579,10 @@ img { max-width: 100%; display: block; }
 .mobile-only { display: none; }
 
 /* Navbar : bascule vers le menu hamburger avant que les liens ne chevauchent le
-   logo. Le menu horizontal complet (logo SSC large + liens + actions) ne tient
-   qu'au-delà de ~1250px ; en dessous, on passe au menu mobile (overlay) complet. */
-@media (max-width: 1250px) {
+   logo. Le menu horizontal complet (logo SSC large + liens + actions, y compris
+   le badge Grossiste d'un compte connecté) ne tient qu'au-delà de ~1320px ;
+   en dessous, on passe au menu mobile (overlay) complet. */
+@media (max-width: 1320px) {
     .nav-links { display: none; flex: none; padding-left: 0; }
     .hamburger { display: flex; }
 }
