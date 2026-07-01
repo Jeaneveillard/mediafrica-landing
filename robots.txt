@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /facture.html
+Disallow: /mon-compte.html
+
+Sitemap: https://medipharma.ca/sitemap.xml
