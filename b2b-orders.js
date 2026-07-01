@@ -277,7 +277,7 @@ const B2BOrders = (() => {
 
         add(order);
 
-        // Notification Netlify Forms
+        // Notification email à l'admin (Web3Forms, voir notify.js)
         if (typeof Notify !== 'undefined') {
             const lignes = items.map(i => `${i.name} × ${i.qty} ${i.unit}`).join(', ');
             Notify.commande({ id: order.id, client: `${nom} (${etab})`, email, items: items.map(i => ({name:i.name, qty:i.qty, prix:i.unitPrice})), total: order.total });

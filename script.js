@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Le formulaire #orderForm (commande grossiste) est géré par b2b-orders.js
     // (validation, lignes de produits, taxes, enregistrement + facture pro forma).
     // L'ancien handler ici a été retiré : il ouvrait un message WhatsApp vide
-    // (champs absents) et envoyait un POST Netlify mort sur GitHub Pages.
+    // (champs absents) et faisait un envoi email désormais géré par notify.js.
     const form = document.getElementById('orderForm');
     if (!form) return;
 

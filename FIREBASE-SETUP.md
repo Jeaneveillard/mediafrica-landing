@@ -103,4 +103,4 @@ service cloud.firestore {
 - **« Firebase not defined »** : les 3 `<script>` du SDK doivent être chargés avant `config.js` (déjà fait sur index, catalogue, admin).
 - **Connexion échoue** : vérifier qu'Email/Password est bien activé (Étape 3).
 - **« Missing permissions »** : Firestore pas en mode test, ou règles trop strictes (Étape 4 / 7).
-- **Le push ne met pas le site à jour** : Netlify n'est pas relié à GitHub → refaire un ZIP (voir note déploiement).
+- **Le push ne met pas le site à jour** : attendre ~1 min (déploiement GitHub Pages) puis rafraîchir. Vérifier que le `push` a bien réussi.
