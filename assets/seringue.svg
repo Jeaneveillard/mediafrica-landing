@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 240" role="img" aria-label="Seringue stérile en sachet individuel">
+  <!-- fond -->
+  <rect width="440" height="240" fill="#ffffff"/>
+  <circle cx="220" cy="122" r="106" fill="#eef5f0"/>
+
+  <!-- ombre du sachet -->
+  <rect x="78" y="46" width="292" height="158" rx="12" fill="#0a2e18" opacity=".08" transform="translate(4 5)"/>
+
+  <!-- sachet : dos papier -->
+  <rect x="78" y="46" width="292" height="158" rx="12" fill="#fdfdfb" stroke="#c7d2cc" stroke-width="2"/>
+
+  <!-- bande de pelage en haut (papier) -->
+  <rect x="78" y="46" width="292" height="34" rx="12" fill="#f2f0e6"/>
+  <rect x="78" y="68" width="292" height="12" fill="#f2f0e6"/>
+  <line x1="78" y1="80" x2="370" y2="80" stroke="#c7d2cc" stroke-width="2"/>
+  <!-- chevrons d'ouverture -->
+  <g stroke="#a8b5ad" stroke-width="2" fill="none">
+    <polyline points="206,56 214,64 222,56"/>
+    <polyline points="226,56 234,64 242,56"/>
+  </g>
+  <!-- encoche de déchirure -->
+  <circle cx="370" cy="63" r="5" fill="#ffffff" stroke="#c7d2cc" stroke-width="2"/>
+
+  <!-- soudure périphérique (pointillés) -->
+  <rect x="88" y="90" width="272" height="104" rx="8" fill="none" stroke="#d7dfd9" stroke-width="2" stroke-dasharray="5 4"/>
+
+  <!-- fenêtre transparente -->
+  <rect x="92" y="94" width="264" height="96" rx="7" fill="#f4fbf7" opacity=".8"/>
+  <!-- reflet du film plastique -->
+  <polygon points="112,94 156,94 118,190 92,190 92,148" fill="#ffffff" opacity=".45"/>
+
+  <!-- seringue VIDE dans le sachet -->
+  <g transform="rotate(-7 224 142)">
+    <!-- aiguille capuchonnée -->
+    <rect x="112" y="136" width="54" height="10" rx="5" fill="#dbe6e0" stroke="#9fb2a8" stroke-width="1.5"/>
+    <polygon points="112,137 104,140.5 112,145" fill="#dbe6e0" stroke="#9fb2a8" stroke-width="1"/>
+
+    <!-- embout luer lock -->
+    <rect x="164" y="134" width="16" height="14" rx="3" fill="#0369A1"/>
+
+    <!-- corps transparent, VIDE -->
+    <rect x="180" y="126" width="128" height="30" rx="7" fill="#ffffff" stroke="#28503c" stroke-width="2.5" opacity=".95"/>
+
+    <!-- graduations -->
+    <g stroke="#28503c" stroke-width="1.5" opacity=".55">
+      <line x1="196" y1="126" x2="196" y2="136"/>
+      <line x1="214" y1="126" x2="214" y2="133"/>
+      <line x1="232" y1="126" x2="232" y2="136"/>
+      <line x1="250" y1="126" x2="250" y2="133"/>
+      <line x1="268" y1="126" x2="268" y2="136"/>
+    </g>
+
+    <!-- joint du piston (piston enfoncé, seringue neuve) -->
+    <rect x="188" y="128" width="9" height="26" rx="3" fill="#28503c"/>
+
+    <!-- collerette -->
+    <rect x="304" y="118" width="9" height="46" rx="4" fill="#28503c"/>
+
+    <!-- tige + bouton du piston -->
+    <rect x="313" y="135" width="30" height="11" rx="4" fill="#c9a84c"/>
+    <rect x="341" y="126" width="10" height="30" rx="4" fill="#c9a84c"/>
+  </g>
+
+  <!-- étiquette STÉRILE -->
+  <g transform="translate(122 170)">
+    <rect x="-14" y="-11" width="76" height="22" rx="11" fill="#1D9E75"/>
+    <text x="24" y="4" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#ffffff" letter-spacing="1.5">STÉRILE</text>
+  </g>
+  <!-- mention usage unique -->
+  <text x="326" y="177" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#7a8a80" letter-spacing=".5">USAGE UNIQUE</text>
+</svg>
