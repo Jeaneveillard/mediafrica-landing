@@ -276,6 +276,9 @@
     box-shadow: var(--shadow-lg);
     z-index: 10002;
     width: min(440px, 95vw);
+    max-height: 92vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding: 2rem;
     opacity: 0;
     pointer-events: none;
