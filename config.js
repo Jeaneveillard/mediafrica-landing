@@ -3,6 +3,7 @@ const CONFIG = {
     adminEmail:      'admin@medipharma.ca',   // ← Email de l'administrateur
     adminUsername:   'eltajoseph29',          // ← Nom d'utilisateur de l'administrateur
     whatsappNumber:  '14384029247',           // ← Numéro WhatsApp sans + ni espaces
+    web3formsKey:    '',                       // ← Clé Web3Forms pour les notifications email (voir NOTIFICATIONS-SETUP.md)
     paypal: {
         handle: 'TON_COMPTE_PAYPAL', // ex: 'mediafrica' → paypal.me/mediafrica
         currency: 'CAD'
