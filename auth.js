@@ -91,7 +91,10 @@ const Auth = (() => {
             const adminLink = admin
                 ? '<a href="admin.html"><i class="fa-solid fa-shield-halved"></i> Panneau Admin</a>'
                 : '';
-            btn.innerHTML = `<i class="fa-solid fa-circle-user"></i><span class="nav-account-label">${name}</span>${badge}`;
+            // Badge (Grossiste/Admin) empilé SOUS le nom → bouton compact même avec un pseudo long
+            btn.innerHTML = badge
+                ? `<i class="fa-solid fa-circle-user"></i><span class="nav-account-stack"><span class="nav-account-label">${name}</span>${badge}</span>`
+                : `<i class="fa-solid fa-circle-user"></i><span class="nav-account-label">${name}</span>`;
             btn.classList.toggle('is-grossiste', !!user.isGrossiste && !admin);
             btn.classList.toggle('is-admin', admin);
             btn.classList.add('logged-in');

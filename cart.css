@@ -39,6 +39,24 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* Nom + badge (Grossiste/Admin) empilés verticalement dans le bouton compte */
+.nav-account-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    line-height: 1.1;
+}
+.nav-account-stack .grossiste-badge,
+.nav-account-stack .admin-badge {
+    margin-left: 0;
+    font-size: .58rem;
+    padding: .05rem .4rem;
+    line-height: 1.3;
+}
+/* Bouton un peu moins haut quand le badge est empilé */
+.nav-account-btn:has(.nav-account-stack) { padding-top: .3rem; padding-bottom: .3rem; }
 .nav-cart-btn:hover,
 .nav-account-btn:hover { background: var(--ivory); }
 
