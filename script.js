@@ -72,49 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof Cart !== 'undefined') Cart.init();
     if (typeof Auth !== 'undefined') Auth.init();
 
-    // Form submission → WhatsApp
-    const form    = document.getElementById('orderForm');
-    const success = document.getElementById('orderSuccess');
+    // Le formulaire #orderForm (commande grossiste) est géré par b2b-orders.js
+    // (validation, lignes de produits, taxes, enregistrement + facture pro forma).
+    // L'ancien handler ici a été retiré : il ouvrait un message WhatsApp vide
+    // (champs absents) et envoyait un POST Netlify mort sur GitHub Pages.
+    const form = document.getElementById('orderForm');
     if (!form) return;
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        
-        const formData = new FormData(form);
-        const nom      = formData.get('nom');
-        const tel      = formData.get('telephone');
-        const email    = formData.get('email');
-        const pays     = formData.get('pays');
-        const produits = formData.get('message');
-
-        // 1. Envoi vers Netlify (pour l'Email automatique)
-        fetch("/", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams(formData).toString(),
-        })
-        .then(() => console.log("Formulaire envoyé avec succès à Netlify"))
-        .catch((error) => console.error("Erreur Netlify:", error));
-
-        // 2. Ouverture de WhatsApp
-        const waNum = (typeof CONFIG !== 'undefined' && CONFIG.whatsappNumber) ? CONFIG.whatsappNumber : '14384029247';
-        const msg = [
-            '🛒 *Nouvelle commande Solutions Santé Canada (Formulaire)*',
-            '',
-            `👤 *Nom :* ${nom}`,
-            `📞 *Tél :* ${tel}`,
-            `✉️ *Email :* ${email}`,
-            `📍 *Pays :* ${pays}`,
-            '',
-            '💊 *Médicaments souhaités :*',
-            `${produits}`
-        ].join('\n');
-
-        window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
-        
-        // 3. Interface
-        form.style.display    = 'none';
-        success.style.display = 'block';
-    });
 
     // Lien WhatsApp contact (utilise CONFIG.whatsappNumber)
     const waLink = document.getElementById('waContactLink');
