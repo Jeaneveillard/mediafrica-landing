@@ -533,15 +533,35 @@ document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
 // ══════════════════════════════
 //  DASHBOARD
 // ══════════════════════════════
-function loadDashboard(){
-    const orders  = getOrders();
-    const users   = getUsers();
+async function loadDashboard(){
+    // Firestore (source partagée, comme les onglets Clients/Commandes) ; repli localStorage
+    let orders = null, usersCount = null;
+    if (fbReady()) {
+        try {
+            const [oSnap, uSnap] = await Promise.all([
+                firebase.firestore().collection('orders').get(),
+                firebase.firestore().collection('users').get()
+            ]);
+            const stMap = { sent:'Envoyée', processing:'En cours', delivered:'Livrée' };
+            orders = oSnap.docs.map(doc => {
+                const d = doc.data() || {};
+                let created = d.createdAt;
+                if (created && typeof created.toMillis === 'function') created = created.toMillis();
+                return { id: d.factureNum || doc.id, client: d.userEmail || '—', email: d.userEmail || '',
+                         date: created || 0, total: d.total, status: stMap[d.status] || d.status || '—' };
+            }).sort((a,b)=> b.date - a.date);
+            usersCount = uSnap.size;
+        } catch (e) { console.warn('Dashboard Firestore indisponible, repli localStorage :', e); orders = null; usersCount = null; }
+    }
+    if (orders === null)     orders     = getOrders();
+    if (usersCount === null) usersCount = getUsers().filter(u => !u.isAdminAccount).length;
+
     const prices  = getPrices();
     const revenue = orders.reduce((s,o)=> s + (o.total||0), 0);
     const priced  = Object.keys(prices).length;
 
     document.getElementById('stat-orders').textContent  = orders.length;
-    document.getElementById('stat-clients').textContent = users.length;
+    document.getElementById('stat-clients').textContent = usersCount;
     document.getElementById('stat-revenue').textContent = revenue.toFixed(2) + ' $';
     document.getElementById('stat-priced').textContent  = priced;
 
