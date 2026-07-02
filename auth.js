@@ -69,17 +69,21 @@ const Auth = (() => {
         const dropdown = wrap.querySelector('.account-dropdown');
         if (!btn || !dropdown) return;
 
-        // L'admin connecté (session admin) a la priorité d'affichage
+        // L'admin connecté (session admin) a la priorité d'affichage.
+        // Deux rôles distincts : DEV (développeur) et ADM (Elta, administratrice).
         const admin = _getAdminSession();
         if (admin && admin.email) {
-            btn.innerHTML = `<i class="fa-solid fa-user-shield"></i><span class="nav-account-label">Admin</span>`;
+            const dev = admin.role === 'dev';
+            btn.innerHTML = `<i class="fa-solid ${dev ? 'fa-code' : 'fa-user-shield'}"></i><span class="nav-account-label">${dev ? 'Dev' : 'Admin'}</span>`;
             btn.classList.add('logged-in', 'is-admin');
             btn.classList.remove('is-grossiste');
             dropdown.innerHTML = `
-                <span class="account-greeting">Connecté en <strong>Administrateur</strong> 🛡️</span>
+                <span class="account-greeting">${dev
+                    ? 'Connecté en <strong>Développeur</strong> 💻'
+                    : 'Connectée en <strong>Administratrice</strong> 🛡️'}</span>
                 <a href="admin.html"><i class="fa-solid fa-gauge-high"></i> Tableau de bord</a>
                 <button type="button" data-action="logout-admin">
-                    <i class="fa-solid fa-right-from-bracket"></i> Déconnexion admin
+                    <i class="fa-solid fa-right-from-bracket"></i> ${dev ? 'Déconnexion dev' : 'Déconnexion admin'}
                 </button>`;
             return;
         }
@@ -87,9 +91,11 @@ const Auth = (() => {
 
         if (user) {
             const admin = _isAdmin(user);
+            const devUser = (typeof CONFIG !== 'undefined' && CONFIG.devEmail)
+                && (user.email || '').toLowerCase() === CONFIG.devEmail.toLowerCase();
             const name = _esc(user.username || user.displayName || user.email.split('@')[0]);
             const badge = admin
-                ? ' <span class="admin-badge">Admin</span>'
+                ? ` <span class="admin-badge">${devUser ? 'Dev' : 'Admin'}</span>`
                 : (user.isGrossiste ? ' <span class="grossiste-badge">Grossiste</span>' : '');
             const adminLink = admin
                 ? '<a href="admin.html"><i class="fa-solid fa-shield-halved"></i> Panneau Admin</a>'
@@ -568,10 +574,15 @@ const Auth = (() => {
         }
         // Admin → tableau de bord
         if (_isAdmin(_user)) {
-            // Ouvre aussi la session du panneau admin → évite un 2e login sur admin.html
-            const ae = (typeof CONFIG !== 'undefined' && CONFIG.adminEmail)    ? CONFIG.adminEmail    : (_user.email || '');
-            const au = (typeof CONFIG !== 'undefined' && CONFIG.adminUsername) ? CONFIG.adminUsername : (_user.username || '');
-            try { localStorage.setItem('ssc_admin_session', JSON.stringify({ email: ae, username: au, loginAt: Date.now() })); } catch (_) {}
+            // Ouvre aussi la session du panneau admin → évite un 2e login sur admin.html.
+            // Le rôle (dev/admin) doit correspondre à celui posé par admin.html.
+            const de  = (typeof CONFIG !== 'undefined' && CONFIG.devEmail) ? CONFIG.devEmail.toLowerCase() : '';
+            const dev = !!de && (_user.email || '').toLowerCase() === de;
+            const ae = dev ? _user.email
+                : ((typeof CONFIG !== 'undefined' && CONFIG.adminEmail)    ? CONFIG.adminEmail    : (_user.email || ''));
+            const au = dev ? 'dev'
+                : ((typeof CONFIG !== 'undefined' && CONFIG.adminUsername) ? CONFIG.adminUsername : (_user.username || ''));
+            try { localStorage.setItem('ssc_admin_session', JSON.stringify({ email: ae, username: au, role: dev ? 'dev' : 'admin', loginAt: Date.now() })); } catch (_) {}
             location.href = 'admin.html';
             return;
         }
