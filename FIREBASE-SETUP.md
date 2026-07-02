@@ -80,11 +80,15 @@ Console → **Firestore → Règles** → coller puis **Publier** :
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Profil : chacun lit/écrit le sien ; lecture admin gérée séparément
+    // L'administrateur (compte Firebase admin@medipharma.ca, voir note ci-dessous)
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'admin@medipharma.ca';
+    }
+    // Profil : chacun lit/écrit le sien ; l'admin peut valider les grossistes
     match /users/{uid} {
       allow read: if request.auth != null;
       allow create: if request.auth != null && request.auth.uid == uid;
-      allow update, delete: if request.auth != null && request.auth.uid == uid;
+      allow update, delete: if (request.auth != null && request.auth.uid == uid) || isAdmin();
     }
     // Avis clients : lecture publique (affichés sur la page d'accueil),
     // chaque utilisateur connecté ne peut écrire que son propre avis (doc id = son uid)
@@ -92,10 +96,25 @@ service cloud.firestore {
       allow read: if true;
       allow create, update, delete: if request.auth != null && request.auth.uid == uid;
     }
+    // Commandes panier : le client crée la sienne et lit les siennes ; l'admin voit tout
+    match /orders/{orderId} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
+      allow update: if isAdmin();
+    }
+    // Commandes grossistes : même logique
+    match /b2b_orders/{orderId} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
+      allow update: if isAdmin();
+    }
   }
 }
 ```
-> Ces règles seront affinées quand l'admin Firestore sera branché (validation grossiste côté serveur).
+
+> **Note admin :** pour que le panneau admin lise les clients/commandes depuis Firestore,
+> le compte `admin@medipharma.ca` doit exister dans Firebase Authentication et
+> `admin.html` doit s'y connecter (chantier prévu — voir la mémoire du projet).
 
 ---
 
