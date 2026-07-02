@@ -115,6 +115,8 @@
         .btn-gros-toggle:hover{border-color:#FBBF24}
         .btn-gros-toggle.on{background:#FEF3C7;color:#92400E;border-color:#FBBF24}
         .btn-gros-toggle.pending{background:#EFF6FF;color:#1D4ED8;border-color:#93C5FD}
+        .btn-client-del{display:inline-flex;align-items:center;background:#fff;color:var(--red);border:1px solid #fecaca;border-radius:999px;padding:5px 10px;font-size:12px;cursor:pointer;transition:all .15s;margin-left:6px}
+        .btn-client-del:hover{background:#fee2e2;border-color:var(--red)}
         .btn-save{background:var(--green);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .2s}
         .btn-save:hover{opacity:.88}
         .save-msg{font-size:13px;margin-left:12px}
@@ -410,7 +412,9 @@ function getUsers(){
 function getPrices(){ try{ return JSON.parse(localStorage.getItem('ssc_prices')||'{}'); }catch{ return CONFIG?.prices||{}; } }
 function savePrices(p){ localStorage.setItem('ssc_prices',JSON.stringify(p)); }
 
-// ── Login ──
+// ── Login (deux identités : ADM = Elta, DEV = développeur) ──
+const DEV_EMAIL = 'dev@medipharma.ca';
+
 document.getElementById('btnLogin').addEventListener('click', async () => {
     const id    = document.getElementById('adminEmail').value.trim();
     const pass  = document.getElementById('adminPass').value;
@@ -418,22 +422,45 @@ document.getElementById('btnLogin').addEventListener('click', async () => {
     const adminEmail = typeof CONFIG !== 'undefined' ? CONFIG.adminEmail : 'admin@medipharma.ca';
 
     if (!id || !pass) { err.textContent = 'Remplissez tous les champs.'; return; }
-    const okId = (id.toLowerCase() === adminEmail.toLowerCase()) || (id.toLowerCase() === ADMIN_USERNAME.toLowerCase());
-    if (!okId) { err.textContent = 'Identifiant non autorisé.'; return; }
-    const passOk = ADMIN_PASSWORD_HASH
-        ? (adminHash(pass) === ADMIN_PASSWORD_HASH)
-        : (pass === ADMIN_PASSWORD);
-    if (!passOk) { err.textContent = 'Mot de passe incorrect.'; return; }
+    const lc = id.toLowerCase();
 
-    localStorage.setItem(ADMIN_SESSION, JSON.stringify({ email: adminEmail, username: ADMIN_USERNAME, loginAt: Date.now() }));
-
-    // Connexion Firebase de l'admin (même mot de passe que le panneau) : donne accès
-    // aux clients/commandes Firestore via la règle isAdmin(). Échec = repli localStorage.
-    if (typeof firebase !== 'undefined' && firebase.apps.length) {
-        try { await firebase.auth().signInWithEmailAndPassword(adminEmail, pass); }
-        catch (e) { console.warn('⚠️ Connexion Firebase admin échouée (repli local) :', e.code); }
+    // ── ADM (Elta) : vérification locale (fonctionne même sans Firebase) ──
+    if (lc === adminEmail.toLowerCase() || lc === ADMIN_USERNAME.toLowerCase()) {
+        const passOk = ADMIN_PASSWORD_HASH
+            ? (adminHash(pass) === ADMIN_PASSWORD_HASH)
+            : (pass === ADMIN_PASSWORD);
+        if (!passOk) { err.textContent = 'Mot de passe incorrect.'; return; }
+        localStorage.setItem(ADMIN_SESSION, JSON.stringify({ email: adminEmail, username: ADMIN_USERNAME, role: 'admin', loginAt: Date.now() }));
+        // Connexion Firebase de l'admin (même mot de passe que le panneau) : donne accès
+        // aux clients/commandes Firestore via la règle isAdmin(). Échec = repli localStorage.
+        if (typeof firebase !== 'undefined' && firebase.apps.length) {
+            try { await firebase.auth().signInWithEmailAndPassword(adminEmail, pass); }
+            catch (e) { console.warn('⚠️ Connexion Firebase admin échouée (repli local) :', e.code); }
+        }
+        showAdmin();
+        return;
     }
-    showAdmin();
+
+    // ── DEV : authentification UNIQUEMENT via Firebase — son mot de passe
+    //    n'existe nulle part dans le code (compte dev@medipharma.ca, console) ──
+    if (lc === DEV_EMAIL || lc === 'dev') {
+        if (!(typeof firebase !== 'undefined' && firebase.apps.length)) {
+            err.textContent = 'Connexion DEV indisponible (Firebase non configuré).';
+            return;
+        }
+        try {
+            await firebase.auth().signInWithEmailAndPassword(DEV_EMAIL, pass);
+            localStorage.setItem(ADMIN_SESSION, JSON.stringify({ email: DEV_EMAIL, username: 'dev', role: 'dev', loginAt: Date.now() }));
+            showAdmin();
+        } catch (e) {
+            err.textContent = (e.code === 'auth/network-request-failed')
+                ? 'Réseau indisponible — réessayez dans un instant.'
+                : 'Mot de passe incorrect.';
+        }
+        return;
+    }
+
+    err.textContent = 'Identifiant non autorisé.';
 });
 
 document.addEventListener('keydown', e => {
@@ -472,12 +499,18 @@ function _adminInit(){
 }
 
 function showAdmin(){
-    const adminEmail = (typeof CONFIG !== 'undefined' ? CONFIG.adminEmail : 'admin@medipharma.ca');
+    const session = JSON.parse(localStorage.getItem(ADMIN_SESSION)||'{}');
+    const role = session.role === 'dev' ? 'dev' : 'admin';
+    window._adminRole = role;   // utilisé par _renderClients (bouton Supprimer réservé au DEV)
+    const adminEmail = role === 'dev' ? DEV_EMAIL : (typeof CONFIG !== 'undefined' ? CONFIG.adminEmail : 'admin@medipharma.ca');
+    const badge = role === 'dev'
+        ? `<span class="admin-role" style="background:#60A5FA;color:#0c1e33"><i class="fa-solid fa-code"></i> DEV</span>`
+        : `<span class="admin-role"><i class="fa-solid fa-shield-halved"></i> ADMIN</span>`;
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminWrap').style.display   = 'flex';
     document.getElementById('adminUserDisplay').innerHTML =
-        `<span class="admin-role"><i class="fa-solid fa-shield-halved"></i> ADMIN</span>`
-        + `<strong class="admin-name">${ADMIN_USERNAME}</strong>`
+        badge
+        + `<strong class="admin-name">${role === 'dev' ? 'Développeur' : ADMIN_USERNAME}</strong>`
         + `<span class="admin-mail">${adminEmail}</span>`;
     (async () => {
         loadDashboard();
@@ -626,6 +659,10 @@ function _renderClients(users){
                      : pending ? '<span class="badge badge-gold"><i class="fa-solid fa-clock"></i> Grossiste — en attente</span>'
                      :           '<span class="badge badge-blue"><i class="fa-solid fa-user"></i> Client</span>';
         const btn = `<button class="btn-gros-toggle ${gros?'on':''} ${pending?'pending':''}" title="Client → En attente → Grossiste validé → Client" data-email="${(u.email||'').replace(/"/g,'&quot;')}" data-uid="${u._uid||''}"><i class="fa-solid fa-rotate"></i> Changer le type</button>`;
+        // Suppression : bouton visible UNIQUEMENT pour le DEV (règle Firestore isDev)
+        const del = (window._adminRole === 'dev' && u._uid)
+            ? ` <button class="btn-client-del" data-uid="${u._uid}" data-name="${((u.displayName||u.email)||'').replace(/"/g,'&quot;')}" title="Supprimer ce compte (DEV uniquement)"><i class="fa-solid fa-trash"></i></button>`
+            : '';
         return `
         <tr>
             <td><strong>${u.displayName||'—'}</strong></td>
@@ -636,11 +673,24 @@ function _renderClients(users){
             <td style="font-size:12px">${u.createdAt ? fmt(u.createdAt) : '—'}</td>
             <td><span class="badge ${u.provider==='google'?'badge-red':'badge-gold'}">${u.provider==='google'?'Google':'Email'}</span></td>
             <td>${statut}</td>
-            <td>${btn}</td>
+            <td style="white-space:nowrap">${btn}${del}</td>
         </tr>`;
     }).join('');
     tbody.querySelectorAll('.btn-gros-toggle').forEach(b => {
         b.addEventListener('click', () => setGrossiste({ uid: b.dataset.uid, email: b.dataset.email }));
+    });
+    // Suppression d'un compte (DEV uniquement — refusée par Firestore pour l'ADM)
+    tbody.querySelectorAll('.btn-client-del').forEach(b => {
+        b.addEventListener('click', async () => {
+            if (!confirm('Supprimer définitivement le compte « ' + b.dataset.name + ' » ?\n\nNote : son compte de connexion (Authentication) doit aussi être supprimé dans la console Firebase.')) return;
+            try {
+                await firebase.firestore().collection('users').doc(b.dataset.uid).delete();
+                await loadClients();
+                loadDashboard();
+            } catch (e) {
+                alert('Suppression refusée : ' + (e.code || e.message));
+            }
+        });
     });
 }
 

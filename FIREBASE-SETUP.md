@@ -80,18 +80,21 @@ Console → **Firestore → Règles** → coller puis **Publier** :
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // L'administrateur (compte Firebase admin@medipharma.ca, voir note ci-dessous)
-    function isAdmin() {
-      return request.auth != null && request.auth.token.email == 'admin@medipharma.ca';
+    // DEV (développeur, compte dev@medipharma.ca) : tous les droits, y compris SUPPRIMER
+    function isDev() {
+      return request.auth != null && request.auth.token.email == 'dev@medipharma.ca';
     }
-    // Profil : chacun lit/écrit le sien ; l'admin peut changer le type (Client/Grossiste)
-    // mais NE PEUT PAS supprimer un compte (protection litige — suppression réservée
-    // au développeur via la console Firebase, qui contourne ces règles).
+    // ADM (Elta, compte admin@medipharma.ca) : gère mais ne supprime pas (protection litige)
+    function isAdmin() {
+      return isDev() || (request.auth != null && request.auth.token.email == 'admin@medipharma.ca');
+    }
+    // Profil : chacun lit/écrit le sien ; l'ADM change le type (Client/Grossiste)
+    // mais seul le DEV (ou le client lui-même) peut supprimer un compte.
     match /users/{uid} {
       allow read: if request.auth != null;
       allow create: if request.auth != null && request.auth.uid == uid;
       allow update: if (request.auth != null && request.auth.uid == uid) || isAdmin();
-      allow delete: if request.auth != null && request.auth.uid == uid;
+      allow delete: if (request.auth != null && request.auth.uid == uid) || isDev();
     }
     // Avis clients : lecture publique (affichés sur la page d'accueil),
     // chaque utilisateur connecté ne peut écrire que son propre avis (doc id = son uid)
@@ -99,25 +102,31 @@ service cloud.firestore {
       allow read: if true;
       allow create, update, delete: if request.auth != null && request.auth.uid == uid;
     }
-    // Commandes panier : le client crée la sienne et lit les siennes ; l'admin voit tout
+    // Commandes panier : le client crée la sienne et lit les siennes ; l'ADM voit tout
+    // et change les statuts ; suppression réservée au DEV (archivage litige).
     match /orders/{orderId} {
       allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
       allow read: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
       allow update: if isAdmin();
+      allow delete: if isDev();
     }
     // Commandes grossistes : même logique
     match /b2b_orders/{orderId} {
       allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
       allow read: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
       allow update: if isAdmin();
+      allow delete: if isDev();
     }
   }
 }
 ```
 
-> **Note admin :** pour que le panneau admin lise les clients/commandes depuis Firestore,
-> le compte `admin@medipharma.ca` doit exister dans Firebase Authentication et
-> `admin.html` doit s'y connecter (chantier prévu — voir la mémoire du projet).
+> **Comptes du panneau (Firebase Authentication) :**
+> - `admin@medipharma.ca` — **ADM (Elta)**, même mot de passe que le panneau. Si on
+>   change ce mot de passe, changer LES DEUX côtés (hash local + Firebase).
+> - `dev@medipharma.ca` — **DEV (développeur)**, mot de passe choisi à la création
+>   dans la console, **jamais stocké dans le code**. Connexion au panneau avec
+>   l'identifiant `dev` (ou l'email complet). Seul rôle autorisé à supprimer.
 
 ---
 
