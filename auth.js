@@ -743,6 +743,13 @@ const Auth = (() => {
             }
             if (result.error) { _setError('loginError', result.error); return; }
             _user = result.user;
+            // Admin : ouvrir aussi la session Firebase (même mot de passe que le panneau)
+            // pour que admin.html accède aux clients/commandes Firestore (règle isAdmin).
+            if (_isAdmin(_user) && _fbReady()) {
+                const ae = (typeof CONFIG !== 'undefined' && CONFIG.adminEmail) ? CONFIG.adminEmail : _user.email;
+                try { await firebase.auth().signInWithEmailAndPassword(ae, password); }
+                catch (_) { /* repli local : le panneau fonctionnera en localStorage */ }
+            }
             _updateNavbar(_user);
             _afterAuthSuccess();
         });

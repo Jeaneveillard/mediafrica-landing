@@ -372,7 +372,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="config.js?v=9"></script>
+<script src="config.js?v=10"></script>
 <script>
 // ═══════════════════════════════════════════════════════
 //  ADMIN — Solutions Santé Canada
@@ -411,7 +411,7 @@ function getPrices(){ try{ return JSON.parse(localStorage.getItem('ssc_prices')|
 function savePrices(p){ localStorage.setItem('ssc_prices',JSON.stringify(p)); }
 
 // ── Login ──
-document.getElementById('btnLogin').addEventListener('click', () => {
+document.getElementById('btnLogin').addEventListener('click', async () => {
     const id    = document.getElementById('adminEmail').value.trim();
     const pass  = document.getElementById('adminPass').value;
     const err   = document.getElementById('loginErr');
@@ -426,6 +426,13 @@ document.getElementById('btnLogin').addEventListener('click', () => {
     if (!passOk) { err.textContent = 'Mot de passe incorrect.'; return; }
 
     localStorage.setItem(ADMIN_SESSION, JSON.stringify({ email: adminEmail, username: ADMIN_USERNAME, loginAt: Date.now() }));
+
+    // Connexion Firebase de l'admin (même mot de passe que le panneau) : donne accès
+    // aux clients/commandes Firestore via la règle isAdmin(). Échec = repli localStorage.
+    if (typeof firebase !== 'undefined' && firebase.apps.length) {
+        try { await firebase.auth().signInWithEmailAndPassword(adminEmail, pass); }
+        catch (e) { console.warn('⚠️ Connexion Firebase admin échouée (repli local) :', e.code); }
+    }
     showAdmin();
 });
 
@@ -440,13 +447,26 @@ document.getElementById('btnLogout').addEventListener('click', () => {
     // Déconnexion complète : on vide aussi la session régulière, sinon l'ancien
     // username refait surface dans le navbar en revenant sur le site principal.
     localStorage.removeItem('ssc_session');
-    location.reload();
+    const done = () => location.reload();
+    if (typeof firebase !== 'undefined' && firebase.apps.length) {
+        firebase.auth().signOut().then(done).catch(done);
+    } else {
+        done();
+    }
 });
 
 // ── Init ── (appelé en fin de script, après toutes les définitions)
 function _adminInit(){
     const session = JSON.parse(localStorage.getItem(ADMIN_SESSION)||'null');
-    if (session && session.email) {
+    if (!(session && session.email)) return;
+    // Attendre la restauration de la session Firebase (persistée par le navigateur)
+    // avant de charger les données, sinon les lectures Firestore partent sans auth.
+    if (typeof firebase !== 'undefined' && firebase.apps.length) {
+        let fait = false;
+        const go = () => { if (!fait) { fait = true; showAdmin(); } };
+        const unsub = firebase.auth().onAuthStateChanged(() => { unsub(); go(); });
+        setTimeout(go, 2500); // filet de sécurité si Firebase ne répond pas
+    } else {
         showAdmin();
     }
 }
