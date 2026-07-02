@@ -320,27 +320,30 @@
             <div class="page-sub">Configuration du site et des paiements</div>
 
             <div class="card">
-                <div class="card-header"><h3>Contact & Paiement</h3></div>
+                <div class="card-header"><h3>Contact & Paiement — configuration actuelle</h3></div>
                 <div style="padding:24px">
                     <div class="settings-form">
                         <div class="field">
                             <label>Numéro WhatsApp</label>
-                            <input type="text" id="set-whatsapp" placeholder="14384029247">
+                            <input type="text" id="set-whatsapp" disabled>
                         </div>
                         <div class="field">
                             <label>Handle PayPal</label>
-                            <input type="text" id="set-paypal" placeholder="solutionssantecanada">
+                            <input type="text" id="set-paypal" disabled>
                         </div>
                         <div class="field">
                             <label>Email administrateur</label>
-                            <input type="text" id="set-email" placeholder="admin@solutionssantecanada.com">
+                            <input type="text" id="set-email" disabled>
                         </div>
                         <div class="field">
-                            <label>Nom du domaine (GoDaddy)</label>
-                            <input type="text" id="set-domain" placeholder="www.solutionssantecanada.com">
+                            <label>Nom du domaine</label>
+                            <input type="text" id="set-domain" disabled>
                         </div>
-                        <button class="btn-settings-save" id="btnSaveSettings"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
-                        <p id="settings-msg" style="font-size:13px;color:#16a34a;min-height:18px"></p>
+                        <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-top:6px">
+                            <i class="fa-solid fa-lock"></i> Ces valeurs sont configurées dans le code du site
+                            (<code>config.js</code>) et s'appliquent à tous les visiteurs.
+                            Pour les modifier, contactez le <strong>développeur</strong>.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -985,24 +988,17 @@ document.getElementById('btnExportB2B')?.addEventListener('click', () => {
 // ══════════════════════════════
 //  PARAMÈTRES
 // ══════════════════════════════
+// Paramètres : affichage en LECTURE SEULE de la configuration réelle (config.js).
+// L'ancien bouton « Enregistrer » a été retiré : il ne sauvegardait que dans le
+// navigateur local (ssc_settings) et RIEN ne lisait cette valeur — piège évité.
 function loadSettings(){
     if (typeof CONFIG === 'undefined') return;
+    const handle = CONFIG.paypal?.handle || '';
     document.getElementById('set-whatsapp').value = CONFIG.whatsappNumber || '';
-    document.getElementById('set-paypal').value   = CONFIG.paypal?.handle || '';
+    document.getElementById('set-paypal').value   = (handle && handle !== 'TON_COMPTE_PAYPAL') ? handle : '(pas encore configuré)';
     document.getElementById('set-email').value    = CONFIG.adminEmail || '';
-    const saved = JSON.parse(localStorage.getItem('ssc_settings')||'{}');
-    if (saved.domain) document.getElementById('set-domain').value = saved.domain;
+    document.getElementById('set-domain').value   = CONFIG.domain || '';
 }
-
-document.getElementById('btnSaveSettings').addEventListener('click', () => {
-    const settings = {
-        domain: document.getElementById('set-domain').value.trim(),
-        updatedAt: Date.now()
-    };
-    localStorage.setItem('ssc_settings', JSON.stringify(settings));
-    document.getElementById('settings-msg').textContent = '✓ Paramètres enregistrés. Pour appliquer WhatsApp/PayPal, modifiez config.js directement.';
-    setTimeout(()=>document.getElementById('settings-msg').textContent='', 4000);
-});
 
 // Démarrage (après que toutes les fonctions et constantes sont définies)
 _adminInit();
