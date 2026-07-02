@@ -9,17 +9,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const grid        = document.getElementById('catGrid');
 
-    // ── Tri : nouveaux produits SSC (Medicaments_) en premier, anciens MediAfrica (M1/M2/M3/M4) en dernier ──
-    (function sortGrid() {
+    // ── Tri du catalogue ──
+    // Clé 1 : les produits AVEC prix configuré d'abord, ceux sans prix (sur devis) à la fin.
+    // Clé 2 : nouveaux produits SSC (Medicaments_) avant les anciens MediAfrica (M1-M4).
+    function sortGrid() {
         const allCards = Array.from(grid.querySelectorAll('.cat-card'));
-        function order(card) {
+        function imgOrder(card) {
             const bg = card.querySelector('[style*="background-image"]')?.getAttribute('style') || '';
             if (/Medicaments_\d+/.test(bg)) return 1;   // nouveaux produits SSC
             if (/[uU]rl\(['"]?(?:assets\/)?M[1-4]/.test(bg)) return 3; // anciens MediAfrica
-            return 2; // autres (antidouleur, gummies, etc.)
+            return 2; // autres (antidouleur, seringues, etc.)
         }
-        allCards.sort((a, b) => order(a) - order(b)).forEach(c => grid.appendChild(c));
-    })();
+        function hasPrice(card) {
+            if (typeof CONFIG === 'undefined' || !CONFIG.priceFor) return true;
+            const name = card.querySelector('h3')?.textContent.replace(/\s+/g, ' ').trim() || '';
+            return CONFIG.priceFor(name, false) != null;
+        }
+        const key = c => (hasPrice(c) ? 0 : 10) + imgOrder(c);
+        allCards.sort((a, b) => key(a) - key(b)).forEach(c => grid.appendChild(c));
+    }
+    sortGrid();
+    // Re-trier si l'admin ajoute/retire des prix (chargés depuis Firestore)
+    document.addEventListener('prices:changed', sortGrid);
 
     const cards       = Array.from(grid.querySelectorAll('.cat-card'));
     const searchInput = document.getElementById('searchInput');
