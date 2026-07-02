@@ -1,7 +1,8 @@
 const CONFIG = {
     domain:          'medipharma.ca',         // ← Domaine GoDaddy
-    adminEmail:      'admin@medipharma.ca',   // ← Email de l'administrateur
+    adminEmail:      'admin@medipharma.ca',   // ← Email de l'administrateur (ADM)
     adminUsername:   'eltajoseph29',          // ← Nom d'utilisateur de l'administrateur
+    devEmail:        'dev@medipharma.ca',     // ← Email du développeur (DEV, droits complets)
     whatsappNumber:  '14384029247',           // ← Numéro WhatsApp sans + ni espaces
     web3formsKey:    '1560dddd-c553-4099-8710-d8195cd93d0b', // Notifications → medipharmacanada@gmail.com
     paypal: {
@@ -103,6 +104,19 @@ try {
 // Initialise Firebase dès que les clés sont renseignées
 if (typeof firebase !== 'undefined' && CONFIG.firebase.apiKey) {
     firebase.initializeApp(CONFIG.firebase);
+
+    // Prix gérés par l'admin : source partagée Firestore (doc settings/prices),
+    // appliquée à TOUS les visiteurs. Le localStorage ne sert que de cache pour
+    // un affichage immédiat au chargement suivant.
+    try {
+        firebase.firestore().doc('settings/prices').get().then(snap => {
+            if (!snap.exists) return;
+            const prices = (snap.data() || {}).prices || {};
+            for (const k in prices) CONFIG.prices[k] = prices[k];
+            try { localStorage.setItem('ssc_prices', JSON.stringify(prices)); } catch (_) {}
+            document.dispatchEvent(new CustomEvent('prices:changed'));
+        }).catch(() => { /* hors-ligne : le cache localStorage ci-dessus fait foi */ });
+    } catch (_) {}
 } else if (typeof firebase !== 'undefined' && !CONFIG.firebase.apiKey) {
     console.info('ℹ️ Solutions Santé Canada : Firebase non configuré — mode local (comptes et commandes stockés dans ce navigateur uniquement).');
 }

@@ -406,6 +406,7 @@ const Cart = (() => {
         _renderItems();
         _loadPrices();
         document.addEventListener('auth:changed', _reprice);
+        document.addEventListener('prices:changed', _reprice);   // prix admin chargés depuis Firestore
 
         document.getElementById('cartToggle')  ?.addEventListener('click', openPanel);
         document.getElementById('cartClose')   ?.addEventListener('click', closePanel);

@@ -377,7 +377,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="config.js?v=10"></script>
+<script src="config.js?v=11"></script>
 <script>
 // ═══════════════════════════════════════════════════════
 //  ADMIN — Solutions Santé Canada
@@ -413,7 +413,17 @@ function getUsers(){
     }catch{ return []; }
 }
 function getPrices(){ try{ return JSON.parse(localStorage.getItem('ssc_prices')||'{}'); }catch{ return CONFIG?.prices||{}; } }
-function savePrices(p){ localStorage.setItem('ssc_prices',JSON.stringify(p)); }
+// Sauvegarde des prix : Firestore (doc settings/prices, appliqué à TOUS les visiteurs)
+// + cache localStorage. Lance une erreur si l'écriture partagée échoue.
+async function savePrices(p){
+    localStorage.setItem('ssc_prices', JSON.stringify(p));
+    if (fbReady()) {
+        await firebase.firestore().doc('settings/prices').set({
+            prices: p,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+}
 
 // ── Login (deux identités : ADM = Elta, DEV = développeur) ──
 const DEV_EMAIL = 'dev@medipharma.ca';
@@ -798,8 +808,19 @@ const PRODUCTS = [
 
 let currentPrices = {};
 
-function loadPrices(){
-    currentPrices = { ...(CONFIG?.prices||{}), ...getPrices() };
+async function loadPrices(){
+    // Source partagée Firestore d'abord (ce que voient les visiteurs), repli cache local
+    let overrides = getPrices();
+    if (fbReady()) {
+        try {
+            const snap = await firebase.firestore().doc('settings/prices').get();
+            if (snap.exists) {
+                overrides = (snap.data() || {}).prices || {};
+                localStorage.setItem('ssc_prices', JSON.stringify(overrides));
+            }
+        } catch (e) { console.warn('Prix Firestore indisponibles, repli cache local :', e); }
+    }
+    currentPrices = { ...(CONFIG?.prices||{}), ...overrides };
     renderPriceRows(PRODUCTS);
 }
 
@@ -859,12 +880,15 @@ document.getElementById('btnSavePrices').addEventListener('click', () => {
         if (u == null && g == null) delete prices[name];
         else prices[name] = { unite: u ?? null, gros: g ?? null };
     }
-    savePrices(prices);
-    currentPrices = prices;
     const fb = document.getElementById('saveFeedback');
-    fb.className = 'save-msg ok';
-    fb.textContent = '✓ Prix sauvegardés !';
-    setTimeout(()=>fb.textContent='', 3000);
+    savePrices(prices).then(() => {
+        currentPrices = prices;
+        fb.className = 'save-msg ok';
+        fb.textContent = '✓ Prix sauvegardés — appliqués à tous les visiteurs !';
+    }).catch(e => {
+        fb.className = 'save-msg err';
+        fb.textContent = '⚠️ Sauvegarde partagée échouée (' + (e.code || e.message) + ') — réessayez.';
+    }).finally(() => setTimeout(()=>fb.textContent='', 5000));
 });
 
 // ══════════════════════════════

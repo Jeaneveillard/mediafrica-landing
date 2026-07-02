@@ -88,6 +88,7 @@ const Pricing = (() => {
         render();
         document.addEventListener('auth:changed', render);
         document.addEventListener('region:changed', render);
+        document.addEventListener('prices:changed', render);   // prix admin chargés depuis Firestore
     }
 
     if (document.readyState === 'loading') {

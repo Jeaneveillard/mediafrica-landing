@@ -44,12 +44,15 @@ const Auth = (() => {
         document.dispatchEvent(new CustomEvent('auth:changed', { detail: { user: user || null } }));
     }
 
-    /* ── L'utilisateur connecté est-il l'administrateur ? ── */
+    /* ── L'utilisateur connecté est-il l'administrateur (ADM) ou le développeur (DEV) ? ── */
     function _isAdmin(user) {
         if (!user) return false;
         const ae = (typeof CONFIG !== 'undefined' && CONFIG.adminEmail)    ? CONFIG.adminEmail.toLowerCase()    : '';
         const au = (typeof CONFIG !== 'undefined' && CONFIG.adminUsername) ? CONFIG.adminUsername.toLowerCase() : '';
-        return (!!ae && (user.email || '').toLowerCase() === ae)
+        const de = (typeof CONFIG !== 'undefined' && CONFIG.devEmail)      ? CONFIG.devEmail.toLowerCase()      : '';
+        const em = (user.email || '').toLowerCase();
+        return (!!ae && em === ae)
+            || (!!de && em === de)
             || (!!au && (user.username || '').toLowerCase() === au);
     }
 

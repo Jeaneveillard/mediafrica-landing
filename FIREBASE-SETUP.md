@@ -117,6 +117,12 @@ service cloud.firestore {
       allow update: if isAdmin();
       allow delete: if isDev();
     }
+    // Paramètres du site (prix gérés par l'ADM) : lisibles par tous les visiteurs,
+    // modifiables uniquement par l'ADM/DEV
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
   }
 }
 ```
