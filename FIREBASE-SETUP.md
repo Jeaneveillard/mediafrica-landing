@@ -84,11 +84,14 @@ service cloud.firestore {
     function isAdmin() {
       return request.auth != null && request.auth.token.email == 'admin@medipharma.ca';
     }
-    // Profil : chacun lit/écrit le sien ; l'admin peut valider les grossistes
+    // Profil : chacun lit/écrit le sien ; l'admin peut changer le type (Client/Grossiste)
+    // mais NE PEUT PAS supprimer un compte (protection litige — suppression réservée
+    // au développeur via la console Firebase, qui contourne ces règles).
     match /users/{uid} {
       allow read: if request.auth != null;
       allow create: if request.auth != null && request.auth.uid == uid;
-      allow update, delete: if (request.auth != null && request.auth.uid == uid) || isAdmin();
+      allow update: if (request.auth != null && request.auth.uid == uid) || isAdmin();
+      allow delete: if request.auth != null && request.auth.uid == uid;
     }
     // Avis clients : lecture publique (affichés sur la page d'accueil),
     // chaque utilisateur connecté ne peut écrire que son propre avis (doc id = son uid)

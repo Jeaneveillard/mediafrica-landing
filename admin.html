@@ -232,7 +232,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3>Liste des commandes</h3>
-                    <button class="btn-save" style="font-size:12px;padding:7px 14px" id="btnClearOrders"><i class="fa-solid fa-trash"></i> Vider</button>
+                    <span style="font-size:12px;color:var(--muted)"><i class="fa-solid fa-lock"></i> Archivage permanent — suppression réservée au développeur</span>
                 </div>
                 <table class="data-table">
                     <thead><tr><th>ID</th><th>Client</th><th>Produits</th><th>Date</th><th>Total</th><th>Statut</th><th>Facture</th></tr></thead>
@@ -251,7 +251,7 @@
                     <span id="clients-count" style="font-size:13px;color:var(--muted)"></span>
                 </div>
                 <table class="data-table">
-                    <thead><tr><th>Nom</th><th>Username</th><th>Établissement</th><th>N° Entreprise</th><th>Email</th><th>Inscrit le</th><th>Méthode</th><th>Type</th></tr></thead>
+                    <thead><tr><th>Nom</th><th>Username</th><th>Établissement</th><th>N° Entreprise</th><th>Email</th><th>Inscrit le</th><th>Méthode</th><th>Statut</th><th>Action</th></tr></thead>
                     <tbody id="clients-body"></tbody>
                 </table>
             </div>
@@ -572,12 +572,9 @@ async function loadOrders(){
         </tr>`).join('');
 }
 
-document.getElementById('btnClearOrders').addEventListener('click', async () => {
-    if (!confirm('Vider toutes les commandes ?')) return;
-    localStorage.removeItem('ssc_orders');
-    await loadOrders();
-    loadDashboard();
-});
+// Le bouton « Vider les commandes » a été retiré : les commandes sont un archivage
+// permanent (protection en cas de litige). Suppression réservée au développeur
+// via la console Firebase — les règles Firestore n'autorisent aucun delete client.
 
 // ══════════════════════════════
 //  CLIENTS
@@ -618,16 +615,17 @@ function _renderClients(users){
     const tbody = document.getElementById('clients-body');
     document.getElementById('clients-count').textContent = users.length + ' client(s)';
     if (users.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-users"></i>Aucun client inscrit</div></td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><i class="fa-solid fa-users"></i>Aucun client inscrit</div></td></tr>';
         return;
     }
     tbody.innerHTML = users.map(u => {
         const gros = !!(u.isGrossiste && u.grossisteValidated);
         const pending = !!(u.isGrossiste && !u.grossisteValidated);
-        const label = gros ? '<i class="fa-solid fa-circle-check"></i> Grossiste ✓'
-                    : pending ? '<i class="fa-solid fa-clock"></i> En attente'
-                    : '<i class="fa-regular fa-circle"></i> Client';
-        const btn = `<button class="btn-gros-toggle ${gros?'on':''} ${pending?'pending':''}" data-email="${(u.email||'').replace(/"/g,'&quot;')}" data-uid="${u._uid||''}">${label}</button>`;
+        // Statut lisible : badge d'information distinct du bouton d'action
+        const statut = gros    ? '<span class="badge badge-green"><i class="fa-solid fa-circle-check"></i> Grossiste validé</span>'
+                     : pending ? '<span class="badge badge-gold"><i class="fa-solid fa-clock"></i> Grossiste — en attente</span>'
+                     :           '<span class="badge badge-blue"><i class="fa-solid fa-user"></i> Client</span>';
+        const btn = `<button class="btn-gros-toggle ${gros?'on':''} ${pending?'pending':''}" title="Client → En attente → Grossiste validé → Client" data-email="${(u.email||'').replace(/"/g,'&quot;')}" data-uid="${u._uid||''}"><i class="fa-solid fa-rotate"></i> Changer le type</button>`;
         return `
         <tr>
             <td><strong>${u.displayName||'—'}</strong></td>
@@ -637,6 +635,7 @@ function _renderClients(users){
             <td>${u.email}</td>
             <td style="font-size:12px">${u.createdAt ? fmt(u.createdAt) : '—'}</td>
             <td><span class="badge ${u.provider==='google'?'badge-red':'badge-gold'}">${u.provider==='google'?'Google':'Email'}</span></td>
+            <td>${statut}</td>
             <td>${btn}</td>
         </tr>`;
     }).join('');
