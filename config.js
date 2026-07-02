@@ -13,12 +13,12 @@ const CONFIG = {
         checkoutFunctionUrl: ''  // ← URL de la Cloud Function "createCheckoutSession" (voir STRIPE-SETUP.md)
     },
     firebase: {
-        apiKey: '',
-        authDomain: '',
-        projectId: '',
-        storageBucket: '',
-        messagingSenderId: '',
-        appId: ''
+        apiKey: 'AIzaSyB7LeycuOSH_-jTHiHAqMJQcNmavudJ19Q',
+        authDomain: 'medipharma-59f91.firebaseapp.com',
+        projectId: 'medipharma-59f91',
+        storageBucket: 'medipharma-59f91.firebasestorage.app',
+        messagingSenderId: '997014467512',
+        appId: '1:997014467512:web:b2de9a225d307d7a77954d'
     },
 
     // ── Régions (portails) ──
