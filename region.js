@@ -56,7 +56,7 @@ const Region = (() => {
                     <button type="button" class="region-card" data-region="international">
                         <span class="region-card-flag">🌍</span>
                         <strong>International</strong>
-                        <span class="region-card-sub">Guinée Conakry · Burkina Faso · Côte d'Ivoire</span>
+                        <span class="region-card-sub">Partout en Afrique · Guinée · Sénégal · Burkina Faso · Côte d'Ivoire…</span>
                     </button>
                 </div>
             </div>

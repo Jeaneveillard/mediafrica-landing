@@ -303,9 +303,61 @@ const Auth = (() => {
                         <select id="regPays">
                             <option value="" disabled selected>Choisir un pays</option>
                             <option>Canada</option>
-                            <option>Guinée Conakry</option>
-                            <option>Burkina Faso</option>
-                            <option>Côte d'Ivoire</option>
+                            <optgroup label="Afrique">
+                                <option>Afrique du Sud</option>
+                                <option>Algérie</option>
+                                <option>Angola</option>
+                                <option>Bénin</option>
+                                <option>Botswana</option>
+                                <option>Burkina Faso</option>
+                                <option>Burundi</option>
+                                <option>Cameroun</option>
+                                <option>Cap-Vert</option>
+                                <option>Comores</option>
+                                <option>Congo (Brazzaville)</option>
+                                <option>Congo (RDC)</option>
+                                <option>Côte d'Ivoire</option>
+                                <option>Djibouti</option>
+                                <option>Égypte</option>
+                                <option>Érythrée</option>
+                                <option>Eswatini</option>
+                                <option>Éthiopie</option>
+                                <option>Gabon</option>
+                                <option>Gambie</option>
+                                <option>Ghana</option>
+                                <option>Guinée Conakry</option>
+                                <option>Guinée-Bissau</option>
+                                <option>Guinée équatoriale</option>
+                                <option>Kenya</option>
+                                <option>Lesotho</option>
+                                <option>Libéria</option>
+                                <option>Libye</option>
+                                <option>Madagascar</option>
+                                <option>Malawi</option>
+                                <option>Mali</option>
+                                <option>Maroc</option>
+                                <option>Maurice</option>
+                                <option>Mauritanie</option>
+                                <option>Mozambique</option>
+                                <option>Namibie</option>
+                                <option>Niger</option>
+                                <option>Nigéria</option>
+                                <option>Ouganda</option>
+                                <option>Rwanda</option>
+                                <option>São Tomé-et-Príncipe</option>
+                                <option>Sénégal</option>
+                                <option>Seychelles</option>
+                                <option>Sierra Leone</option>
+                                <option>Somalie</option>
+                                <option>Soudan</option>
+                                <option>Soudan du Sud</option>
+                                <option>Tanzanie</option>
+                                <option>Tchad</option>
+                                <option>Togo</option>
+                                <option>Tunisie</option>
+                                <option>Zambie</option>
+                                <option>Zimbabwe</option>
+                            </optgroup>
                             <option>Autre</option>
                         </select>
                     </div>
