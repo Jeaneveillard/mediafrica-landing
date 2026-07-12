@@ -298,18 +298,32 @@ const Cart = (() => {
                 <button onclick="document.getElementById('cartOrderConfirm').remove()"
                     style="margin-left:auto;background:none;border:none;cursor:pointer;color:#9ca3af;font-size:1rem">✕</button>
             </div>
-            <p style="font-size:.83rem;color:#4b5563;margin-bottom:.85rem">
-                Votre commande a été enregistrée. Consultez votre facture :
+            <p style="font-size:.83rem;color:#4b5563;margin-bottom:.5rem">
+                Votre numéro de commande :
             </p>
-            <a href="facture.html?id=${orderId}" target="_blank" style="
-                display:inline-flex;align-items:center;gap:.4rem;
-                background:#0c2d1a;color:#fff;padding:.55rem 1rem;
-                border-radius:8px;font-size:.85rem;font-weight:600;text-decoration:none;">
-                <i class="fa-solid fa-file-invoice"></i> Voir ma facture
-            </a>
+            <div style="font-family:monospace;font-size:.9rem;font-weight:700;color:#0c2d1a;
+                background:#f0fdf4;border:1px dashed #86efac;border-radius:8px;
+                padding:.5rem .75rem;margin-bottom:.6rem;word-break:break-all;">${orderId}</div>
+            <p style="font-size:.78rem;color:#6b7280;margin-bottom:.85rem">
+                Conservez-le : il vous permet de suivre votre commande à tout moment.
+            </p>
+            <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+                <a href="facture.html?id=${orderId}" target="_blank" style="
+                    display:inline-flex;align-items:center;gap:.4rem;
+                    background:#0c2d1a;color:#fff;padding:.55rem 1rem;
+                    border-radius:8px;font-size:.85rem;font-weight:600;text-decoration:none;">
+                    <i class="fa-solid fa-file-invoice"></i> Voir ma facture
+                </a>
+                <a href="mon-compte.html?cmd=${encodeURIComponent(orderId)}" style="
+                    display:inline-flex;align-items:center;gap:.4rem;
+                    background:#fff;color:#0c2d1a;border:1.5px solid #0c2d1a;padding:.55rem 1rem;
+                    border-radius:8px;font-size:.85rem;font-weight:600;text-decoration:none;">
+                    <i class="fa-solid fa-truck-fast"></i> Suivre ma commande
+                </a>
+            </div>
         </div>
         <style>@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}</style>`);
-        setTimeout(() => document.getElementById('cartOrderConfirm')?.remove(), 12000);
+        setTimeout(() => document.getElementById('cartOrderConfirm')?.remove(), 25000);
     }
 
     /* ── DOM injection ── */

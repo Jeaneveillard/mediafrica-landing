@@ -26,7 +26,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css?v=12">
-    <link rel="stylesheet" href="cart.css?v=12">
+    <link rel="stylesheet" href="cart.css?v=13">
     <style>
         .page-header {
             padding: 160px 0 80px;
@@ -124,9 +124,9 @@
             <div class="tracking-card">
                 <i class="fa-solid fa-box-open tracking-icon"></i>
                 <h2>Suivez votre <em>commande</em></h2>
-                <p>Entrez votre numéro de suivi pour connaître l'état actuel de votre expédition.</p>
-                <form class="tracking-form" onsubmit="alert('Service de suivi en cours de déploiement. Contactez le 438-402-9247 pour assistance immédiate.'); return false;">
-                    <input type="text" placeholder="Ex: MA-123456" required>
+                <p>Chaque commande placée reçoit automatiquement un numéro de commande (affiché à la confirmation et sur votre facture). Entrez-le pour connaître l'état de votre commande, ou retrouvez toutes vos commandes dans <a href="mon-compte.html">Mon compte</a>.</p>
+                <form class="tracking-form" onsubmit="window.location.href='mon-compte.html?cmd='+encodeURIComponent(this.querySelector('input').value.trim()); return false;">
+                    <input type="text" placeholder="Ex : CMD-A1b2C3d4…" required>
                     <button type="submit">Tracer</button>
                 </form>
             </div>
@@ -235,7 +235,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="config.js?v=12"></script>
-    <script src="cart.js?v=12"></script>
+    <script src="cart.js?v=13"></script>
     <script src="auth.js?v=14"></script>
     <script src="notify.js?v=12"></script>
     <script src="region.js?v=13"></script>

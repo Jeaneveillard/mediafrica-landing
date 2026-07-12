@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css?v=12">
-    <link rel="stylesheet" href="cart.css?v=12">
+    <link rel="stylesheet" href="cart.css?v=13">
 </head>
 <body>
 
@@ -108,7 +108,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="config.js?v=12"></script>
-    <script src="cart.js?v=12"></script>
+    <script src="cart.js?v=13"></script>
     <script src="auth.js?v=14"></script>
     <script src="notify.js?v=12"></script>
     <script src="region.js?v=13"></script>
@@ -157,6 +157,7 @@
                     };
                     container.innerHTML = snap.docs.map(doc => {
                         const o    = doc.data();
+                        const num  = 'CMD-' + doc.id;
                         const date = o.createdAt?.toDate().toLocaleDateString('fr-CA', {
                             year: 'numeric', month: 'long', day: 'numeric'
                         }) || '—';
@@ -168,16 +169,31 @@
                         const method = o.paymentMethod === 'paypal' ? 'PayPal' : 'WhatsApp';
                         const status = statusLabels[o.status] || statusLabels['sent'];
                         return `
-                        <div class="order-card">
+                        <div class="order-card" data-order-id="${doc.id}">
                             <div class="order-card-header">
                                 <span class="order-date">${date}</span>
                                 ${status}
                             </div>
+                            <div class="order-num" title="Numéro de commande">N° ${num}</div>
                             <ul class="order-items">${items}</ul>
                             <div class="order-total">Total : ${total}</div>
                             <div class="order-method">Paiement : ${method}</div>
                         </div>`;
                     }).join('');
+
+                    // Suivi : ?cmd=CMD-xxxx (depuis la confirmation ou la page Livraison)
+                    const cmdParam = new URLSearchParams(window.location.search).get('cmd');
+                    if (cmdParam) {
+                        const wanted = cmdParam.trim().replace(/^cmd-?/i, '');
+                        const card = container.querySelector(`.order-card[data-order-id="${CSS.escape(wanted)}"]`);
+                        if (card) {
+                            card.classList.add('order-highlight');
+                            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        } else {
+                            container.insertAdjacentHTML('afterbegin',
+                                `<p class="orders-empty">Aucune commande trouvée pour le numéro « ${cmdParam.replace(/[<>&"]/g, '')} » sur ce compte. Vérifiez le numéro ou contactez le 438-402-9247.</p>`);
+                        }
+                    }
                 })
                 .catch(() => {
                     container.innerHTML = '<p class="orders-empty">Impossible de charger les commandes.</p>';
