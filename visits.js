@@ -73,8 +73,11 @@ const Visits = (() => {
         const jour = _today();
         const inc  = firebase.firestore.FieldValue.increment(1);
 
-        const maj = { date: jour, vues: inc };
-        maj['pages.' + _pageKey()] = inc;
+        // L'objet `pages` doit être imbriqué explicitement : avec set(), une clé
+        // « pages.index » créerait un champ nommé littéralement ainsi, au lieu
+        // d'alimenter la map `pages`. Seul update() interprète la notation pointée.
+        const maj = { date: jour, vues: inc, pages: {} };
+        maj.pages[_pageKey()] = inc;
         if (_nouvelleSession()) maj.visites = inc;
 
         firebase.firestore().collection('stats').doc(jour)
