@@ -5,6 +5,10 @@ const CONFIG = {
     devEmail:        'dev@medipharma.ca',     // ← Email du développeur (DEV, droits complets)
     whatsappNumber:  '14384029247',           // ← Numéro WhatsApp sans + ni espaces
     web3formsKey:    '1560dddd-c553-4099-8710-d8195cd93d0b', // Notifications → medipharmacanada@gmail.com
+
+    // ← ID de mesure Google Analytics 4, format G-XXXXXXXXXX (voir ANALYTICS-SETUP.md)
+    //    Vide = aucun traceur chargé et aucune bannière affichée.
+    ga4MeasurementId: 'G-B0147DN6XY',
     paypal: {
         handle: 'TON_COMPTE_PAYPAL', // ex: 'mediafrica' → paypal.me/mediafrica
         currency: 'CAD'

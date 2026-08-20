@@ -17,6 +17,18 @@ const Cart = (() => {
         _updateBadge();
     }
 
+    /* ── Statistiques GA4 (sans effet si non configuré ou refusé) ── */
+    function _ga(name, params) {
+        if (typeof Analytics !== 'undefined') Analytics.track(name, params);
+    }
+    function _gaItems(items) {
+        return items.map(i => ({
+            item_name: i.name,
+            quantity:  i.quantity,
+            price:     i.unitPrice != null ? i.unitPrice : 0
+        }));
+    }
+
     /* ── Public API ── */
     function add(product) {
         const items = getItems();
@@ -24,6 +36,12 @@ const Cart = (() => {
         if (existing) { existing.quantity += 1; }
         else { items.push({ ...product, quantity: 1 }); }
         _save(items);
+        _ga('add_to_cart', {
+            currency: 'CAD',
+            value:    product.unitPrice != null ? product.unitPrice : 0,
+            items:    [{ item_name: product.name, quantity: 1,
+                         price: product.unitPrice != null ? product.unitPrice : 0 }]
+        });
         _renderItems();
         _flash();
         openPanel();
@@ -253,6 +271,10 @@ const Cart = (() => {
         orders.unshift(newOrder);
         localStorage.setItem('ssc_orders', JSON.stringify(orders.slice(0, 200)));
         if (typeof Notify !== 'undefined') Notify.commande(newOrder);
+        _ga('purchase', {
+            transaction_id: newOrder.factureNum,
+            currency: 'CAD', value: total, items: _gaItems(items)
+        });
 
         clear();
         closePanel();
@@ -276,6 +298,10 @@ const Cart = (() => {
         });
         localStorage.setItem('ssc_orders', JSON.stringify(orders.slice(0, 200)));
         if (typeof Notify !== 'undefined') Notify.commande(orders[0]);
+        _ga('purchase', {
+            transaction_id: factureNum,
+            currency: 'CAD', value: total, items: _gaItems(items)
+        });
         clear(); closePanel();
         _showOrderConfirmation(orders[0].id);
         _redirect(items, total, user, factureNum);

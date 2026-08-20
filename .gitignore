@@ -17,3 +17,6 @@ desktop.ini
 node_modules/
 /package.json
 /package-lock.json
+
+# Publicité vidéo (livrable marque, hors site)
+pub-collagene/
