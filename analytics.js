@@ -65,6 +65,27 @@ const Analytics = (() => {
     }
 
     /* ── Bannière de consentement ── */
+
+    // Le choix de région (#regionModal, z-index 99000) passe avant : il s'affiche
+    // au premier chargement et recouvrirait la bannière, la rendant incliquable.
+    // region.js est chargé APRÈS analytics.js et injecte son modal sur
+    // DOMContentLoaded — d'où le délai avant de décider, puis l'observateur.
+    function _showBannerWhenFree() {
+        const modalOuvert = () => !!document.querySelector('#regionModal.open');
+
+        setTimeout(() => {
+            if (!modalOuvert()) { _showBanner(); return; }
+
+            const obs = new MutationObserver(() => {
+                if (!modalOuvert()) { obs.disconnect(); _showBanner(); }
+            });
+            obs.observe(document.body, {
+                subtree: true, childList: true,
+                attributes: true, attributeFilter: ['class']
+            });
+        }, 150);
+    }
+
     function _showBanner() {
         if (document.getElementById('sscConsentBar')) return;
 
@@ -79,6 +100,7 @@ const Analytics = (() => {
             box-shadow:0 16px 48px rgba(28,25,23,.14);
             padding:1.15rem 1.35rem; font-family:'DM Sans',sans-serif;
             display:flex; flex-wrap:wrap; gap:.9rem; align-items:center;
+            opacity:1;
             animation:sscConsentIn .35s ease-out;
         `;
         bar.innerHTML = `
@@ -103,7 +125,10 @@ const Analytics = (() => {
         `;
 
         const style = document.createElement('style');
-        style.textContent = '@keyframes sscConsentIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}';
+        // L'animation ne touche PAS l'opacité : si le rendu est suspendu (onglet
+        // ouvert en arrière-plan), une animation figée sur son 1er keyframe
+        // laisserait la bannière invisible. Seul le glissement est animé.
+        style.textContent = '@keyframes sscConsentIn{from{transform:translateY(12px)}to{transform:none}}';
         document.head.appendChild(style);
         document.body.appendChild(bar);
 
@@ -148,9 +173,9 @@ const Analytics = (() => {
             _grant();
         } else if (consent === null) {
             if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', _showBanner);
+                document.addEventListener('DOMContentLoaded', _showBannerWhenFree);
             } else {
-                _showBanner();
+                _showBannerWhenFree();
             }
         }
     }
