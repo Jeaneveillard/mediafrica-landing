@@ -122,3 +122,78 @@ page (facultatif) :
 
 **Tant que `ga4MeasurementId` est vide, rien n'est chargé et aucune bannière ne
 s'affiche** — le site fonctionne exactement comme avant.
+
+---
+
+# 📈 Onglet « Statistiques » dans le panneau d'administration
+
+En plus de Google Analytics, le site tient son **propre compteur de visites**,
+consultable directement dans l'admin — sans passer par Google, sans se connecter
+à un compte externe.
+
+**Accès :** `medipharma.ca/admin.html` → menu de gauche → **Statistiques**
+(visible pour l'ADM et le DEV).
+
+Il affiche : visites du jour / 7 jours / 30 jours, pages vues, un graphique des
+30 derniers jours, et le classement des pages les plus consultées.
+
+## ⚠️ Une étape obligatoire : publier les règles Firestore
+
+**Sans cette étape, le compteur restera à zéro.** Les visites ne peuvent pas être
+enregistrées tant que Firestore refuse l'écriture.
+
+1. Aller sur **https://console.firebase.google.com** → projet **medipharma-59f91**
+2. Menu de gauche : **Firestore Database** → onglet **Règles**
+3. Ajouter ce bloc **avant** l'accolade fermante finale (`}` puis `}`) :
+
+```
+    match /stats/{jour} {
+      allow read:   if isAdmin();
+      allow create: if true;
+      allow update: if request.resource.data.vues >= resource.data.vues;
+      allow delete: if isDev();
+    }
+```
+
+4. Cliquer sur **Publier**.
+
+Le jeu de règles complet et à jour se trouve dans `FIREBASE-SETUP.md`.
+
+## Ce que le compteur enregistre
+
+Un document par jour dans la collection `stats` :
+
+```
+stats/2026-08-19 = {
+  date: '2026-08-19',
+  vues: 128,          ← pages chargées
+  visites: 47,        ← sessions distinctes
+  pages: { index: 60, catalogue: 45, livraison: 23 }
+}
+```
+
+**Rien d'autre.** Aucun nom, aucun courriel, aucune adresse IP, aucun cookie,
+aucun parcours individuel — uniquement des totaux.
+
+## Compteur maison ou Google Analytics ?
+
+Les deux tournent en parallèle et se complètent :
+
+| | Compteur maison | Google Analytics 4 |
+|---|---|---|
+| Où le consulter | Dans votre admin | analytics.google.com |
+| Consentement requis | **Non** (anonyme, sans cookie) | Oui (bannière) |
+| Visiteurs comptés | **100 %** | 70 à 90 % (les refus sont perdus) |
+| Pays, sources de trafic | ✗ | ✓ |
+| Ajouts au panier, commandes | ✗ | ✓ |
+| Historique | Depuis la publication des règles | Depuis le 19 août 2026 |
+
+👉 Les chiffres des deux outils **ne seront jamais identiques**, et c'est normal :
+le compteur maison sera systématiquement plus élevé, puisqu'il compte aussi les
+visiteurs qui refusent la bannière. Pour « combien de personnes visitent le
+site », le compteur maison est le plus fidèle.
+
+## Coût
+
+Aucun. Une écriture Firestore par page vue, contre un quota gratuit de
+20 000 écritures par jour — soit largement au-delà du trafic prévu.

@@ -175,6 +175,7 @@
         </a>
         <nav>
             <button class="nav-item active" data-page="dashboard"><i class="fa-solid fa-gauge"></i> Tableau de bord</button>
+            <button class="nav-item" data-page="visits"><i class="fa-solid fa-chart-line"></i> Statistiques</button>
             <button class="nav-item" data-page="orders"><i class="fa-solid fa-bag-shopping"></i> Commandes</button>
             <button class="nav-item" data-page="b2b"><i class="fa-solid fa-building"></i> Commandes B2B</button>
             <button class="nav-item" data-page="clients"><i class="fa-solid fa-users"></i> Clients</button>
@@ -224,6 +225,67 @@
                     <thead><tr><th>ID</th><th>Client</th><th>Date</th><th>Total</th><th>Statut</th></tr></thead>
                     <tbody id="dash-orders-body"></tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- ── STATISTIQUES DE VISITE ── -->
+        <div class="page" id="page-visits">
+            <div class="page-title">Statistiques de visite</div>
+            <div class="page-sub">Fréquentation du site — comptage anonyme, sans cookie</div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fa-solid fa-eye s-icon"></i>
+                    <div class="s-label">Visites aujourd'hui</div>
+                    <div class="s-val" id="vis-today">—</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-calendar-week s-icon"></i>
+                    <div class="s-label">7 derniers jours</div>
+                    <div class="s-val" id="vis-7">—</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-calendar-days s-icon"></i>
+                    <div class="s-label">30 derniers jours</div>
+                    <div class="s-val" id="vis-30">—</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-file-lines s-icon"></i>
+                    <div class="s-label">Pages vues (30 j)</div>
+                    <div class="s-val" id="vis-views">—</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h3>Visites par jour — 30 derniers jours</h3></div>
+                <div style="padding:20px">
+                    <div id="vis-chart" style="display:flex;align-items:flex-end;gap:3px;height:160px"></div>
+                    <div id="vis-chart-legend"
+                         style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--muted)"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h3>Pages les plus consultées (30 derniers jours)</h3></div>
+                <table class="data-table">
+                    <thead><tr><th>Page</th><th>Vues</th><th style="width:45%">Part</th></tr></thead>
+                    <tbody id="vis-pages-body"></tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h3>À propos de ces chiffres</h3></div>
+                <div style="padding:20px;font-size:13px;line-height:1.7;color:var(--muted)">
+                    <p><strong>Visite</strong> = une personne qui arrive sur le site (une session).
+                       <strong>Page vue</strong> = chaque page qu'elle consulte ensuite.
+                       Une visite qui parcourt 4 pages compte pour 1 visite et 4 pages vues.</p>
+                    <p style="margin-top:10px">Le comptage est anonyme et sans cookie : il n'enregistre
+                       ni identité, ni adresse IP, ni parcours individuel — uniquement des totaux par jour.
+                       Il n'est donc pas soumis au consentement et compte <strong>tous</strong> les visiteurs.</p>
+                    <p style="margin-top:10px">Vos propres visites (ADM et DEV) ne sont pas comptées.
+                       Pour les données détaillées — pays, sources de trafic, commandes —
+                       consultez Google&nbsp;Analytics.</p>
+                </div>
             </div>
         </div>
 
@@ -379,6 +441,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="config.js?v=14"></script>
 <script src="analytics.js?v=2"></script>
+<script src="visits.js?v=1"></script>
 <script>
 // ═══════════════════════════════════════════════════════
 //  ADMIN — Solutions Santé Canada
@@ -541,8 +604,82 @@ document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
         document.getElementById('page-' + btn.dataset.page).classList.add('active');
+        if (btn.dataset.page === 'visits') loadVisits();
     });
 });
+
+// ══════════════════════════════
+//  STATISTIQUES DE VISITE
+// ══════════════════════════════
+let _visitsCharge = false;
+
+async function loadVisits(){
+    if (_visitsCharge) return;          // une seule lecture Firestore par session
+    if (typeof Visits === 'undefined') return;
+
+    const $ = id => document.getElementById(id);
+    try {
+        const serie = await Visits.derniersJours(30);
+        _visitsCharge = true;
+
+        const somme = (arr, champ) => arr.reduce((s, j) => s + (j[champ] || 0), 0);
+        const j7    = serie.slice(-7);
+
+        $('vis-today').textContent = serie[serie.length - 1].visites;
+        $('vis-7').textContent     = somme(j7, 'visites');
+        $('vis-30').textContent    = somme(serie, 'visites');
+        $('vis-views').textContent = somme(serie, 'vues');
+
+        // ── Graphique en barres ──
+        const max = Math.max(1, ...serie.map(j => j.visites));
+        $('vis-chart').innerHTML = serie.map(j => {
+            const h = Math.round((j.visites / max) * 100);
+            const d = new Date(j.date + 'T12:00:00').toLocaleDateString('fr-CA',
+                        { day: 'numeric', month: 'short' });
+            return `<div title="${d} — ${j.visites} visite(s), ${j.vues} page(s) vue(s)"
+                         style="flex:1;min-width:0;height:${Math.max(h,2)}%;border-radius:3px 3px 0 0;
+                                background:${j.visites ? 'var(--green)' : '#e5e7eb'}"></div>`;
+        }).join('');
+
+        const fmt = d => new Date(d + 'T12:00:00').toLocaleDateString('fr-CA',
+                        { day: 'numeric', month: 'short' });
+        $('vis-chart-legend').innerHTML =
+            `<span>${fmt(serie[0].date)}</span><span>${fmt(serie[serie.length-1].date)}</span>`;
+
+        // ── Pages les plus vues ──
+        const pages = Visits.pagesPopulaires(serie);
+        const totalVues = pages.reduce((s, p) => s + p.vues, 0) || 1;
+        const noms = { index:'Accueil', catalogue:'Catalogue', livraison:'Livraison & Suivi',
+                       aide:'Aide & FAQ', communaute:'Communauté', 'mon-compte':'Mon compte',
+                       'alerte-nouveautes':'Alerte nouveautés', facture:'Facture',
+                       'article-paludisme':'Article — Paludisme',
+                       'article-pediatrie':'Article — Pédiatrie',
+                       'article-vitamines':'Article — Vitamines' };
+
+        $('vis-pages-body').innerHTML = pages.length
+            ? pages.map(p => {
+                const pct = Math.round((p.vues / totalVues) * 100);
+                return `<tr>
+                    <td>${noms[p.page] || p.page}</td>
+                    <td><strong>${p.vues}</strong></td>
+                    <td><div style="background:#f3f4f6;border-radius:99px;height:8px">
+                          <div style="width:${pct}%;background:var(--green);height:8px;border-radius:99px"></div>
+                        </div><span style="font-size:11px;color:var(--muted)">${pct} %</span></td>
+                </tr>`;
+              }).join('')
+            : `<tr><td colspan="3" style="color:var(--muted);padding:20px">
+                 Aucune visite enregistrée pour l'instant. Les chiffres apparaîtront
+                 dès les premiers visiteurs.</td></tr>`;
+
+    } catch (err) {
+        $('vis-pages-body').innerHTML =
+            `<tr><td colspan="3" style="color:#b91c1c;padding:20px">
+               Lecture impossible : ${err.message}<br>
+               <span style="color:var(--muted);font-size:12px">Vérifiez que les règles Firestore
+               pour la collection « stats » ont bien été publiées (voir FIREBASE-SETUP.md).</span>
+             </td></tr>`;
+    }
+}
 
 // ══════════════════════════════
 //  DASHBOARD

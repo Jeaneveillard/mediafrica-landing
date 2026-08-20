@@ -123,6 +123,18 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+    // Compteur de visites (onglet « Statistiques » du panneau admin).
+    // Un document par jour, contenant uniquement des totaux anonymes —
+    // aucune donnée personnelle, aucune IP, aucun identifiant.
+    // Écriture ouverte : le compteur doit fonctionner pour les visiteurs
+    // non connectés. La condition empêche qu'on remette les compteurs à
+    // zéro ou qu'on efface l'historique ; seul l'ADM/DEV peut les lire.
+    match /stats/{jour} {
+      allow read:   if isAdmin();
+      allow create: if true;
+      allow update: if request.resource.data.vues >= resource.data.vues;
+      allow delete: if isDev();
+    }
   }
 }
 ```
