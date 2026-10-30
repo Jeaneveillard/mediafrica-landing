@@ -168,8 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const header = card.querySelector('.cat-card-header');
         modalImg.style.backgroundImage    = header ? header.style.backgroundImage : '';
         modalImg.style.backgroundRepeat   = 'no-repeat';
-        // Copier le recadrage de la carte si défini, sinon valeurs par défaut
-        if (header && header.style.backgroundPosition) {
+        // Recadrage spécial seulement pour les cartes non « contain » (ex. M1) ;
+        // les flacons restent entiers. Toutes les cartes ont une position inline.
+        if (header && header.style.backgroundSize && header.style.backgroundSize !== 'contain') {
             modalImg.style.backgroundSize     = '100% 145%';
             modalImg.style.backgroundPosition = 'center 50%';
         } else {
